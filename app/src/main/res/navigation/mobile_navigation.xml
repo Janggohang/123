@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_homeFragment">
+
+    <fragment
+        android:id="@+id/navigation_homeFragment"
+        android:name="com.example.gonggu.ui.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_chatFragment"
+        android:name="com.example.gonggu.ui.chat.ChatFragment"
+        android:label="Chat"
+        tools:layout="@layout/fragment_chat" />
+
+    <fragment
+        android:id="@+id/navigation_heartFragment"
+        android:name="com.example.gonggu.ui.heart.HeartFragment"
+        android:label="Heart"
+        tools:layout="@layout/fragment_heart" />
+
+    <fragment
+        android:id="@+id/navigation_profileFragment"
+        android:name="com.example.gonggu.ui.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" />
+
+
+</navigation>
