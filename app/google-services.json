@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "849200555135",
+    "project_id": "gonggu-eca6b",
+    "storage_bucket": "gonggu-eca6b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849200555135:android:455860a8ebb4d9e81e0b4a",
+        "android_client_info": {
+          "package_name": "com.example.gonggu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "849200555135-oi2sa3q43ss69abaq7s4dmvllqjuah80.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbAuW5FVpktMS_sTqqkGX2Vtd_uy9ryKg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "849200555135-oi2sa3q43ss69abaq7s4dmvllqjuah80.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
