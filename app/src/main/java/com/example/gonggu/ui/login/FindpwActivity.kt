@@ -13,6 +13,7 @@ class FindpwActivity: AppCompatActivity()  {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+
         val email = findViewById<EditText>(R.id.id_edit_text)
 
         binding.loginButton.setOnClickListener{
