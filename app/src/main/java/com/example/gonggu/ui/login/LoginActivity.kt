@@ -18,14 +18,14 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //자동 로그인
-
-        if (Firebase.auth.currentUser != null){
-            //Toast.makeText(this,"Current user is ${Firebase.auth.uid}",Toast.LENGTH_SHORT).show()
-            startActivity(
-                Intent(this, MainActivity::class.java)
-            )
-            finish()
-        }
+//
+//        if (Firebase.auth.currentUser != null){
+//            //Toast.makeText(this,"Current user is ${Firebase.auth.uid}",Toast.LENGTH_SHORT).show()
+//            startActivity(
+//                Intent(this, MainActivity::class.java)
+//            )
+//            finish()
+//        }
 
         //로그인 이벤트
         binding.loginButton.setOnClickListener {
