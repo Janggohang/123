@@ -30,9 +30,6 @@ class SignUpActivity : AppCompatActivity() {
 
     private lateinit var mDbRef: DatabaseReference
 
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignupBinding.inflate(layoutInflater)
@@ -44,21 +41,33 @@ class SignUpActivity : AppCompatActivity() {
         //인증 초기화
         mDbRef = Firebase.database.reference
 
-
         binding.signinButton.setOnClickListener {
+            if (binding.emailEditText.text.isBlank() || binding.nameEditText.text.isBlank() ||
+                binding.passwordEditText.text.isBlank() || binding.passwordConfirmEditText.text.isBlank()){
+                Toast.makeText(this,"빈칸이 남아있습니다. 빈칸을 모두 채워주세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (!Patterns.EMAIL_ADDRESS.matcher(binding.emailEditText.text).matches()){
+                Toast.makeText(this,"올바른 이메일 형태가 아닙니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (!Pattern.matches("^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$", binding.phoneEditText.text)){
+                Toast.makeText(this,"올바른 전화번호 형태가 아닙니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (binding.passwordConfirmEditText.text.toString() != binding.passwordEditText.text.toString()){
+                Toast.makeText(this,"비밀번호가 서로 동일 하지 않습니다. 다시 확인해주세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             val name = binding.nameEditText.text.toString().trim()
             val email = binding.emailEditText.text.toString().trim()
             val password = binding.passwordEditText.text.toString().trim()
             val phonenumber = binding.phoneEditText.text.toString().trim()
 
-
             signUp(name, email, password, phonenumber)
         }
-
-
     }
-
 
     //회원가입
     private fun signUp(name: String, email: String, password:String, phonenumber:String) {
@@ -77,11 +86,10 @@ class SignUpActivity : AppCompatActivity() {
             }
     }
 
-    private fun addUserToDatabase (name: String, email: String, uId: String, phonenumber: String) {
-        mDbRef.child("user").child(uId).setValue(UserData(name,email, uId,phonenumber))
+    private fun addUserToDatabase (name: String, email: String,  phonenumber: String, uId: String) {
+        mDbRef.child("user").child(uId).setValue(UserData(name,email, phonenumber, uId))
+
     }
-
-
 
 //    private val db: FirebaseFirestore = Firebase.firestore
 //    private val userdataCollectionRef = db.collection("userdata")
@@ -91,23 +99,7 @@ class SignUpActivity : AppCompatActivity() {
 //        super.onCreate(savedInstanceState)
 //        setContentView(binding.root)
 //        binding.signinButton.setOnClickListener {
-//            if (binding.emailEditText.text.isBlank() || binding.nameEditText.text.isBlank() ||
-//                binding.passwordEditText.text.isBlank() || binding.passwordConfirmEditText.text.isBlank()){
-//                Toast.makeText(this,"빈칸이 남아있습니다. 빈칸을 모두 채워주세요.", Toast.LENGTH_SHORT).show()
-//                return@setOnClickListener
-//            }
-//            if (!Patterns.EMAIL_ADDRESS.matcher(binding.emailEditText.text).matches()){
-//                Toast.makeText(this,"올바른 이메일 형태가 아닙니다.", Toast.LENGTH_SHORT).show()
-//                return@setOnClickListener
-//            }
-//            if (!Pattern.matches("^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$", binding.phoneEditText.text)){
-//                Toast.makeText(this,"올바른 전화번호 형태가 아닙니다.", Toast.LENGTH_SHORT).show()
-//                return@setOnClickListener
-//            }
-//            if (binding.passwordConfirmEditText.text.toString() != binding.passwordEditText.text.toString()){
-//                Toast.makeText(this,"비밀번호가 서로 동일 하지 않습니다. 다시 확인해주세요.", Toast.LENGTH_SHORT).show()
-//                return@setOnClickListener
-//            }
+//
 //            Firebase.auth.createUserWithEmailAndPassword(binding.emailEditText.text.toString(), binding.passwordEditText.text.toString())
 //                .addOnCompleteListener {
 //                    if (it.isSuccessful){
