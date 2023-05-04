@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gonggu.Data.ChatDataList
+import com.example.gonggu.Data.HomeDataList
 import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentHomeBinding
 import com.example.gonggu.ui.chat.ChatFragment
