@@ -19,10 +19,19 @@ import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentProfileBinding
 import com.example.gonggu.ui.location.LocationFragment
+import com.example.gonggu.ui.login.LoginActivity
 import com.example.gonggu.ui.post.PostFragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 @Suppress("DEPRECATION")
 class ProfileFragment : Fragment() {
+    private lateinit var mAuth: FirebaseAuth
+    private lateinit var mDatabase: DatabaseReference
+
     private var binding: FragmentProfileBinding? = null
 
     override fun onCreateView(
@@ -31,14 +40,21 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+
+        // FirebaseAuth와 Firebase Realtime Database 객체를 초기화합니다.
+        mAuth = Firebase.auth
+        mDatabase = Firebase.database.reference.child("user")
+
         val root: View = binding!!.root
 
         val activity = activity as MainActivity
         val myPost = binding!!.myPost
         val myLocation = binding!!.myLocation
+        val logout = binding!!.signOut
         val profileImage = binding!!.profileImage
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
         val context = view.context
+
 
         // 내가 쓴 글
         myPost.setOnClickListener {
@@ -61,6 +77,13 @@ class ProfileFragment : Fragment() {
                     )
                 }
             }
+        }
+
+        logout.setOnClickListener{
+            val intent = Intent(context, LoginActivity::class.java)
+            mAuth.signOut()
+            startActivity(intent)
+
         }
 
         // 프로필 이미지 설정
