@@ -17,11 +17,11 @@ import net.daum.mf.map.api.MapView
 
 
 
-class LocationFragment : Fragment() {
+class LocationFragment : Fragment(), MapView.MapViewEventListener {
 
     private var binding: FragmentLocationBinding? = null
     private lateinit var map: MapView
-
+    private val marker = MapPOIItem()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +36,7 @@ class LocationFragment : Fragment() {
         map = MapView(context)
         binding!!.mapView.addView(map)
         startTracking()
+        map.setMapViewEventListener(this)
         // 줌인
         map.zoomIn(true)
         // 줌아웃
@@ -59,7 +60,7 @@ class LocationFragment : Fragment() {
         map.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.5828, 127.0106), true)
         Log.d("location", "위도: $uLatitude 경도: $uLongitude")
         // 현위치에 마커 찍기
-        val marker = MapPOIItem()
+
         marker.itemName = "현 위치"
         marker.tag = 0
         marker.mapPoint = uNowPosition
@@ -75,5 +76,42 @@ class LocationFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         stopTasking()
+    }
+
+    override fun onMapViewInitialized(p0: MapView?) {
+       Log.d("map", "onMapViewInitialized")
+    }
+
+    override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
+        Log.d("map", "onMapViewCenterPointMoved")
+    }
+
+    override fun onMapViewZoomLevelChanged(p0: MapView?, p1: Int) {
+        Log.d("map", "onMapViewZoomLevelChanged")
+    }
+
+    override fun onMapViewSingleTapped(p0: MapView?, p1: MapPoint?) {
+        Log.d("map", "onMapViewSingleTapped")
+        map.removePOIItem(marker)
+    }
+
+    override fun onMapViewDoubleTapped(p0: MapView?, p1: MapPoint?) {
+        Log.d("map", "onMapViewDoubleTapped")
+    }
+
+    override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
+        Log.d("map", "onMapViewLongPressed")
+    }
+
+    override fun onMapViewDragStarted(p0: MapView?, p1: MapPoint?) {
+        Log.d("map", "onMapViewDragStarted")
+    }
+
+    override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
+        Log.d("map", "onMapViewDragEnded")
+    }
+
+    override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
+        Log.d("map", "onMapViewMoveFinished")
     }
 }
