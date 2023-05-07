@@ -38,14 +38,14 @@ class ChatFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
     private val mChatList: ArrayList<ChatData> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // 레이아웃 파일을 inflate하고 뷰 바인딩 객체를 생성합니다.
+        // 레이아웃 파일을 inflate하고 뷰 바인딩 객체를 생성
         val binding = FragmentChatBinding.inflate(inflater, container, false)
 
-        // FirebaseAuth와 Firebase Realtime Database 객체를 초기화합니다.
+        // FirebaseAuth와 Firebase Realtime Database 객체 초기화
         mAuth = Firebase.auth
         mDatabase = Firebase.database.reference.child("user")
 
-        // RecyclerView에 사용할 어댑터를 초기화합니다.
+        // RecyclerView에 사용할 어댑터를 초기화
         mAdapter = ChatAdapter(mChatList)
 
         // RecyclerView 설정
@@ -55,13 +55,13 @@ class ChatFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
             adapter = mAdapter }
 
 
-        // Firebase Realtime Database에서 데이터를 가져와서 RecyclerView에 표시합니다.
+        // Firebase Realtime Database에서 데이터를 가져와서 RecyclerView에 표시
         mDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 mChatList.clear()
 
                 for (chatSnapshot in snapshot.children) {
-                    // ChatData 객체로 변환하여 ArrayList에 추가합니다.
+                    // ChatData 객체로 변환하여 ArrayList에 추가
                     val chat = chatSnapshot.getValue(ChatData::class.java)
                     if(mAuth.currentUser?.uid != chat?.uid){
                         mChatList.add(chat!!)
@@ -72,7 +72,7 @@ class ChatFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // 실패 시 처리할 작업을 구현합니다.
+                // 실패 시 처리할 작업을 구현
             }
         })
         val spaceDecoration = RecyclerDecoration(40)
@@ -107,106 +107,3 @@ class ChatFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
         }
     }
 }
-
-//
-//class ChatFragment : Fragment() {
-//    lateinit var binding: FragmentChatBinding
-//    lateinit var adapter: UserAdapter
-//
-//    private lateinit var mAuth: FirebaseAuth
-//    private lateinit var mDbRef: DatabaseReference
-//
-//    private lateinit var userList: ArrayList<UserData>
-//
-//    override fun onCreateView(
-//        inflater: LayoutInflater,
-//        container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        binding = FragmentChatBinding.inflate(layoutInflater)
-//
-//        mAuth = Firebase.auth
-//
-//        mDbRef = Firebase.database.reference
-//
-//        userList = ArrayList()
-//
-//        adapter = UserAdapter(this,userList)
-//
-////        binding.recyclerViewChatlist.layoutManager =  LinearLayoutManager(this)
-//        val view = inflater.inflate(R.layout.fragment_chat,container,false)
-//        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView_chatlist)
-//        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-//        recyclerView.adapter = adapter
-//
-//        mDbRef.child("user").addValueEventListener(object :ValueEventListener{
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                for(postSnapshot in snapshot.children){
-//                    //유저 정보
-//                    val currentUser = postSnapshot.getValue(UserData::class.java)
-//
-//                    if(mAuth.currentUser?.uid != currentUser?.uId){
-//                        userList.add(currentUser!!)
-//                    }
-//                }
-//                adapter.notifyDataSetChanged()
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                //실패시 실행
-//
-//
-//            }
-//
-//        })
-//        val spaceDecoration = RecyclerDecoration(40)
-//        recyclerView.addItemDecoration(spaceDecoration)
-//
-//        // Inflate the layout for this fragment
-//        //inflater.inflate(R.layout.fragment_chat, container, false)
-//
-//        return view
-//
-//    }
-//
-//
-//
-//
-//    //    companion object {
-////        fun newInstance(): ChatFragment {
-////            return ChatFragment()
-////        }
-////    }
-//    inner class UserAdapter(val context: ChatFragment, val userList: ArrayList<UserData>):
-//    RecyclerView.Adapter<UserAdapter.UserViewHolder>(){
-//
-//        inner class UserViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-//            val nameText: TextView = itemView.findViewById(R.id.item_name_chat_list)
-//        }
-//
-//        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-////            val view: View = LayoutInflater.from(View)
-////
-//            val inflater = LayoutInflater.from(binding.root.context)
-//            return UserViewHolder(inflater.inflate(R.layout.item_chat_list, parent, false))        }
-//
-//        override fun onBindViewHolder(holder: UserAdapter.UserViewHolder, position: Int) {
-//
-//            val currentUser = userList[position]
-//            holder.nameText.text = currentUser.name
-//        }
-//
-//        override fun getItemCount() = userList.size
-//
-//
-//    }
-//
-//    override fun onAttach(context: Context) {
-//        super.onAttach(context)
-//    }
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//    }
-//
-//}

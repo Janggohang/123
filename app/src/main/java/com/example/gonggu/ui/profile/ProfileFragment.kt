@@ -18,21 +18,52 @@ import androidx.fragment.app.Fragment
 import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentProfileBinding
+import com.example.gonggu.ui.chat.ChatData
 import com.example.gonggu.ui.location.LocationFragment
 import com.example.gonggu.ui.login.LoginActivity
 import com.example.gonggu.ui.post.PostFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
+data class UserData (val email:String, val name : String , val phonenumber : String, val uid: String){
+    constructor(): this("","","","")
+}
 @Suppress("DEPRECATION")
 class ProfileFragment : Fragment() {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
 
     private var binding: FragmentProfileBinding? = null
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mAuth = Firebase.auth
+        mDatabase = Firebase.database.reference.child("user")
+        val binding = FragmentProfileBinding.bind(view)
+
+        mDatabase.child(mAuth.currentUser!!.uid).addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val user = snapshot.getValue(UserData::class.java)
+                    binding!!.nameTextView.text = user?.name
+                    binding!!.phoneTextView.text = user?.phonenumber
+                    binding!!.emailTextView.text = user?.email
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

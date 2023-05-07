@@ -78,7 +78,6 @@
 
                 android:layout_marginStart="30dp"
                 android:fontFamily="@font/rubik_bold"
-                android:text="Pasta"
                 android:textColor="@color/default_dark_ui_color"
                 android:textSize="20dp"
                 app:layout_constraintStart_toEndOf="@id/profile_image"
@@ -90,7 +89,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:fontFamily="@font/rubik_bold"
-                android:text="010-1345-1235"
                 android:textColor="@color/gray_ui_text_color"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@id/email_text_view"
@@ -102,7 +100,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
-                android:text="pasta@gmail.com"
                 android:textColor="@color/gray_ui_text_color"
                 app:layout_constraintBottom_toBottomOf="@id/profile_image"
                 app:layout_constraintStart_toEndOf="@id/profile_image" />
