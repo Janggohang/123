@@ -92,7 +92,8 @@
             android:layout_height="48dp"
             android:layout_below="@+id/price_label"
             android:layout_marginTop="10dp"
-            android:hint="가격을 입력해주세요" />
+            android:hint="가격을 입력해주세요"
+            android:background="#FDFDFD"/>
 
         <!-- 인원수 -->
         <TextView
@@ -110,7 +111,8 @@
             android:layout_height="48dp"
             android:layout_below="@+id/count_label"
             android:layout_marginTop="10dp"
-            android:hint="인원수를 입력해주세요" />
+            android:hint="인원수를 입력해주세요"
+            android:background="#FDFDFD"/>
 
         <!-- 현위치 -->
         <TextView
@@ -128,7 +130,8 @@
             android:layout_height="48dp"
             android:layout_below="@+id/location_label"
             android:layout_marginTop="10dp"
-            android:hint="현위치를 입력해주세요" />
+            android:hint="현위치를 입력해주세요"
+            android:background="#FDFDFD"/>
         <!-- 글 내용 -->
         <TextView
             android:id="@+id/content_label"
@@ -145,7 +148,8 @@
             android:layout_height="48dp"
             android:layout_below="@+id/content_label"
             android:layout_marginTop="10dp"
-            android:hint="내용을 입력해주세요" />
+            android:hint="내용을 입력해주세요"
+            android:background="#FDFDFD"/>
 
         <!-- 등록 버튼 -->
         <Button
