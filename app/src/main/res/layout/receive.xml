@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        >
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/chat_opponent_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@mipmap/default_user_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+        <TextView
+            android:id="@+id/opponent_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:text="채팅 대상"
+            android:textSize="16dp"
+            android:gravity="center"
+            android:fontFamily="@font/rubik_bold"
+            android:textColor="@color/default_harf_ui_color"
+            app:layout_constraintStart_toEndOf="@id/chat_opponent_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/receive_message_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/opponent_chat_round_rect"
+        android:padding="10dp"
+        android:textSize="14dp"
+        android:layout_margin="10dp"
+        android:fontFamily="@font/rubik_regular"
+        android:textColor="@color/white"
+        android:text="상대방이 보낸 채팅입니다."
+        android:maxWidth="300dp"/>
+
+</LinearLayout>
