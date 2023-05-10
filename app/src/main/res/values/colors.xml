@@ -1,7 +1,7 @@
 <resources>
     <color name="default_harf_ui_color">#FF928FFF</color>
     <color name="default_super_bright_ui_color">#FFD5D4FF</color>
-    <color name="default_bright_ui_color">#FFCAC8F1</color>
+    <color name="default_ui_color">#7F9287</color>
     <color name="default_dark_ui_color">#FF444370</color>
     <color name="gray_ui_text_color">#FF7B7B7B</color>
     <color name="light_gray_ui_text_color">#B8B8B8</color>
