@@ -2,6 +2,7 @@ package com.example.gonggu.ui.chat
 
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -94,6 +95,15 @@ class ChatFragment : Fragment() {// FirebaseAuthì™€ Firebase Realtime Database ê
         override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
             val chatData = chatList[position]
             holder.bind(chatData)
+
+            holder.itemView.setOnClickListener{
+                val intent = Intent(context, ChatActivity::class.java)
+
+                intent.putExtra("name",chatData.name)
+                intent.putExtra("uId",chatData.uid)
+
+                context?.startActivity(intent)
+            }
         }
 
         override fun getItemCount() = chatList.size
