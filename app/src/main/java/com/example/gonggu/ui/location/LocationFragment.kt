@@ -57,12 +57,12 @@ class LocationFragment : Fragment(), MapView.MapViewEventListener {
         // 위도, 경도
         val uLatitude = userNowLocation?.latitude
         val uLongitude = userNowLocation?.longitude
-        //val uNowPosition = MapPoint.mapPointWithGeoCoord(uLatitude!!, uLongitude!!)
+        val uNowPosition = MapPoint.mapPointWithGeoCoord(uLatitude!!, uLongitude!!)
         Log.d("activity2", "latitude : $uLatitude, longitude : $uLongitude")
         // 중심점 변경
-        //map.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(uLatitude!!, uLongitude!!), true)
-        val uNowPosition = MapPoint.mapPointWithGeoCoord(37.5828, 127.0106)
-        map.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.5828, 127.0106), true)
+        map.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(uLatitude!!, uLongitude!!), true)
+        //val uNowPosition = MapPoint.mapPointWithGeoCoord(37.5828, 127.0106)
+        //  map.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.5828, 127.0106), true)
         Log.d("location", "위도: $uLatitude 경도: $uLongitude")
         // 현위치에 마커 찍기
         marker.itemName = "현 위치"
