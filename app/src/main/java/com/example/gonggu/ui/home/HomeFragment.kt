@@ -17,9 +17,11 @@ import com.example.gonggu.Data.HomeDataList
 import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentHomeBinding
+import com.example.gonggu.databinding.FragmentProfileBinding
 import com.example.gonggu.ui.chat.ChatFragment
 import com.example.gonggu.ui.chat.ChatListAdapter
 import com.example.gonggu.ui.chat.RecyclerDecoration
+import com.example.gonggu.ui.post.BuyFragment
 import com.example.gonggu.ui.post.PostFragment
 
 class HomeFragment : Fragment() {
@@ -44,19 +46,25 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(R.layout.fragment_home,container,false)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView_realtimelist)
-        val wrBtn = view.findViewById<Button>(R.id.wrBtn) // 글쓰기 버튼
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        val root: View = binding!!.root
+
+        //val view = inflater.inflate(R.layout.fragment_home,container,false)
+        //val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView_realtimelist)
+        //val wrBtn = view.findViewById<Button>(R.id.wrBtn) // 글쓰기 버튼
         val mActivity = activity as MainActivity
-        wrBtn.setOnClickListener {
+        binding!!.buy.setOnClickListener {
+            mActivity.replaceFragment(BuyFragment())
+        }
+        binding!!.wrBtn.setOnClickListener {
             mActivity.replaceFragment(PostFragment())
         }
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = ChatListAdapter(ChatDataList)
+        binding!!.recyclerViewRealtimelist.layoutManager = LinearLayoutManager(requireContext())
+        binding!!.recyclerViewRealtimelist.adapter = ChatListAdapter(ChatDataList)
         val spaceDecoration = RecyclerDecoration(40)
-        recyclerView.addItemDecoration(spaceDecoration)
+        binding!!.recyclerViewRealtimelist.addItemDecoration(spaceDecoration)
         mainContext = container!!.context
-        return view //inflater.inflate(R.layout.fragment_home, container, false)
+        return root //inflater.inflate(R.layout.fragment_home, container, false)
     }
     override fun onDestroyView() {
         super.onDestroyView()
