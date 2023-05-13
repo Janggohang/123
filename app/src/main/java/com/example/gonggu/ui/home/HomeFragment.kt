@@ -56,7 +56,7 @@ class HomeFragment : Fragment() {
         binding!!.buy.setOnClickListener {
             mActivity.replaceFragment(BuyFragment())
         }
-        binding!!.wrBtn.setOnClickListener {
+        binding!!.fabMain.setOnClickListener {
             mActivity.replaceFragment(PostFragment())
         }
         binding!!.recyclerViewRealtimelist.layoutManager = LinearLayoutManager(requireContext())

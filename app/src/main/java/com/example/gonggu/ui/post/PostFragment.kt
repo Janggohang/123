@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.gonggu.MainActivity
 import com.example.gonggu.databinding.FragmentPostBinding
 import com.example.gonggu.ui.home.HomeFragment
@@ -36,7 +37,9 @@ class PostFragment : Fragment() {
         val locationBtn = binding!!.locationBtn // 현재 위치 불러오기
 
         summitBtn.setOnClickListener {
+            Toast.makeText(activity, "등록하였습니다.", Toast.LENGTH_SHORT).show()
             registerPost()
+
         }
 
         locationBtn.setOnClickListener {
