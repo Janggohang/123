@@ -28,19 +28,12 @@
         android:layout_height="60dp"
         android:background="#437044"
         android:gravity="center_horizontal|center_vertical"
-        android:text="내가 쓴 글"
+        android:text="게시글 작성"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
 
-
-
-        </LinearLayout>
         <!-- 제목 -->
         <TextView
             android:id="@+id/title_label"
@@ -69,7 +62,7 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/photo_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -124,14 +117,28 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/location_edit"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_below="@+id/location_label"
-            android:layout_marginTop="10dp"
-            android:hint="현위치를 입력해주세요"
-            android:background="#FDFDFD"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/myLocation"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_height="40dp"
+                android:layout_weight="10"
+                android:background="#FDFDFD" />
+
+            <android.widget.Button
+                android:id="@+id/locationBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="위치 불러오기"
+                tools:ignore="InvalidId" />
+
+        </LinearLayout>
         <!-- 글 내용 -->
         <TextView
             android:id="@+id/content_label"
@@ -152,7 +159,7 @@
             android:background="#FDFDFD"/>
 
         <!-- 등록 버튼 -->
-        <Button
+        <android.widget.Button
             android:id="@+id/submit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

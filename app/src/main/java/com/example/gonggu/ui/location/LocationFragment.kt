@@ -1,6 +1,8 @@
 package com.example.gonggu.ui.location
 
+import android.Manifest
 import android.content.Context.LOCATION_SERVICE
+import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
@@ -10,6 +12,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import com.example.gonggu.databinding.FragmentLocationBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
@@ -43,6 +46,7 @@ class LocationFragment : Fragment() {
     ): View? {
         binding = FragmentLocationBinding.inflate(inflater, container, false)
         lm = activity?.getSystemService(LOCATION_SERVICE) as LocationManager
+
         userNowLocation = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!
         uLatitude = userNowLocation?.latitude!!
         uLongitude = userNowLocation?.longitude!!
