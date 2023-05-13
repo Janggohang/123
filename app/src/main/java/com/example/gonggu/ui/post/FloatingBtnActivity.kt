@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class FloatingBtnActivity : AppCompatActivity(), View.OnClickListener {
     private var fab_open: Animation? = null
     private var fab_close: Animation? = null
     private var isFabOpen = false
