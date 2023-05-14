@@ -20,10 +20,21 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 //data class User (val profile :String, val name : String, val phonenumber : String, val email : String)
-data class PostData (val content:String, val numOfPeople : Int, val price : Int, val title: String){
-    constructor(): this("",0,0,"")
+data class PostData (
+    val content: String,
+    val numOfPeople: Int,
+    val price : Int,
+    val title: String,
+    val time: String,
+    val uid: String
+    )
+{
+    constructor(): this("",0,0,"","","")
 }
 
 class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database 객체 선언
@@ -105,11 +116,36 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
 
         override fun getItemCount() = postList.size
 
+
         inner class PostViewHolder(private val binding: ItemPostListBinding) :
             RecyclerView.ViewHolder(binding.root) {
+
+            private val now = Calendar.getInstance()
+            private val postDataFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA)
+
             fun bind(postData: PostData) {
                 binding.itemPostTitle.text = postData.title
                 binding.itemPostPre.text = postData.content
+
+                // 게시글 작성 시간 데이터 파싱
+                val postTime = Calendar.getInstance().apply {
+                    time = postDataFormat.parse(postData.time)!!
+                }
+
+                // 날짜, 시간 변환
+                val diff = now.timeInMillis - postTime.timeInMillis
+                val timeString = when {
+                    diff < 60 * 1000 -> "방금 전"
+                    diff < 60 * 60 * 1000 -> "${diff / (60 * 1000)}분 전"
+                    postTime.get(Calendar.YEAR) == now.get(Calendar.YEAR) -> {
+                        when (postTime.get(Calendar.DAY_OF_YEAR)) {
+                            now.get(Calendar.DAY_OF_YEAR) -> postDataFormat.format(postTime.time).substring(11)
+                            else -> SimpleDateFormat("MM/dd", Locale.KOREA).format(postTime.time)
+                        }
+                    }
+                    else -> SimpleDateFormat("yy/MM/dd", Locale.KOREA).format(postTime.time)
+                }
+                binding.itemPostListTime.text = timeString
             }
         }
     }
