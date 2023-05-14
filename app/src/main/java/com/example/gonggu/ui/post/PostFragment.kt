@@ -40,11 +40,11 @@ class PostFragment : Fragment() {
         val summitBtn = binding!!.submitButton // 등록 버튼
         val locationBtn = binding!!.locationBtn // 현재 위치 불러오기
 
-        summitBtn.setOnClickListener {
-            Toast.makeText(activity, "등록하였습니다.", Toast.LENGTH_SHORT).show()
-            registerPost()
-
-        }
+//        summitBtn.setOnClickListener {
+//            Toast.makeText(activity, "등록하였습니다.", Toast.LENGTH_SHORT).show()
+//            registerPost()
+//
+//        }
 
         locationBtn.setOnClickListener {
             loadMyLocation()
