@@ -64,18 +64,18 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
 
 
         // Firebase Realtime Database에서 데이터를 가져와서 RecyclerView에 표시
-        mDatabase.addValueEventListener(object : ValueEventListener {
+        mDatabase.orderByChild("time").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                PostList.clear()
+                val newPostList: ArrayList<PostData> = ArrayList()
 
                 for (postSnapshot in snapshot.children) {
-                    // ChatData 객체로 변환하여 ArrayList에 추가
                     val post = postSnapshot.getValue(PostData::class.java)
-                    PostList.add(post!!)
-//                    if(mAuth.currentUser?.uid != post?.uid){
-//                        PostList.add(post!!)
-//                    }
+                    newPostList.add(0, post!!)
                 }
+
+                // 기존 리스트에 새로운 게시글 리스트를 맨 앞에 추가
+                PostList.clear()
+                PostList.addAll(newPostList)
 
                 mAdapter.notifyDataSetChanged()
             }
