@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.fragment.app.Fragment
 import com.example.gonggu.MainActivity
@@ -93,21 +94,7 @@ class ProfileFragment : Fragment() {
         }
         // 내 위치 설정
         myLocation.setOnClickListener {
-            when {
-                checkSelfPermission(context, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                -> {
-                    activity.replaceFragment(LocationFragment())
-                }
-                shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION) -> {
-
-                }
-                else -> {
-                    requestPermissions(
-                        arrayOf(ACCESS_FINE_LOCATION),
-                        1001
-                    )
-                }
-            }
+            activity.replaceFragment(LocationFragment())
         }
 
         logout.setOnClickListener{
@@ -120,7 +107,7 @@ class ProfileFragment : Fragment() {
         // 프로필 이미지 설정
         profileImage.setOnClickListener {
             when {
-                checkSelfPermission(context, READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                checkSelfPermission(context, READ_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED
                 -> {
                     startContentProvider()
                 }

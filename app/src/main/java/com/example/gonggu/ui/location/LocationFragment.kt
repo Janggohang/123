@@ -13,6 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
+import androidx.core.content.PermissionChecker
+import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentLocationBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
@@ -24,6 +26,7 @@ import java.io.IOException
 import kotlin.properties.Delegates
 import kotlin.math.*
 
+@Suppress("DEPRECATION")
 class LocationFragment : Fragment() {
 
     private var binding: FragmentLocationBinding? = null
@@ -47,24 +50,44 @@ class LocationFragment : Fragment() {
     ): View? {
         binding = FragmentLocationBinding.inflate(inflater, container, false)
         lm = activity?.getSystemService(LOCATION_SERVICE) as LocationManager
-
-        userNowLocation = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!
-        uLatitude = userNowLocation?.latitude!!
-        uLongitude = userNowLocation?.longitude!!
-
-        val setBtn = binding!!.setBtn // 위치 설정 버튼
+        val view = inflater.inflate(R.layout.fragment_location, container, false)
+        val context = view.context
         val root : View = binding!!.root
-        map = MapView(context)
+        when {
+            PermissionChecker.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PermissionChecker.PERMISSION_GRANTED
+            -> {
+                userNowLocation = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!
+                uLatitude = userNowLocation?.latitude!!
+                uLongitude = userNowLocation?.longitude!!
 
-        binding!!.mapView.addView(map)
-        setBtn.setOnClickListener {
-            setLocation()
+                val setBtn = binding!!.setBtn // 위치 설정 버튼
+
+                map = MapView(context)
+
+                binding!!.mapView.addView(map)
+                setBtn.setOnClickListener {
+                    setLocation()
+                }
+                // 줌인
+                map.zoomIn(true)
+                // 줌아웃
+                map.zoomOut(true)
+                startTracking()
+            }
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
+
+            }
+            else -> {
+                requestPermissions(
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    1001
+                )
+            }
         }
-        // 줌인
-        map.zoomIn(true)
-        // 줌아웃
-        map.zoomOut(true)
-        startTracking()
+
         return root
     }
 
