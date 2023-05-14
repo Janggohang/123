@@ -58,6 +58,7 @@ class PostFragment : Fragment() {
         val price = binding!!.priceEdit.text.toString().toInt() // 가격
         val numOfPeople = binding!!.countEdit.text.toString().toInt() // 인원 수
         val content = binding!!.contentEdit.text.toString() // 내용
+//        val location = binding!!.myLocation.
 
         if (title.isNullOrEmpty() || price == null || numOfPeople == null || content.isNullOrEmpty()) {
             // 필수 입력값이 빠졌을 때
