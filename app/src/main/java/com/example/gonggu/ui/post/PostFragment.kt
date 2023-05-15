@@ -41,7 +41,6 @@ class PostFragment : Fragment() {
         val locationBtn = binding!!.locationBtn // 현재 위치 불러오기
 
         summitBtn.setOnClickListener {
-//            Toast.makeText(activity, "등록하였습니다.", Toast.LENGTH_SHORT).show()
             registerPost()
 
         }
@@ -58,7 +57,7 @@ class PostFragment : Fragment() {
         val price = binding!!.priceEdit.text.toString().toInt() // 가격
         val numOfPeople = binding!!.countEdit.text.toString().toInt() // 인원 수
         val content = binding!!.contentEdit.text.toString() // 내용
-//        val location = binding!!.myLocation.
+        val location = binding!!.myLocation.text.toString() // 위치
 
         if (title.isNullOrEmpty() || price == null || numOfPeople == null || content.isNullOrEmpty()) {
             // 필수 입력값이 빠졌을 때
@@ -72,15 +71,19 @@ class PostFragment : Fragment() {
         val uid = Firebase.auth.uid
         val like= mutableListOf<String>()
         val comment= mutableListOf<Map<String,String>>()
+
         val itemMap = hashMapOf(
             "content" to content,
+            "location" to location,
             "numOfPeople" to numOfPeople,
             "price" to price,
             "title" to title,
             "time" to time,
             "uid" to uid
         )
+
         val postRef = postsRef.push()
+
         postRef.setValue(itemMap).addOnSuccessListener {
             Toast.makeText(requireContext(), "게시물이 등록되었습니다.", Toast.LENGTH_SHORT).show()
             activity?.supportFragmentManager?.popBackStack()
@@ -88,9 +91,6 @@ class PostFragment : Fragment() {
         } .addOnFailureListener{
             Toast.makeText(requireContext(), "게시물 등록에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
         }
-
-
-
     }
 
     private fun loadMyLocation() { // 내 주소 불러오기

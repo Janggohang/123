@@ -1,6 +1,7 @@
 package com.example.gonggu.ui.location
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager
 import android.location.Geocoder
@@ -78,7 +79,7 @@ class LocationFragment : Fragment() {
                 startTracking()
             }
             shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
-
+                showPermissionContextPopup()
             }
             else -> {
                 requestPermissions(
@@ -108,9 +109,14 @@ class LocationFragment : Fragment() {
         map.addPOIItem(marker)
 
     }
+
     // 위치 추적 종료
     private fun stopTasking() {
         map.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOff
+    }
+
+    private fun addMap() {
+
     }
 
     // 내 위치 설정
@@ -131,35 +137,19 @@ class LocationFragment : Fragment() {
         }
     }
 
-    // 반경 구하기
-    fun getCoordinates(latitude: Double, longitude: Double, radius: Double): Pair<List<Double>, List<Double>> {
-        // 지구의 반경 (단위: km)
-        val EARTH_RADIUS = 6371.0
-
-        // 중심점의 위도와 경도를 라디안 단위로 변환
-        val latRadian = Math.toRadians(latitude)
-        val longRadian = Math.toRadians(longitude)
-
-        // 반경의 크기를 지구 반경의 비율로 계산
-        val radiusRatio = radius / EARTH_RADIUS
-
-        // 중심점에서 거리가 radius인 지점들의 위도와 경도를 계산
-        val latitudes = mutableListOf<Double>()
-        val longitudes = mutableListOf<Double>()
-        for (angle in 0..360 step 10) {
-            val angleRadian = Math.toRadians(angle.toDouble())
-            val lat = asin(sin(latRadian) * cos(radiusRatio) +
-                    cos(latRadian) * sin(radiusRatio) * cos(angleRadian))
-            val long = longRadian + atan2(sin(angleRadian) * sin(radiusRatio) * cos(latRadian),
-                cos(radiusRatio) - sin(latRadian) * sin(lat))
-            latitudes.add(Math.toDegrees(lat))
-            longitudes.add(Math.toDegrees(long))
-        }
-
-        return Pair(latitudes, longitudes)
-    }
     override fun onDestroy() {
         super.onDestroy()
         stopTasking()
+    }
+
+    private fun showPermissionContextPopup() {
+        AlertDialog.Builder(context)
+            .setTitle("권한이 필요합니다.")
+            .setMessage("지도 사용을 위해 필요합니다.")
+            .setPositiveButton("동의") { _, _ ->
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1010)
+            }
+            .create()
+            .show()
     }
 }
