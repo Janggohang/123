@@ -85,6 +85,7 @@
             android:layout_height="48dp"
             android:layout_below="@+id/price_label"
             android:layout_marginTop="10dp"
+            android:inputType="number"
             android:hint="가격을 입력해주세요"
             android:background="#FDFDFD"/>
 
@@ -152,19 +153,25 @@
         <EditText
             android:id="@+id/content_edit"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
+            android:minHeight="100dp"
             android:layout_below="@+id/content_label"
             android:layout_marginTop="10dp"
-            android:hint="내용을 입력해주세요"
-            android:background="#FDFDFD"/>
+            android:inputType="textMultiLine"
+            android:scrollHorizontally="false"
+            android:gravity="top"
+            android:background="#FDFDFD"
+            tools:ignore="SpeakableTextPresentCheck"/>
 
         <!-- 등록 버튼 -->
         <android.widget.Button
             android:id="@+id/submit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_marginTop="70dp"
+            android:layout_gravity="center"
             android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
             android:text="등록" />
 
 

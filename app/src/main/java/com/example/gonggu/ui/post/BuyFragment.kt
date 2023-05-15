@@ -27,6 +27,7 @@ import kotlin.collections.ArrayList
 //data class User (val profile :String, val name : String, val phonenumber : String, val email : String)
 data class PostData (
     val content: String,
+    val location: String,
     val numOfPeople: Int,
     val price : Int,
     val title: String,
@@ -34,7 +35,7 @@ data class PostData (
     val uid: String
     )
 {
-    constructor(): this("",0,0,"","","")
+    constructor(): this("", "",0,0,"","","")
 }
 
 class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database 객체 선언
