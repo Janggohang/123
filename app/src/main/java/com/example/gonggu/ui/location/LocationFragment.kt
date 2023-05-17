@@ -7,6 +7,8 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
+import android.location.LocationManager.GPS_PROVIDER
+import android.location.LocationManager.NETWORK_PROVIDER
 import android.util.Log
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -25,14 +27,12 @@ import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
 import java.io.IOException
 import kotlin.properties.Delegates
-import kotlin.math.*
 
 @Suppress("DEPRECATION")
 class LocationFragment : Fragment() {
 
     private var binding: FragmentLocationBinding? = null
     private lateinit var map: MapView
-    private lateinit var lm : LocationManager
     private lateinit var userNowLocation : Location
     private var uLatitude by Delegates.notNull<Double>() // 위도
     private var uLongitude by Delegates.notNull<Double>() // 경도
@@ -50,7 +50,7 @@ class LocationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentLocationBinding.inflate(inflater, container, false)
-        lm = activity?.getSystemService(LOCATION_SERVICE) as LocationManager
+        val lm = activity?.getSystemService(LOCATION_SERVICE) as LocationManager
         val view = inflater.inflate(R.layout.fragment_location, container, false)
         val context = view.context
         val root : View = binding!!.root
@@ -67,17 +67,18 @@ class LocationFragment : Fragment() {
         map.zoomIn(true)
         // 줌아웃
         map.zoomOut(true)
-        
+
         when {
             PermissionChecker.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PermissionChecker.PERMISSION_GRANTED
             -> {
-                userNowLocation = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)!!
+                userNowLocation = (lm.getLastKnownLocation(GPS_PROVIDER) ?: lm.getLastKnownLocation(
+                    NETWORK_PROVIDER)) as Location
+                println(userNowLocation)
                 uLatitude = userNowLocation?.latitude!!
                 uLongitude = userNowLocation?.longitude!!
-
                 startTracking()
             }
             shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
@@ -90,7 +91,6 @@ class LocationFragment : Fragment() {
                 )
             }
         }
-
         return root
     }
 
