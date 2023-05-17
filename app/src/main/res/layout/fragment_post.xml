@@ -14,168 +14,167 @@
         android:fillViewport="true"
         android:scrollbars="vertical"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="-99dp">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#9DAA88"
-        android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/textViewMyPost"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="#437044"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="게시글 작성"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-
-        <!-- 제목 -->
-        <TextView
-            android:id="@+id/title_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="제목"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/title_edit"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_below="@+id/title_label"
-            android:layout_marginTop="10dp"
-            android:background="#FDFDFD"
-            android:hint="제목을 입력해주세요" />
-
-        <!-- 사진 -->
-        <TextView
-            android:id="@+id/photo_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/title_edit"
-            android:text="사진"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <android.widget.Button
-            android:id="@+id/photo_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/photo_label"
-            android:text="사진 추가하기" />
-
-        <!-- 가격 -->
-        <TextView
-            android:id="@+id/price_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/photo_button"
-            android:text="가격"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/price_edit"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_below="@+id/price_label"
-            android:layout_marginTop="10dp"
-            android:inputType="number"
-            android:hint="가격을 입력해주세요"
-            android:background="#FDFDFD"/>
-
-        <!-- 인원수 -->
-        <TextView
-            android:id="@+id/count_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/price_edit"
-            android:text="인원수"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/count_edit"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_below="@+id/count_label"
-            android:layout_marginTop="10dp"
-            android:hint="인원수를 입력해주세요"
-            android:background="#FDFDFD"/>
-
-        <!-- 현위치 -->
-        <TextView
-            android:id="@+id/location_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/count_edit"
-            android:text="현위치"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        tools:layout_editor_absoluteY="-54dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:background="#9DAA88"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/myLocation"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_height="40dp"
-                android:layout_weight="10"
-                android:background="#FDFDFD" />
+                android:id="@+id/textViewMyPost"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="#437044"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="게시글 작성"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
-            <android.widget.Button
-                android:id="@+id/locationBtn"
+            <!-- 제목 -->
+            <TextView
+                android:id="@+id/title_label"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="제목"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/title_edit"
+                android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="위치 불러오기"
-                tools:ignore="InvalidId" />
+                android:layout_below="@+id/title_label"
+                android:layout_marginTop="10dp"
+                android:background="#FDFDFD"
+                android:hint="제목을 입력해주세요" />
+
+            <!-- 사진 -->
+            <TextView
+                android:id="@+id/photo_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title_edit"
+                android:text="사진"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/photo_button"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/photo_label"
+                app:srcCompat="@drawable/photo_img" />
+
+            <!-- 가격 -->
+            <TextView
+                android:id="@+id/price_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/photo_button"
+                android:text="가격"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/price_edit"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_below="@+id/price_label"
+                android:layout_marginTop="10dp"
+                android:background="#FDFDFD"
+                android:hint="가격을 입력해주세요"
+                android:inputType="number" />
+
+            <!-- 인원수 -->
+            <TextView
+                android:id="@+id/count_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/price_edit"
+                android:text="인원수"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/count_edit"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_below="@+id/count_label"
+                android:layout_marginTop="10dp"
+                android:background="#FDFDFD"
+                android:hint="인원수를 입력해주세요" />
+
+            <!-- 현위치 -->
+            <TextView
+                android:id="@+id/location_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/count_edit"
+                android:text="현위치"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/myLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="10"
+                    android:background="#FDFDFD"
+                    android:gravity="center" />
+
+                <android.widget.Button
+                    android:id="@+id/locationBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="위치 불러오기"
+                    tools:ignore="InvalidId" />
+
+            </LinearLayout>
+            <!-- 글 내용 -->
+            <TextView
+                android:id="@+id/content_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/location_edit"
+                android:text="글 내용"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/content_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/content_label"
+                android:layout_marginTop="10dp"
+                android:background="#FDFDFD"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:minHeight="100dp"
+                android:scrollHorizontally="false"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <!-- 등록 버튼 -->
+            <android.widget.Button
+                android:id="@+id/submit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="70dp"
+                android:text="등록" />
+
 
         </LinearLayout>
-        <!-- 글 내용 -->
-        <TextView
-            android:id="@+id/content_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/location_edit"
-            android:text="글 내용"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/content_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="100dp"
-            android:layout_below="@+id/content_label"
-            android:layout_marginTop="10dp"
-            android:inputType="textMultiLine"
-            android:scrollHorizontally="false"
-            android:gravity="top"
-            android:background="#FDFDFD"
-            tools:ignore="SpeakableTextPresentCheck"/>
-
-        <!-- 등록 버튼 -->
-        <android.widget.Button
-            android:id="@+id/submit_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="70dp"
-            android:layout_gravity="center"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:text="등록" />
-
-
-    </LinearLayout>
 
     </ScrollView>
 

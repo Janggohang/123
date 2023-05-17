@@ -54,6 +54,20 @@ class LocationFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_location, container, false)
         val context = view.context
         val root : View = binding!!.root
+
+        val setBtn = binding!!.setBtn // 위치 설정 버튼
+
+        map = MapView(context)
+
+        binding!!.mapView.addView(map)
+        setBtn.setOnClickListener {
+            setLocation()
+        }
+        // 줌인
+        map.zoomIn(true)
+        // 줌아웃
+        map.zoomOut(true)
+        
         when {
             PermissionChecker.checkSelfPermission(
                 context,
@@ -64,18 +78,6 @@ class LocationFragment : Fragment() {
                 uLatitude = userNowLocation?.latitude!!
                 uLongitude = userNowLocation?.longitude!!
 
-                val setBtn = binding!!.setBtn // 위치 설정 버튼
-
-                map = MapView(context)
-
-                binding!!.mapView.addView(map)
-                setBtn.setOnClickListener {
-                    setLocation()
-                }
-                // 줌인
-                map.zoomIn(true)
-                // 줌아웃
-                map.zoomOut(true)
                 startTracking()
             }
             shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
