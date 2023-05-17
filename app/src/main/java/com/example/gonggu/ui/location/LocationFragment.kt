@@ -33,7 +33,6 @@ class LocationFragment : Fragment() {
 
     private var binding: FragmentLocationBinding? = null
     private lateinit var map: MapView
-    private lateinit var userNowLocation : Location
     private var uLatitude by Delegates.notNull<Double>() // 위도
     private var uLongitude by Delegates.notNull<Double>() // 경도
     private val marker = MapPOIItem()
@@ -74,7 +73,7 @@ class LocationFragment : Fragment() {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PermissionChecker.PERMISSION_GRANTED
             -> {
-                userNowLocation = (lm.getLastKnownLocation(GPS_PROVIDER) ?: lm.getLastKnownLocation(
+                val userNowLocation = (lm.getLastKnownLocation(GPS_PROVIDER) ?: lm.getLastKnownLocation(
                     NETWORK_PROVIDER)) as Location
                 println(userNowLocation)
                 uLatitude = userNowLocation?.latitude!!
