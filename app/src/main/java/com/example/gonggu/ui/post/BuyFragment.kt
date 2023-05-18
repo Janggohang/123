@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.gonggu.MainActivity
 import com.example.gonggu.databinding.FragmentBuyBinding
 import com.example.gonggu.databinding.FragmentChatBinding
 import com.example.gonggu.databinding.ItemChatListBinding
@@ -49,6 +50,12 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // 레이아웃 파일을 inflate하고 뷰 바인딩 객체를 생성
         val binding = FragmentBuyBinding.inflate(inflater, container, false)
+
+        // MainActivity 객체 생성
+        val mActivity = activity as MainActivity
+
+        // 게시판 이동 후 네비게이션 바로 홈 화면 이동
+        mActivity.addNavigation()
 
         // FirebaseAuth와 Firebase Realtime Database 객체 초기화
         mAuth = Firebase.auth

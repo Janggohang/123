@@ -18,9 +18,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.gonggu.databinding.ActivityMainBinding
+import com.example.gonggu.ui.chat.ChatFragment
+import com.example.gonggu.ui.heart.HeartFragment
+import com.example.gonggu.ui.home.HomeFragment
+import com.example.gonggu.ui.profile.ProfileFragment
 
 class MainActivity : AppCompatActivity() {
     val binding by lazy { ActivityMainBinding.inflate(layoutInflater)}
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,9 +36,8 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragment) as NavHostFragment
         val navController = navHostFragment.navController
         // CAUTION: findNavController(R.id.fragment) in onCreate will fail.
-
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomNavigationView?.setupWithNavController(navController)
+        bottomNavigationView = findViewById(R.id.bottomNav)
+        bottomNavigationView.setupWithNavController(navController)
 
         // 해시키 구하기
         try {
@@ -66,6 +70,29 @@ class MainActivity : AppCompatActivity() {
                     .addToBackStack(null)
                 commit()
             }
+    }
+    fun addNavigation() { // navigation
+        bottomNavigationView.setOnItemSelectedListener { item->
+            when (item.itemId){
+                R.id.navigation_homeFragment ->{
+                    replaceFragment(HomeFragment())
+                    true
+                }
+                R.id.navigation_chatFragment -> {
+                    replaceFragment(ChatFragment())
+                    true
+                }
+                R.id.navigation_heartFragment -> {
+                    replaceFragment(HeartFragment())
+                    true
+                }
+                R.id.navigation_profileFragment -> {
+                    replaceFragment(ProfileFragment())
+                    true
+                }
+                else -> false
+            }
+        }
     }
     companion object{
         lateinit var current : MainActivity

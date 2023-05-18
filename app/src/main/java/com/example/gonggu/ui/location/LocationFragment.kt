@@ -17,8 +17,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.PermissionChecker
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentLocationBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -38,7 +42,7 @@ class LocationFragment : Fragment() {
     private val marker = MapPOIItem()
     private val db = Firebase.database
     private val mAuth = Firebase.auth
-    val usersRef = db.getReference("user")
+    private val usersRef = db.getReference("user")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,8 +53,12 @@ class LocationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentLocationBinding.inflate(inflater, container, false)
+        val mActivity = activity as MainActivity
         val lm = activity?.getSystemService(LOCATION_SERVICE) as LocationManager
         val view = inflater.inflate(R.layout.fragment_location, container, false)
+
+        mActivity.addNavigation()
+
         val context = view.context
         val root : View = binding!!.root
 
@@ -73,8 +81,8 @@ class LocationFragment : Fragment() {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PermissionChecker.PERMISSION_GRANTED
             -> {
-                val userNowLocation = (lm.getLastKnownLocation(GPS_PROVIDER) ?: lm.getLastKnownLocation(
-                    NETWORK_PROVIDER)) as Location
+                val userNowLocation : Location? = (lm.getLastKnownLocation(GPS_PROVIDER) ?: lm.getLastKnownLocation(
+                    NETWORK_PROVIDER))
                 println(userNowLocation)
                 uLatitude = userNowLocation?.latitude!!
                 uLongitude = userNowLocation?.longitude!!
