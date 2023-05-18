@@ -130,11 +130,11 @@ class LocationFragment : Fragment() {
 
     // 내 위치 설정
     private fun setLocation() {
-        val geoCoder = Geocoder(context)
+        val geoCoder = context?.let { Geocoder(it) }
 
         try {
-            val addresses = geoCoder.getFromLocation(uLatitude, uLongitude, 1)
-            if (addresses.isNotEmpty()){
+            val addresses = geoCoder!!.getFromLocation(uLatitude, uLongitude, 1)
+            if (addresses!!.isNotEmpty()){
                 val address = addresses[0]
                 val addressText = address.getAddressLine(0)
                 val addressString = addressText.drop(5)
