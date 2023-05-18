@@ -1,14 +1,21 @@
 package com.example.gonggu.ui.post
 
+import android.Manifest
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.PermissionChecker
 import com.example.gonggu.MainActivity
 import com.example.gonggu.databinding.FragmentPostBinding
 import com.example.gonggu.ui.home.HomeFragment
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -16,17 +23,27 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
+@Suppress("DEPRECATION")
 class PostFragment : Fragment() {
     lateinit var binding: FragmentPostBinding
     private val db = Firebase.database
-    private val mAuth = Firebase.auth
+    private var selectedUri: Uri? = null
+    private val mAuth: FirebaseAuth by lazy {
+        Firebase.auth
+    }
+    private val storage: FirebaseStorage by lazy {
+        Firebase.storage
+    }
     private val postsRef = db.getReference("post")
     private val usersRef = db.getReference("user")
+    private val DEFAULT_GALLERY_CODE = 2020
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,27 +54,89 @@ class PostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPostBinding.inflate(inflater, container, false)
-        val summitBtn = binding!!.submitButton // 등록 버튼
-        val locationBtn = binding!!.locationBtn // 현재 위치 불러오기
+        val summitBtn = binding.submitButton
+        val locationBtn = binding.locationBtn
+        val addPhotoBtn = binding.photoButton
 
-        summitBtn.setOnClickListener {
-            registerPost()
-
+        // 사진 불러오기
+        addPhotoBtn.setOnClickListener {
+            when {
+                PermissionChecker.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PermissionChecker.PERMISSION_GRANTED
+                -> {
+                    startContentProvider()
+                }
+                shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
+                    showPermissionContextPopup()
+                }
+                else -> {
+                    requestPermissions(
+                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                        1000)
+                }
+            }
         }
 
+        // 위치 불러오기
         locationBtn.setOnClickListener {
             loadMyLocation()
         }
 
-        return binding!!.root
+        // 게시글 등록
+        summitBtn.setOnClickListener {
+            registerPost()
+        }
+
+        return binding.root
     }
 
+    private fun startContentProvider() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        startActivityForResult(intent, DEFAULT_GALLERY_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // 예외처리
+        if (resultCode != Activity.RESULT_OK)
+            return
+
+        when (requestCode) {
+            DEFAULT_GALLERY_CODE -> {
+                val selectedImageUri: Uri? = data?.data
+                if (selectedImageUri != null) {
+                    binding.photoButton.setImageURI(selectedImageUri)
+                    selectedUri = selectedImageUri
+                } else {
+                    Toast.makeText(view?.context, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            else -> {
+                Toast.makeText(view?.context, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun showPermissionContextPopup() {
+        AlertDialog.Builder(view?.context)
+            .setTitle("권한이 필요합니다.")
+            .setMessage("사진을 가져오기 위해 필요합니다.")
+            .setPositiveButton("확인") { _, _ ->
+                requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1010)
+            }
+            .create()
+            .show()
+    }
+    
     private fun registerPost() { // 게시물 등록
-        val title = binding!!.titleEdit.text.toString() // 제목
-        val price = binding!!.priceEdit.text.toString().toInt() // 가격
-        val numOfPeople = binding!!.countEdit.text.toString().toInt() // 인원 수
-        val content = binding!!.contentEdit.text.toString() // 내용
-        val location = binding!!.myLocation.text.toString() // 위치
+        val title = binding.titleEdit.text.toString() // 제목
+        val price = binding.priceEdit.text.toString().toInt() // 가격
+        val numOfPeople = binding.countEdit.text.toString().toInt() // 인원 수
+        val content = binding.contentEdit.text.toString() // 내용
+        val location = binding.myLocation.text.toString() // 위치
 
         if (title.isNullOrEmpty() || price == null || numOfPeople == null || content.isNullOrEmpty()) {
             // 필수 입력값이 빠졌을 때
@@ -99,10 +178,10 @@ class PostFragment : Fragment() {
                 val map = snapshot.value as Map <*,*>
                 val myAddress = map["address"].toString()
                 if (myAddress != null){
-                    binding!!.myLocation.text = myAddress
+                    binding.myLocation.text = myAddress
                 }
                 else {
-                    binding!!.myLocation.text = "내 위치를 설정해주세요."
+                    binding.myLocation.text = "내 위치를 설정해주세요."
                 }
             }
 

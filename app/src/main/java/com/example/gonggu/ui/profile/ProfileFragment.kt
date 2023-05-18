@@ -111,81 +111,82 @@ class ProfileFragment : Fragment() {
                 -> {
                     startContentProvider()
                 }
-                    shouldShowRequestPermissionRationale(READ_EXTERNAL_STORAGE) -> {
-                        showPermissionContextPopup()
-                    }
-                    else -> {
-                        requestPermissions(
-                            arrayOf(READ_EXTERNAL_STORAGE),
-                            1000)
-                    }
-                }
-            }
-            return root
-        }
-
-        // 권한 요청 승인 이후 실행되는 함수
-        override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
-        ) {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-            when (requestCode) {
-                1000 -> {
-                    if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                        startContentProvider()
-                    else
-                        Toast.makeText(view?.context,"권한을 거부하셨습니다.", Toast.LENGTH_SHORT).show()
+                shouldShowRequestPermissionRationale(READ_EXTERNAL_STORAGE) -> {
                     showPermissionContextPopup()
                 }
                 else -> {
-                    //
+                    requestPermissions(
+                        arrayOf(READ_EXTERNAL_STORAGE),
+                        1000)
                 }
             }
         }
 
-        private fun startContentProvider() {
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "image/*"
-            startActivityForResult(intent, 2020)
+        return root
+    }
+
+    // 권한 요청 승인 이후 실행되는 함수
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        when (requestCode) {
+            1000 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    startContentProvider()
+                else
+                    Toast.makeText(view?.context,"권한을 거부하셨습니다.", Toast.LENGTH_SHORT).show()
+                showPermissionContextPopup()
+            }
+            else -> {
+                //
+            }
         }
+    }
 
-        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-            super.onActivityResult(requestCode, resultCode, data)
-            // 예외처리
-            if (resultCode != Activity.RESULT_OK)
-                return
+    private fun startContentProvider() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        startActivityForResult(intent, 2020)
+    }
 
-            when (requestCode) {
-                2020 -> {
-                    val selectedImageUri: Uri? = data?.data
-                    if (selectedImageUri != null) {
-                        binding!!.profileImage.setImageURI(selectedImageUri)
-                    } else {
-                        Toast.makeText(view?.context, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                else -> {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // 예외처리
+        if (resultCode != Activity.RESULT_OK)
+            return
+
+        when (requestCode) {
+            2020 -> {
+                val selectedImageUri: Uri? = data?.data
+                if (selectedImageUri != null) {
+                    binding!!.profileImage.setImageURI(selectedImageUri)
+                } else {
                     Toast.makeText(view?.context, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
-        }
-
-        private fun showPermissionContextPopup() {
-            AlertDialog.Builder(view?.context)
-                .setTitle("권한이 필요합니다.")
-                .setMessage("사진을 가져오기 위해 필요합니다.")
-                        .setPositiveButton("확인") { _, _ ->
-                            requestPermissions(arrayOf(READ_EXTERNAL_STORAGE), 1010)
-                        }
-                        .create()
-                        .show()
-                }
-
-            override fun onDestroyView() {
-                super.onDestroyView()
-                binding = null
+            else -> {
+                Toast.makeText(view?.context, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun showPermissionContextPopup() {
+        AlertDialog.Builder(view?.context)
+            .setTitle("권한이 필요합니다.")
+            .setMessage("사진을 가져오기 위해 필요합니다.")
+                    .setPositiveButton("확인") { _, _ ->
+                        requestPermissions(arrayOf(READ_EXTERNAL_STORAGE), 1010)
+                    }
+                    .create()
+                    .show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+}
