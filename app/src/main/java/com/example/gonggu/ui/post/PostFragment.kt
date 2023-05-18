@@ -86,10 +86,109 @@ class PostFragment : Fragment() {
 
         // 게시글 등록
         summitBtn.setOnClickListener {
-            registerPost()
+            // 선택된 사진이 있는 경우
+            if (selectedUri != null) {
+                val photoUri = selectedUri ?: return@setOnClickListener
+                uploadPhoto(photoUri,
+                    successHandler = { uri ->
+                        registerPost(uri)
+                    },
+                    errorHandler = {
+                        Toast.makeText(requireContext(), "사진 업로드에 실패했습니다!!!", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            } else {
+                registerPost("")
+            }
         }
 
         return binding.root
+    }
+
+    private fun registerPost(imageUrl : String) { // 게시물 등록
+        val title = binding.titleEdit.text.toString() // 제목
+        val price = binding.priceEdit.text.toString().toIntOrNull() // 가격
+        val numOfPeople = binding.countEdit.text.toString().toIntOrNull() // 인원 수
+        val content = binding.contentEdit.text.toString() // 내용
+        val location = binding.myLocation.text.toString() // 위치
+
+        if (title.isEmpty() || price == null ||
+            numOfPeople == null || content.isEmpty() || location == null) {
+            // 필수 입력값이 빠졌을 때
+            Toast.makeText(requireContext(), "모든 항목을 입력해 주세요.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        else if (location == "내 위치를 설정해 주세요"){
+            Toast.makeText(requireContext(), "내 위치를 설정 해야 게시글 등록이 가능 합니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        //val time = System.currentTimeMillis().hours.toString() + ":" + System.currentTimeMillis().minutes.toString()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) // 포맷 지정
+        val currentTime = System.currentTimeMillis() // 현재 시간
+        val time = dateFormat.format(currentTime) // 현재 시간을 포맷에 맞게 변환
+        val uid = Firebase.auth.uid
+        val like= mutableListOf<String>()
+        val comment= mutableListOf<Map<String,String>>()
+
+        val itemMap = hashMapOf(
+            "content" to content,
+            "imageUrl" to imageUrl,
+            "location" to location,
+            "numOfPeople" to numOfPeople,
+            "price" to price,
+            "title" to title,
+            "time" to time,
+            "uid" to uid
+        )
+
+        val postRef = postsRef.push()
+
+        postRef.setValue(itemMap).addOnSuccessListener {
+            Toast.makeText(requireContext(), "게시물이 등록되었습니다.", Toast.LENGTH_SHORT).show()
+            activity?.supportFragmentManager?.popBackStack()
+            //activity?.finish() // 현재 액티비티 종료
+        } .addOnFailureListener{
+            Toast.makeText(requireContext(), "게시물 등록에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun loadMyLocation() { // 내 주소 불러오기
+        usersRef.child(mAuth.currentUser?.uid!!).addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val map = snapshot.value as Map <*,*>
+                if (map.containsKey("address")){
+                    val myAddress = map["address"].toString()
+                    binding.myLocation.text = myAddress
+                } else {
+                    binding.myLocation.text = "내 위치를 설정해 주세요."
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+    }
+
+    //storage에 사진 업로드 함수
+    private fun uploadPhoto(uri: Uri, successHandler: (String) -> Unit, errorHandler: () -> Unit) {
+        val fileName = "${System.currentTimeMillis()}.png"
+        storage.reference.child("gonggu/photo").child(fileName)
+            .putFile(uri)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    storage.reference.child("gonggu/photo").child(fileName)
+                        .downloadUrl
+                        .addOnSuccessListener { uri ->
+                            successHandler(uri.toString())
+                        }.addOnFailureListener {
+                            errorHandler()
+                        }
+                } else {
+                    errorHandler()
+                }
+            }
     }
 
     private fun startContentProvider() {
@@ -129,66 +228,5 @@ class PostFragment : Fragment() {
             }
             .create()
             .show()
-    }
-    
-    private fun registerPost() { // 게시물 등록
-        val title = binding.titleEdit.text.toString() // 제목
-        val price = binding.priceEdit.text.toString().toInt() // 가격
-        val numOfPeople = binding.countEdit.text.toString().toInt() // 인원 수
-        val content = binding.contentEdit.text.toString() // 내용
-        val location = binding.myLocation.text.toString() // 위치
-
-        if (title.isNullOrEmpty() || price == null || numOfPeople == null || content.isNullOrEmpty()) {
-            // 필수 입력값이 빠졌을 때
-            Toast.makeText(requireContext(), "모든 항목을 입력해주세요.", Toast.LENGTH_SHORT).show()
-            return
-        }
-        //val time = System.currentTimeMillis().hours.toString() + ":" + System.currentTimeMillis().minutes.toString()
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) // 포맷 지정
-        val currentTime = System.currentTimeMillis() // 현재 시간
-        val time = dateFormat.format(currentTime) // 현재 시간을 포맷에 맞게 변환
-        val uid = Firebase.auth.uid
-        val like= mutableListOf<String>()
-        val comment= mutableListOf<Map<String,String>>()
-
-        val itemMap = hashMapOf(
-            "content" to content,
-            "location" to location,
-            "numOfPeople" to numOfPeople,
-            "price" to price,
-            "title" to title,
-            "time" to time,
-            "uid" to uid
-        )
-
-        val postRef = postsRef.push()
-
-        postRef.setValue(itemMap).addOnSuccessListener {
-            Toast.makeText(requireContext(), "게시물이 등록되었습니다.", Toast.LENGTH_SHORT).show()
-            activity?.supportFragmentManager?.popBackStack()
-            //activity?.finish() // 현재 액티비티 종료
-        } .addOnFailureListener{
-            Toast.makeText(requireContext(), "게시물 등록에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun loadMyLocation() { // 내 주소 불러오기
-        usersRef.child(mAuth.currentUser?.uid!!).addListenerForSingleValueEvent(object: ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val map = snapshot.value as Map <*,*>
-                val myAddress = map["address"].toString()
-                if (myAddress != null){
-                    binding.myLocation.text = myAddress
-                }
-                else {
-                    binding.myLocation.text = "내 위치를 설정해주세요."
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
-        })
     }
 }
