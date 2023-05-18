@@ -1,5 +1,6 @@
 package com.example.gonggu.ui.post
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -112,14 +113,19 @@ class BuyFragment : Fragment() {// FirebaseAuthì™€ Firebase Realtime Database ê°
             val postData = postList[position]
             holder.bind(postData)
 
-//            holder.itemView.setOnClickListener{
-//                val intent = Intent(context, ChatActivity::class.java)
-//
-//                intent.putExtra("name",chatData.name)
-//                intent.putExtra("uId",chatData.uid)
-//
-//                context?.startActivity(intent)
-//            }
+            holder.itemView.setOnClickListener{
+                val intent = Intent(context, PostViewerActivity::class.java)
+
+                intent.putExtra("content",postData.content)
+                intent.putExtra("location",postData.location)
+                intent.putExtra("numOfPeople",postData.numOfPeople.toString())
+                intent.putExtra("price",postData.price.toString())
+                intent.putExtra("title",postData.title)
+                intent.putExtra("time",postData.time)
+                intent.putExtra("uId",postData.uid)
+
+                context?.startActivity(intent)
+            }
         }
 
         override fun getItemCount() = postList.size
