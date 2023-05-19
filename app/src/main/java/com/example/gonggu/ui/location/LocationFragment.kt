@@ -83,10 +83,11 @@ class LocationFragment : Fragment() {
             -> {
                 val userNowLocation : Location? = (lm.getLastKnownLocation(GPS_PROVIDER) ?: lm.getLastKnownLocation(
                     NETWORK_PROVIDER))
-                println(userNowLocation)
-                uLatitude = userNowLocation?.latitude!!
-                uLongitude = userNowLocation?.longitude!!
-                startTracking()
+                if (userNowLocation != null) {
+                    uLatitude = userNowLocation?.latitude!!
+                    uLongitude = userNowLocation?.longitude!!
+                    startTracking()
+                }
             }
             shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
                 showPermissionContextPopup()
