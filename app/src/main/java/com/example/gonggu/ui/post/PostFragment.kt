@@ -63,7 +63,7 @@ class PostFragment : Fragment() {
             when {
                 PermissionChecker.checkSelfPermission(
                     requireContext(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE
+                    Manifest.permission.READ_MEDIA_IMAGES
                 ) == PermissionChecker.PERMISSION_GRANTED
                 -> {
                     startContentProvider()
@@ -73,7 +73,7 @@ class PostFragment : Fragment() {
                 }
                 else -> {
                     requestPermissions(
-                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                        arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
                         1000)
                 }
             }
@@ -227,7 +227,7 @@ class PostFragment : Fragment() {
             .setTitle("권한이 필요합니다.")
             .setMessage("사진을 가져오기 위해 필요합니다.")
             .setPositiveButton("확인") { _, _ ->
-                requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1010)
+                requestPermissions(arrayOf(Manifest.permission.READ_MEDIA_IMAGES), 1010)
             }
             .create()
             .show()
