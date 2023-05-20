@@ -126,9 +126,11 @@ class PostFragment : Fragment() {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) // 포맷 지정
         val currentTime = System.currentTimeMillis() // 현재 시간
         val time = dateFormat.format(currentTime) // 현재 시간을 포맷에 맞게 변환
-        val uid = Firebase.auth.uid
-        val like= mutableListOf<String>()
+        val writeruid = Firebase.auth.uid
+        val like = mutableListOf<String>()
         val comment= mutableListOf<Map<String,String>>()
+
+        val postRef = postsRef.push()
 
         val itemMap = hashMapOf(
             "content" to content,
@@ -138,10 +140,11 @@ class PostFragment : Fragment() {
             "price" to price,
             "title" to title,
             "time" to time,
-            "uid" to uid
+            "writeruid" to writeruid,
+            "like" to like,
+            "postId" to postRef.key
         )
 
-        val postRef = postsRef.push()
 
         postRef.setValue(itemMap).addOnSuccessListener {
             Toast.makeText(requireContext(), "게시물이 등록되었습니다.", Toast.LENGTH_SHORT).show()

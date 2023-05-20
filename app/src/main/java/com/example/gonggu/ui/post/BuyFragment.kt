@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.gonggu.MainActivity
+import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentBuyBinding
-import com.example.gonggu.databinding.FragmentChatBinding
-import com.example.gonggu.databinding.ItemChatListBinding
 import com.example.gonggu.databinding.ItemPostListBinding
 import com.example.gonggu.ui.chat.RecyclerDecoration
 import com.google.firebase.auth.FirebaseAuth
@@ -27,18 +27,6 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 //data class User (val profile :String, val name : String, val phonenumber : String, val email : String)
-data class PostData (
-    val content: String,
-    val location: String,
-    val numOfPeople: Int,
-    val price : Int,
-    val title: String,
-    val time: String,
-    val uid: String
-    )
-{
-    constructor(): this("", "",0,0,"","","")
-}
 
 class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database 객체 선언
     private lateinit var mAuth: FirebaseAuth
@@ -114,17 +102,17 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
             holder.bind(postData)
 
             holder.itemView.setOnClickListener{
-                val intent = Intent(context, PostViewerActivity::class.java)
+                PostViewerActivity.currentPost = postData
+                context?.startActivity(Intent(context,PostViewerActivity::class.java))
 
-                intent.putExtra("content",postData.content)
-                intent.putExtra("location",postData.location)
-                intent.putExtra("numOfPeople",postData.numOfPeople.toString())
-                intent.putExtra("price",postData.price.toString())
-                intent.putExtra("title",postData.title)
-                intent.putExtra("time",postData.time)
-                intent.putExtra("uId",postData.uid)
-
-                context?.startActivity(intent)
+//                intent.putExtra("content",postData.content)
+//                intent.putExtra("location",postData.location)
+//                intent.putExtra("numOfPeople",postData.numOfPeople.toString())
+//                intent.putExtra("price",postData.price.toString())
+//                intent.putExtra("title",postData.title)
+//                intent.putExtra("time",postData.time)
+//                intent.putExtra("uId",postData.uid)
+//                context?.startActivity(intent)
             }
         }
 
@@ -140,6 +128,16 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
             fun bind(postData: PostData) {
                 binding.itemPostTitle.text = postData.title
                 binding.itemPostPre.text = postData.content
+                // ImageView에 이미지 로드
+                if( postData.imageUrl != null) {
+                    Glide.with(binding.root)
+                        .load(postData.imageUrl)
+                        .into(binding.itemPostImgList) // item_post_list.xml의 ImageView ID
+                } else {
+                    Glide.with(binding.root)
+                        .load(R.drawable.image4)
+                        .into(binding.itemPostImgList)
+                }
 
                 // 게시글 작성 시간 데이터 파싱
                 val postTime = Calendar.getInstance().apply {
