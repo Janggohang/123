@@ -32,7 +32,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
-data class UserData (val email:String, val name : String , val phonenumber : String, val uid: String){
+data class UserData (val email:String, var name : String, var phonenumber : String, val uid: String){
     constructor(): this("","","","")
 }
 @Suppress("DEPRECATION")
@@ -63,7 +63,6 @@ class ProfileFragment : Fragment() {
             }
 
         })
-
     }
 
     override fun onCreateView(
@@ -83,10 +82,15 @@ class ProfileFragment : Fragment() {
         val myPost = binding!!.myPost
         val myLocation = binding!!.myLocation
         val logout = binding!!.signOut
+        val settingBtn = binding!!.settingButton
         val profileImage = binding!!.profileImage
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
         val context = view.context
 
+        // 내 정보 설정
+        settingBtn.setOnClickListener {
+            activity.replaceFragment(ProfileSettingFragment())
+        }
 
         // 내가 쓴 글
         myPost.setOnClickListener {
@@ -97,11 +101,11 @@ class ProfileFragment : Fragment() {
             activity.replaceFragment(LocationFragment())
         }
 
+        // 로그아웃
         logout.setOnClickListener{
             val intent = Intent(context, LoginActivity::class.java)
             mAuth.signOut()
             startActivity(intent)
-
         }
 
         // 프로필 이미지 설정

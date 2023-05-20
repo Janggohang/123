@@ -37,13 +37,11 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
     private lateinit var userDatabase: DatabaseReference
+    var locationMap = HashMap<String, Double>() // 내 위도, 경도 정보 담을 hashmap
 
     // RecyclerView에 사용할 어댑터 객체와 데이터를 담을 ArrayList 선언
     private lateinit var mAdapter: PostAdapter
     private val PostList: ArrayList<PostData> = ArrayList()
-
-    private var myLatitude = 0.0
-    private var myLongitude = 0.0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // 레이아웃 파일을 inflate하고 뷰 바인딩 객체를 생성
@@ -62,18 +60,19 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
         mAdapter = PostAdapter(PostList)
 
         // RecyclerView 설정
-
         binding.recyclerViewPostlist.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdapter }
 
+        // 내 위치 정보 가져오기
+        getMyLocation()
 
         // Firebase Realtime Database에서 데이터를 가져와서 RecyclerView에 표시
         mDatabase.orderByChild("time").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val newPostList: ArrayList<PostData> = ArrayList()
 
-                val myLocation = Location(0.0, 0.0)
+                val myLocation = Location(locationMap["latitude"] as Double, locationMap["longitude"] as Double)
 
                 for (postSnapshot in snapshot.children) {
                     val post = postSnapshot.getValue(PostData::class.java)
@@ -82,7 +81,7 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
                     val postLocation = post?.let { Location(it.latitude, post.longitude) }
                     val distance = postLocation?.let { calculateDistance(myLocation, it) }
 
-                    // 반경 5km 내의
+                    // 반경 5km 내의 게시물만 추가
                     if (distance != null) {
                         if (distance <= 5) {
                             newPostList.add(0, post!!)
@@ -114,8 +113,8 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
             override fun onDataChange(snapshot: DataSnapshot) {
                 val map = snapshot.value as Map <*,*>
 
-                myLatitude = map["latitude"] as Double
-                myLongitude = map["longitude"] as Double
+                locationMap["latitude"] = map["latitude"] as Double
+                locationMap["longitude"] = map["longitude"] as Double
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -212,5 +211,10 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
                 binding.itemPostListTime.text = timeString
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        locationMap.clear()
     }
 }
