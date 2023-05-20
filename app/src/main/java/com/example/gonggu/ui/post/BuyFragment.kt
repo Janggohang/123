@@ -25,21 +25,29 @@ import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.*
+import kotlin.properties.Delegates
 
 //data class User (val profile :String, val name : String, val phonenumber : String, val email : String)
+
+
+data class Location(val latitude: Double, val longitude: Double)
 
 class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database 객체 선언
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
+    private lateinit var userDatabase: DatabaseReference
 
     // RecyclerView에 사용할 어댑터 객체와 데이터를 담을 ArrayList 선언
     private lateinit var mAdapter: PostAdapter
     private val PostList: ArrayList<PostData> = ArrayList()
 
+    private var myLatitude = 0.0
+    private var myLongitude = 0.0
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // 레이아웃 파일을 inflate하고 뷰 바인딩 객체를 생성
         val binding = FragmentBuyBinding.inflate(inflater, container, false)
-
         // MainActivity 객체 생성
         val mActivity = activity as MainActivity
 
@@ -65,9 +73,21 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
             override fun onDataChange(snapshot: DataSnapshot) {
                 val newPostList: ArrayList<PostData> = ArrayList()
 
+                val myLocation = Location(0.0, 0.0)
+
                 for (postSnapshot in snapshot.children) {
                     val post = postSnapshot.getValue(PostData::class.java)
-                    newPostList.add(0, post!!)
+
+                    // 게시물의 위치 좌표
+                    val postLocation = post?.let { Location(it.latitude, post.longitude) }
+                    val distance = postLocation?.let { calculateDistance(myLocation, it) }
+
+                    // 반경 5km 내의
+                    if (distance != null) {
+                        if (distance <= 5) {
+                            newPostList.add(0, post!!)
+                        }
+                    }
                 }
 
                 // 기존 리스트에 새로운 게시글 리스트를 맨 앞에 추가
@@ -84,8 +104,40 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
         val spaceDecoration = RecyclerDecoration(40)
         binding.recyclerViewPostlist.addItemDecoration(spaceDecoration)
 
-
         return binding.root
+    }
+
+    fun getMyLocation() {
+        userDatabase = Firebase.database.reference.child("user").child(mAuth.currentUser?.uid!!)
+
+        userDatabase.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val map = snapshot.value as Map <*,*>
+
+                myLatitude = map["latitude"] as Double
+                myLongitude = map["longitude"] as Double
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+    }
+    // 위도, 경도로 거리 계산
+    fun calculateDistance(location1: Location, location2: Location): Double {
+        val earthRadius = 6371 // 지구 반경 (단위: km)
+
+        val latDiff = Math.toRadians(location2.latitude - location1.latitude)
+        val lonDiff = Math.toRadians(location2.longitude - location1.longitude)
+
+        val a = sin(latDiff / 2) * sin(latDiff / 2) +
+                cos(Math.toRadians(location1.latitude)) * cos(Math.toRadians(location2.latitude)) *
+                sin(lonDiff / 2) * sin(lonDiff / 2)
+
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        return earthRadius * c
     }
 
     private inner class PostAdapter(private val postList: ArrayList<PostData>) :

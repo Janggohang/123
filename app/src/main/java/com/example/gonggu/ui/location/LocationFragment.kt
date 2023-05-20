@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.PermissionChecker
 import androidx.navigation.fragment.NavHostFragment
@@ -67,9 +68,7 @@ class LocationFragment : Fragment() {
         map = MapView(context)
 
         binding!!.mapView.addView(map)
-        setBtn.setOnClickListener {
-            setLocation()
-        }
+
         // 줌인
         map.zoomIn(true)
         // 줌아웃
@@ -84,9 +83,19 @@ class LocationFragment : Fragment() {
                 val userNowLocation : Location? = (lm.getLastKnownLocation(GPS_PROVIDER) ?: lm.getLastKnownLocation(
                     NETWORK_PROVIDER))
                 if (userNowLocation != null) {
+                    Log.d("location", "위도, 경도")
                     uLatitude = userNowLocation?.latitude!!
                     uLongitude = userNowLocation?.longitude!!
                     startTracking()
+
+                    setBtn.setOnClickListener {
+                        setLocation()
+                    }
+                }
+                else {
+                    setBtn.setOnClickListener {
+                        Toast.makeText(requireContext(),"위치 정보를 가져올 수 없습니다", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
             shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
@@ -141,6 +150,8 @@ class LocationFragment : Fragment() {
                 val addressString = addressText.drop(5)
                 // 내 위치 설정
                 usersRef.child(mAuth.currentUser?.uid!!).child("address").setValue(addressString)
+                usersRef.child(mAuth.currentUser?.uid!!).child("latitude").setValue(uLatitude)
+                usersRef.child(mAuth.currentUser?.uid!!).child("longitude").setValue(uLongitude)
             }
         }catch(e: IOException){
             e.printStackTrace()
