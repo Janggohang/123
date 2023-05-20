@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 
-class HotDealFragment : Fragment() {
+class ForeignFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_hotdeal, container, false)
@@ -24,8 +24,8 @@ class HotDealFragment : Fragment() {
 
         webView.webViewClient = WebViewClient()
 
-        // 연결할 URL 설정
-        val externalLink = "http://www.naver.com"
+        // 연결할 URL 설정 (해외는 여기가 제일 괜찮아보임)
+        val externalLink = "http://www.dealbada.com/bbs/board.php?bo_table=deal_oversea"
 
         webView.loadUrl(externalLink)
 

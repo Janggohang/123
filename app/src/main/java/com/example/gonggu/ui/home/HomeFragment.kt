@@ -22,6 +22,7 @@ import com.example.gonggu.ui.chat.ChatFragment
 import com.example.gonggu.ui.chat.ChatListAdapter
 import com.example.gonggu.ui.chat.RecyclerDecoration
 import com.example.gonggu.ui.post.BuyFragment
+import com.example.gonggu.ui.post.ForeignFragment
 import com.example.gonggu.ui.post.HotDealFragment
 import com.example.gonggu.ui.post.PostFragment
 
@@ -62,6 +63,9 @@ class HomeFragment : Fragment() {
         }
         binding!!.hotdeal.setOnClickListener {
             mActivity.replaceFragment(HotDealFragment())
+        }
+        binding!!.foreign.setOnClickListener {
+            mActivity.replaceFragment(ForeignFragment())
         }
         binding!!.recyclerViewRealtimelist.layoutManager = LinearLayoutManager(requireContext())
         binding!!.recyclerViewRealtimelist.adapter = ChatListAdapter(ChatDataList)
