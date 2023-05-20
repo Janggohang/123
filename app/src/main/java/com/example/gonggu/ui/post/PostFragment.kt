@@ -68,7 +68,7 @@ class PostFragment : Fragment() {
                 -> {
                     startContentProvider()
                 }
-                shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
+                shouldShowRequestPermissionRationale(Manifest.permission.READ_MEDIA_IMAGES) -> {
                     showPermissionContextPopup()
                 }
                 else -> {
