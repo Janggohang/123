@@ -4,7 +4,10 @@ data class UserData (
     var name: String,
     var email: String,
     var phonenumber: String,
-    var uId: String
-) {
-    constructor(): this("","","","")
+    var uId: String,
+    val location: String,
+    val latitude: Double,
+    val longitude: Double
+    ) {
+    constructor(): this("","","","","",0.0,0.0)
 }

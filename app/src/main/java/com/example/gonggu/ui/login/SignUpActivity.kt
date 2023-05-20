@@ -89,7 +89,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun addUserToDatabase (name: String, email: String,  phonenumber: String, uId: String) {
-        mDbRef.child("user").child(uId).setValue(UserData(name,email, phonenumber, uId))
+        mDbRef.child("user").child(uId).setValue(UserData(name,email, phonenumber, uId,"",0.0,0.0))
 
     }
 

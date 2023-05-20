@@ -137,26 +137,55 @@ class LocationFragment : Fragment() {
     private fun addMap() {
 
     }
-
     // 내 위치 설정
     private fun setLocation() {
         val geoCoder = context?.let { Geocoder(it) }
 
         try {
             val addresses = geoCoder!!.getFromLocation(uLatitude, uLongitude, 1)
-            if (addresses!!.isNotEmpty()){
+            if (addresses!!.isNotEmpty()) {
                 val address = addresses[0]
                 val addressText = address.getAddressLine(0)
                 val addressString = addressText.drop(5)
-                // 내 위치 설정
-                usersRef.child(mAuth.currentUser?.uid!!).child("address").setValue(addressString)
-                usersRef.child(mAuth.currentUser?.uid!!).child("latitude").setValue(uLatitude)
-                usersRef.child(mAuth.currentUser?.uid!!).child("longitude").setValue(uLongitude)
+
+                val user = mAuth.currentUser
+                val userId = user?.uid
+
+                if (userId != null) {
+                    val userRef = usersRef.child(userId)
+                    userRef.get().addOnSuccessListener { dataSnapshot ->
+                        if (dataSnapshot.exists()) {
+                            val userData = dataSnapshot.value as? HashMap<String, Any>
+                            userData?.let { data ->
+                                data["location"] = addressString
+                                data["latitude"] = uLatitude
+                                data["longitude"] = uLongitude
+
+                                userRef.updateChildren(data)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "위치 정보가 저장되었습니다.",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "위치 정보를 저장하는데 실패했습니다: $e",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                            }
+                        }
+                    }
+                }
             }
-        }catch(e: IOException){
+        } catch (e: IOException) {
             e.printStackTrace()
         }
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
