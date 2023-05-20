@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
+import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 
 class HotDealFragment : Fragment() {
@@ -19,11 +20,15 @@ class HotDealFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val webView: WebView = view.findViewById(R.id.webView)
+        val mainActivity = activity as MainActivity
 
         webView.webViewClient = WebViewClient()
 
+        // 연결할 URL 설정
         val externalLink = "http://www.naver.com"
 
         webView.loadUrl(externalLink)
+
+        mainActivity.addNavigation()
     }
 }
