@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.util.regex.Pattern
 
 class ProfileSettingFragment : Fragment() {
 
@@ -64,6 +65,10 @@ class ProfileSettingFragment : Fragment() {
 
         // 프로필 설정 완료
         completeBtn.setOnClickListener {
+            if (!Pattern.matches("^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$", binding!!.phoneEditText.text)){
+                Toast.makeText(requireContext(),"올바른 전화번호 형태가 아닙니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             changeMyInfo()
         }
 
@@ -85,6 +90,8 @@ class ProfileSettingFragment : Fragment() {
                         val user = snapshot.getValue(UserData::class.java)
                         user?.name = nameEdit.text.toString()
                         user?.phonenumber = phoneEdit.text.toString()
+
+
 
                         userRef.setValue(user)
                             .addOnSuccessListener {
