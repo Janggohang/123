@@ -2,6 +2,7 @@ package com.example.gonggu.ui.profile
 
 import android.content.Context
 import android.os.Bundle
+import android.telephony.PhoneNumberFormattingTextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,9 @@ class ProfileSettingFragment : Fragment() {
         // FirebaseAuth와 Firebase Realtime Database 객체를 초기화합니다.
         mAuth = Firebase.auth
 
+        // 전화번호 입력 시 자동 하이픈 입력
+        phoneEdit.addTextChangedListener(PhoneNumberFormattingTextWatcher())
+
         val mActivity = activity as MainActivity
         // 바텀 네비게이션 사용
         mActivity.addNavigation()
@@ -78,7 +82,6 @@ class ProfileSettingFragment : Fragment() {
     private fun changeMyInfo() {
         val user = mAuth.currentUser
         val userId = user?.uid
-
 
         // user 정보 변경
         if (userId != null) {
@@ -117,9 +120,7 @@ class ProfileSettingFragment : Fragment() {
 
             })
         }
-
         activity?.supportFragmentManager?.popBackStack()
     }
-
 }
 

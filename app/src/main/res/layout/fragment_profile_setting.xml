@@ -101,7 +101,7 @@
         android:elevation="3dp"
         android:fontFamily="@font/rubik_regular"
         android:hint="0000-0000-0000"
-        android:inputType="textEmailAddress"
+        android:inputType="phone"
         android:padding="10dp"
         android:textColor="@color/black"
         android:textColorHint="@color/light_gray_ui_text_color"
