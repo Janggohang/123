@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -72,21 +73,26 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
             override fun onDataChange(snapshot: DataSnapshot) {
                 val newPostList: ArrayList<PostData> = ArrayList()
 
-                val myLocation = Location(locationMap["latitude"] as Double, locationMap["longitude"] as Double)
+                if (locationMap["latitude"] != null && locationMap["longitude"] != null){
+                    val myLocation = Location(locationMap["latitude"] as Double, locationMap["longitude"] as Double)
 
-                for (postSnapshot in snapshot.children) {
-                    val post = postSnapshot.getValue(PostData::class.java)
+                    for (postSnapshot in snapshot.children) {
+                        val post = postSnapshot.getValue(PostData::class.java)
 
-                    // 게시물의 위치 좌표
-                    val postLocation = post?.let { Location(it.latitude, post.longitude) }
-                    val distance = postLocation?.let { calculateDistance(myLocation, it) }
+                        // 게시물의 위치 좌표
+                        val postLocation = post?.let { Location(it.latitude, post.longitude) }
+                        val distance = postLocation?.let { calculateDistance(myLocation, it) }
 
-                    // 반경 5km 내의 게시물만 추가
-                    if (distance != null) {
-                        if (distance <= 5) {
-                            newPostList.add(0, post)
+                        // 반경 5km 내의 게시물만 추가
+                        if (distance != null) {
+                            if (distance <= 5) {
+                                newPostList.add(0, post)
+                            }
                         }
                     }
+                }
+                else {
+                    Toast.makeText(requireContext(), "위치 정보를 설정해 주세요.", Toast.LENGTH_SHORT).show()
                 }
 
                 // 기존 리스트에 새로운 게시글 리스트를 맨 앞에 추가
@@ -113,8 +119,13 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
             override fun onDataChange(snapshot: DataSnapshot) {
                 val map = snapshot.value as Map <*,*>
 
-                locationMap["latitude"] = map["latitude"] as Double
-                locationMap["longitude"] = map["longitude"] as Double
+                if (map["latitude"] != null && map["longitude"] != null){
+                    locationMap["latitude"] = map["latitude"] as Double
+                    locationMap["longitude"] = map["longitude"] as Double
+                }
+                else {
+                    println("cannot get location")
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
