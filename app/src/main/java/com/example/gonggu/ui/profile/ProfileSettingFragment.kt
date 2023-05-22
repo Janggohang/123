@@ -93,9 +93,7 @@ class ProfileSettingFragment : Fragment() {
                         val user = snapshot.getValue(UserData::class.java)
                         user?.name = nameEdit.text.toString()
                         user?.phonenumber = phoneEdit.text.toString()
-
-
-
+                        
                         userRef.setValue(user)
                             .addOnSuccessListener {
 //                                Toast.makeText(
