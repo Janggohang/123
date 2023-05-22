@@ -139,6 +139,7 @@
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        android:contentDescription="글쓰기 버튼"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
