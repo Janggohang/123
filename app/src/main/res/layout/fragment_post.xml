@@ -14,7 +14,7 @@
         android:fillViewport="true"
         android:scrollbars="vertical"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="-54dp">
+        tools:layout_editor_absoluteY="-93dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,17 +22,47 @@
             android:background="#9DAA88"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textViewMyPost"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/top_bar"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="60sp"
                 android:background="#437044"
-                android:gravity="center_horizontal|center_vertical"
-                android:text="게시글 작성"
-                android:textColor="#FFFFFF"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+                    <TextView
+                        android:id="@+id/textViewMyPost"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="28sp"
+                        android:background="#437044"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:text="게시글 작성"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        tools:ignore="MissingConstraints"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
 
+                    <TextView
+                        android:id="@+id/submitBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="30dp"
+                        android:text="등록"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_baseline_brightness_7_40"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
             <!-- 제목 -->
             <TextView
                 android:id="@+id/title_label"
@@ -105,7 +135,29 @@
                 android:layout_below="@+id/count_label"
                 android:layout_marginTop="10dp"
                 android:background="#FDFDFD"
-                android:hint="인원수를 입력해주세요" />
+                android:hint="인원수를 입력해 주세요"
+                android:inputType="number"/>
+
+            <!--인당 가격-->
+            <TextView
+                android:id="@+id/price_per_Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/price_edit"
+                android:text="인당 가격"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/price_per_text"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_below="@+id/price_per_Label"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:gravity="center_vertical"
+                android:background="#FDFDFD"/>
 
             <!-- 현위치 -->
             <TextView
@@ -129,7 +181,8 @@
                     android:layout_gravity="center"
                     android:layout_weight="10"
                     android:background="#FDFDFD"
-                    android:gravity="center" />
+                    android:textStyle="bold"
+                    android:gravity="center_vertical" />
 
                 <android.widget.Button
                     android:id="@+id/locationBtn"
@@ -161,18 +214,6 @@
                 android:minHeight="100dp"
                 android:scrollHorizontally="false"
                 tools:ignore="SpeakableTextPresentCheck" />
-
-            <!-- 등록 버튼 -->
-            <android.widget.Button
-                android:id="@+id/submit_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_gravity="center"
-                android:layout_marginTop="70dp"
-                android:text="등록" />
-
 
         </LinearLayout>
 

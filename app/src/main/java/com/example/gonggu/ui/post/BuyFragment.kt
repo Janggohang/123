@@ -84,7 +84,7 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
                     // 반경 5km 내의 게시물만 추가
                     if (distance != null) {
                         if (distance <= 5) {
-                            newPostList.add(0, post!!)
+                            newPostList.add(0, post)
                         }
                     }
                 }
