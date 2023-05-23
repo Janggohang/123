@@ -85,9 +85,10 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
 
                         // 반경 5km 내의 게시물만 추가
                         if (distance != null) {
-                            if (distance <= 5) {
-                                newPostList.add(0, post)
-                            }
+                            newPostList.add(0, post)
+//                            if (distance <= 5) {
+//                                newPostList.add(0, post)
+//                            }
                         }
                     }
                 }
@@ -134,6 +135,7 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
 
         })
     }
+
     // 위도, 경도로 거리 계산
     fun calculateDistance(location1: Location, location2: Location): Double {
         val earthRadius = 6371 // 지구 반경 (단위: km)

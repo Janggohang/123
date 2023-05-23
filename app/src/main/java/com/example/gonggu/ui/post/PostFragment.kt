@@ -46,6 +46,7 @@ class PostFragment : Fragment() {
     private val postsRef = db.getReference("post")
     private val usersRef = db.getReference("user")
     private val DEFAULT_GALLERY_CODE = 2020
+    var locationMap = HashMap<String, Double>() // 내 위도, 경도 정보 담을 hashmap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,6 +122,8 @@ class PostFragment : Fragment() {
         val pricePerPerson = binding.pricePerText.text.toString().toIntOrNull() // 인당 가격
         val content = binding.contentEdit.text.toString() // 내용
         val location = binding.myLocation.text.toString() // 위치
+        val latitude = locationMap["latitude"] as Double // 위도
+        val longitude = locationMap["longitude"] as Double // 경도
 
         if (title.isEmpty() || price == null ||
             numOfPeople == null || content.isEmpty() || location == null) {
@@ -136,28 +139,22 @@ class PostFragment : Fragment() {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) // 포맷 지정
         val currentTime = System.currentTimeMillis() // 현재 시간
         val time = dateFormat.format(currentTime) // 현재 시간을 포맷에 맞게 변환
-        val writeruid = Firebase.auth.uid
+        val writeruid = Firebase.auth.uid!!
         val like = mutableListOf<String>()
         val comment= mutableListOf<Map<String,String>>()
 
         val postRef = postsRef.push()
 
-        val itemMap = hashMapOf(
-            "content" to content,
-            "imageUrl" to imageUrl,
-            "location" to location,
-            "numOfPeople" to numOfPeople,
-            "price" to price,
-            "pricePerPerson" to pricePerPerson,
-            "title" to title,
-            "time" to time,
-            "writeruid" to writeruid,
-            "like" to like,
-            "postId" to postRef.key
-        )
+        // 게시물 데이터베이스
+        val postItem = pricePerPerson?.let {
+            PostData(content, latitude, location, longitude,
+                numOfPeople, price, title,time,
+                writeruid,imageUrl, like, postRef.key!!,
+                it
+            )
+        }
 
-
-        postRef.setValue(itemMap).addOnSuccessListener {
+        postRef.setValue(postItem).addOnSuccessListener {
             Toast.makeText(requireContext(), "게시물이 등록되었습니다.", Toast.LENGTH_SHORT).show()
             activity?.supportFragmentManager?.popBackStack()
             //activity?.finish() // 현재 액티비티 종료
@@ -172,6 +169,8 @@ class PostFragment : Fragment() {
                 val map = snapshot.value as Map <*,*>
                 if (map.containsKey("address")){
                     val myAddress = map["address"].toString()
+                    locationMap["latitude"] = map["latitude"] as Double
+                    locationMap["longitude"] = map["longitude"] as Double
                     binding.myLocation.text = myAddress
                 } else {
                     binding.myLocation.text = "내 위치를 설정해 주세요."
