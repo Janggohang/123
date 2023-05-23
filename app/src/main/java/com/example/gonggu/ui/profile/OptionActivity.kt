@@ -25,6 +25,7 @@ class OptionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding= ActivityOptionBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        mAuth = Firebase.auth
 //        profileDataViewModel = ViewModelProvider(this).get(ProfileDataViewModel::class.java)
         //뒤로가기버튼
         binding.backButton.setOnClickListener{
