@@ -167,8 +167,8 @@ class PostFragment : Fragment() {
         usersRef.child(mAuth.currentUser?.uid!!).addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val map = snapshot.value as Map <*,*>
-                if (map.containsKey("address")){
-                    val myAddress = map["address"].toString()
+                if (map.containsKey("location")){
+                    val myAddress = map["location"].toString()
                     locationMap["latitude"] = map["latitude"] as Double
                     locationMap["longitude"] = map["longitude"] as Double
                     binding.myLocation.text = myAddress
