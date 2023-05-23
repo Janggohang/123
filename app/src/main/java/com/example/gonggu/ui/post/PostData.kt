@@ -2,8 +2,8 @@ package com.example.gonggu.ui.post
 
 data class PostData (
     val content: String,
-    val latitude: Double,
     val location: String,
+    val latitude: Double,
     val longitude: Double,
     val numOfPeople: Int,
     val price : Int,
@@ -13,9 +13,7 @@ data class PostData (
     val imageUrl: String,
     val like: MutableList<String> = mutableListOf(),
     val postId: String,
-    val pricePerPerson: Int
 )
 {
-    constructor(): this("", 0.0, "", 0.0,
-        0,0,"","","","", mutableListOf(),"", 0)
+    constructor(): this("", "", 0.0, 0.0,0,0,"","","","", mutableListOf(),"")
 }

@@ -146,13 +146,21 @@ class PostFragment : Fragment() {
         val postRef = postsRef.push()
 
         // 게시물 데이터베이스
-        val postItem = pricePerPerson?.let {
-            PostData(content, latitude, location, longitude,
-                numOfPeople, price, title,time,
-                writeruid,imageUrl, like, postRef.key!!,
-                it
-            )
-        }
+        val postItem = hashMapOf(
+            "content" to content,
+            "latitude" to latitude,
+            "location" to location,
+            "longitude" to longitude,
+            "numOfPeople" to numOfPeople,
+            "price" to price,
+            "title" to title,
+            "time" to time,
+            "writeruid" to writeruid,
+            "imageUrl" to imageUrl,
+            "like" to like,
+            "postId" to postRef.key,
+            "pricePerPerson" to pricePerPerson
+        )
 
         postRef.setValue(postItem).addOnSuccessListener {
             Toast.makeText(requireContext(), "게시물이 등록되었습니다.", Toast.LENGTH_SHORT).show()
