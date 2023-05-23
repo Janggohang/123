@@ -64,6 +64,7 @@ class LocationFragment : Fragment() {
         val root : View = binding!!.root
 
         val setBtn = binding!!.setBtn // 위치 설정 버튼
+        val trackingBtn = binding!!.trackingBtn // 위치 추적 버튼
 
         map = MapView(context)
 
@@ -80,13 +81,19 @@ class LocationFragment : Fragment() {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PermissionChecker.PERMISSION_GRANTED
             -> {
-                val userNowLocation : Location? = (lm.getLastKnownLocation(GPS_PROVIDER) ?: lm.getLastKnownLocation(
-                    NETWORK_PROVIDER))
+                val userNowLocation : Location? = (lm.getLastKnownLocation(NETWORK_PROVIDER) ?:
+                lm.getLastKnownLocation(GPS_PROVIDER))
+
                 if (userNowLocation != null) {
                     Log.d("location", "위도, 경도")
                     uLatitude = userNowLocation?.latitude!!
                     uLongitude = userNowLocation?.longitude!!
+
                     startTracking()
+
+                    trackingBtn.setOnClickListener {
+                        startTracking()
+                    }
 
                     setBtn.setOnClickListener {
                         setLocation()
@@ -94,6 +101,9 @@ class LocationFragment : Fragment() {
                 }
                 else {
                     setBtn.setOnClickListener {
+                        Toast.makeText(requireContext(),"위치 정보를 가져올 수 없습니다", Toast.LENGTH_SHORT).show()
+                    }
+                    trackingBtn.setOnClickListener {
                         Toast.makeText(requireContext(),"위치 정보를 가져올 수 없습니다", Toast.LENGTH_SHORT).show()
                     }
                 }

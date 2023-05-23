@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.telephony.PhoneNumberFormattingTextWatcher
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
@@ -40,6 +41,8 @@ class SignUpActivity : AppCompatActivity() {
 
         //인증 초기화
         mDbRef = Firebase.database.reference
+
+        phoneNumberFormat()
 
         //회원가입 버튼
         binding.signinButton.setOnClickListener {
@@ -93,6 +96,12 @@ class SignUpActivity : AppCompatActivity() {
 
     }
 
+    // 전화번호 입력시 자동 하이픈 입력
+    private fun phoneNumberFormat() {
+        // 전화번호 입력 칸
+        val phoneEdit = binding.phoneEditText
+        phoneEdit.addTextChangedListener(PhoneNumberFormattingTextWatcher())
+    }
     }
     private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()

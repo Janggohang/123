@@ -39,6 +39,7 @@
         android:layout_marginBottom="15dp"
         android:backgroundTint="#FFFFFF"
         android:src="@drawable/ic_location"
+        android:tooltipText="df"
         app:borderWidth="0dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -3,6 +3,11 @@ package com.example.gonggu.ui.profile
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
+import android.telephony.PhoneNumberFormattingTextWatcher
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -44,9 +49,11 @@ class ProfileSettingActivity : AppCompatActivity() {
 
         //인증 초기화
         mDbRef = Firebase.database.reference
+        // 전화번호 입력 시 자동 하이픈 입력
 
         nameEdit = binding!!.nameEditText
         phoneEdit = binding!!.phoneEditText
+
         val completeBtn = binding!!.completeBtn
 
         usersRef.child(mAuth.currentUser?.uid!!).addValueEventListener(object: ValueEventListener {
@@ -79,7 +86,6 @@ class ProfileSettingActivity : AppCompatActivity() {
         val user = mAuth.currentUser
         val userId = user?.uid
 
-
         // user 정보 변경
         if (userId != null) {
             val userRef = usersRef.child(userId)
@@ -90,9 +96,7 @@ class ProfileSettingActivity : AppCompatActivity() {
                         val user = snapshot.getValue(com.example.gonggu.ui.profile.UserData::class.java)
                         user?.name = nameEdit.text.toString()
                         user?.phonenumber = phoneEdit.text.toString()
-
-
-
+                        
                         userRef.setValue(user)
                             .addOnSuccessListener {
                                 val intent: Intent = Intent(this@ProfileSettingActivity, MainActivity::class.java)
@@ -122,6 +126,5 @@ class ProfileSettingActivity : AppCompatActivity() {
 //        finish()
 
     }
-
 }
 

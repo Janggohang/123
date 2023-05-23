@@ -6,6 +6,8 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -54,9 +56,16 @@ class PostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPostBinding.inflate(inflater, container, false)
-        val summitBtn = binding.submitButton
+        val textWatcher = MyTextWatcher()
+        val summitBtn = binding.submitBtn
         val locationBtn = binding.locationBtn
         val addPhotoBtn = binding.photoButton
+        val priceText = binding.priceEdit
+        val numOfPeopleText = binding.countEdit
+
+        // 가격과 인원 수에 따라 인당 가격 측정
+        priceText.addTextChangedListener(textWatcher)
+        numOfPeopleText.addTextChangedListener(textWatcher)
 
         // 사진 불러오기
         addPhotoBtn.setOnClickListener {
@@ -109,6 +118,7 @@ class PostFragment : Fragment() {
         val title = binding.titleEdit.text.toString() // 제목
         val price = binding.priceEdit.text.toString().toIntOrNull() // 가격
         val numOfPeople = binding.countEdit.text.toString().toIntOrNull() // 인원 수
+        val pricePerPerson = binding.pricePerText.text.toString().toIntOrNull() // 인당 가격
         val content = binding.contentEdit.text.toString() // 내용
         val location = binding.myLocation.text.toString() // 위치
 
@@ -138,6 +148,7 @@ class PostFragment : Fragment() {
             "location" to location,
             "numOfPeople" to numOfPeople,
             "price" to price,
+            "pricePerPerson" to pricePerPerson,
             "title" to title,
             "time" to time,
             "writeruid" to writeruid,
@@ -231,5 +242,26 @@ class PostFragment : Fragment() {
             }
             .create()
             .show()
+    }
+
+    private inner class MyTextWatcher: TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            // 텍스트 변경 전에 호출
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            // 텍스트 변경 중에 호출
+            val price = binding.priceEdit.text.toString().toIntOrNull() // 가격
+            val numOfPeople = binding.countEdit.text.toString().toIntOrNull() // 인원 수
+
+            if (price != null && numOfPeople != null) {
+                binding.pricePerText.text = (price / numOfPeople).toString()
+            }
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            // 텍스트 변경 후에 호출
+        }
+
     }
 }
