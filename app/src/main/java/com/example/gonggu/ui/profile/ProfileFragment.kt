@@ -9,13 +9,19 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentProfileBinding
@@ -23,6 +29,7 @@ import com.example.gonggu.ui.chat.ChatData
 import com.example.gonggu.ui.location.LocationFragment
 import com.example.gonggu.ui.login.LoginActivity
 import com.example.gonggu.ui.post.PostFragment
+import com.example.gonggu.ui.post.PostViewerActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -81,15 +88,26 @@ class ProfileFragment : Fragment() {
         val activity = activity as MainActivity
         val myPost = binding!!.myPost
         val myLocation = binding!!.myLocation
-        val logout = binding!!.signOut
         val settingBtn = binding!!.settingButton
         val profileImage = binding!!.profileImage
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
         val context = view.context
 
+
+
+//        val spinner: Spinner = binding!!.spinner
+//
+//        val spinnerItems = resources.getStringArray(R.array.spinner_items)
+//        val spinnerBackground = ContextCompat.getDrawable(requireContext(), R.drawable.dropdown)
+//
+//        spinner.background = spinnerBackground
+//        val spinnerAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, spinnerItems)
+//        spinner.adapter = spinnerAdapter
+//
         // 내 정보 설정
         settingBtn.setOnClickListener {
-            activity.replaceFragment(ProfileSettingFragment())
+            val intent = Intent(requireActivity(), OptionActivity::class.java)
+            startActivity(intent)
         }
 
         // 내가 쓴 글
@@ -101,12 +119,12 @@ class ProfileFragment : Fragment() {
             activity.replaceFragment(LocationFragment())
         }
 
-        // 로그아웃
-        logout.setOnClickListener{
-            val intent = Intent(context, LoginActivity::class.java)
-            mAuth.signOut()
-            startActivity(intent)
-        }
+//        // 로그아웃
+//        logout.setOnClickListener{
+//            val intent = Intent(context, LoginActivity::class.java)
+//            mAuth.signOut()
+//            startActivity(intent)
+//        }
 
         // 프로필 이미지 설정
         profileImage.setOnClickListener {
@@ -126,6 +144,29 @@ class ProfileFragment : Fragment() {
             }
         }
 
+//        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+//                when (position) {
+//                    0 -> {
+//                        // 개인정보 수정 기능 추가
+//                        val intent = Intent(requireActivity(), ProfileSettingActivity::class.java)
+//                        startActivity(intent)
+//                    }
+//                    2 -> {
+//                        // 로그아웃 기능 추가
+//                        val intent = Intent(context, LoginActivity::class.java)
+//                        mAuth.signOut()
+//                        startActivity(intent)
+//                    }
+//                }
+//            }
+//
+//
+//            override fun onNothingSelected(parent: AdapterView<*>?) {
+//                // Do nothing
+//            }
+//        }
+//
         return root
     }
 

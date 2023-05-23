@@ -142,16 +142,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
-            <TextView
-                android:id="@+id/sign_out"
-                android:text="로그아웃"
-                android:drawableStart="@drawable/ic_logout"
-                android:drawablePadding="5dp"
-                android:textColor="@color/black"
-                android:gravity="center_vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
         </LinearLayout>
 
     </LinearLayout>

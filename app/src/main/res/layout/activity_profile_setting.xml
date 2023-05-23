@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#7F9287"
-    tools:context=".ui.profile.ProfileSettingFragment">
+    tools:context=".ui.profile.ProfileSettingActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_bar"
