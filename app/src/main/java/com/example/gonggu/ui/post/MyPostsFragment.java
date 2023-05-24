@@ -18,7 +18,7 @@ import java.util.List;
 public class MyPostsFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private ExampleAdapter adapter;
+    private RecyclerView.Adapter adapter;
     private List<String> myPostsList;
 
     @Nullable
@@ -30,7 +30,7 @@ public class MyPostsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         myPostsList = getMyPosts(); // 사용자가 작성한 글 목록을 가져옴
 
-        adapter = new ExampleAdapter(myPostsList, new ExampleAdapter.OnItemClickListener() {
+        adapter = new RecyclerView.Adapter(myPostsList, new Adapter.OnItemClickListener() {
             @Override
             public void onItemClick(String item) {
                 // 아이템 클릭 이벤트 처리
