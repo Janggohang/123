@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentChatBinding
 import com.example.gonggu.databinding.ItemChatListBinding
@@ -24,6 +25,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 
 //data class User (val profile :String, val name : String, val phonenumber : String, val email : String)
 data class ChatData (val email:String, val name : String , val phonenumber : String, val uid: String){
@@ -33,10 +36,16 @@ data class ChatData (val email:String, val name : String , val phonenumber : Str
 class ChatFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database 객체 선언
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
+    private lateinit var storage: FirebaseStorage
 
     // RecyclerView에 사용할 어댑터 객체와 데이터를 담을 ArrayList 선언
     private lateinit var mAdapter: ChatAdapter
     private val mChatList: ArrayList<ChatData> = ArrayList()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        storage = Firebase.storage
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // 레이아웃 파일을 inflate하고 뷰 바인딩 객체를 생성
@@ -113,6 +122,14 @@ class ChatFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
             fun bind(chatData: ChatData) {
                 binding.itemNameChatList.text = chatData.name
                 binding.itemLastChat.text = chatData.phonenumber
+                val profileImageRef = storage.reference.child("gonggu/userProfile/${chatData.uid}.png")
+                profileImageRef.downloadUrl.addOnSuccessListener { uri ->
+                    Glide.with(requireContext())
+                        .load(uri)
+                        .into(binding.itemImageChatList)
+                }.addOnFailureListener {
+                    // 프로필 사진 로드 실패 시 처리할 내용
+                }
             }
         }
     }
