@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.gonggu.databinding.ActivityPostViewer2Binding
 import com.example.gonggu.databinding.ActivityPostViewerBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -32,7 +33,7 @@ class PostViewerActivity : AppCompatActivity() {
     //lateinit var mDbRef: DatabaseReference  // DB 객체
     //private val  postCollectionRef = mDbRef.child("post")
     //private val userdataCollectionRef =  mDbRef.child("userdata")
-    val binding by lazy { ActivityPostViewerBinding.inflate(layoutInflater) }
+    val binding by lazy { ActivityPostViewer2Binding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
