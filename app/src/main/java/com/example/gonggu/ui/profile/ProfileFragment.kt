@@ -30,6 +30,7 @@ import com.example.gonggu.databinding.FragmentProfileBinding
 import com.example.gonggu.ui.chat.ChatData
 import com.example.gonggu.ui.location.LocationFragment
 import com.example.gonggu.ui.login.LoginActivity
+import com.example.gonggu.ui.post.MyPostsFragment
 import com.example.gonggu.ui.post.PostFragment
 import com.example.gonggu.ui.post.PostViewerActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -112,7 +113,7 @@ class ProfileFragment : Fragment() {
         }
 
         myPost.setOnClickListener {
-            activity.replaceFragment(PostFragment())
+            activity.replaceFragment(MyPostsFragment())
         }
 
         myLocation.setOnClickListener {
