@@ -119,18 +119,37 @@ class ChatFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
 
         inner class ChatViewHolder(private val binding: ItemChatListBinding) :
             RecyclerView.ViewHolder(binding.root) {
+
             fun bind(chatData: ChatData) {
                 binding.itemNameChatList.text = chatData.name
                 binding.itemLastChat.text = chatData.phonenumber
+
                 val profileImageRef = storage.reference.child("gonggu/userProfile/${chatData.uid}.png")
-                profileImageRef.downloadUrl.addOnSuccessListener { uri ->
-                    Glide.with(requireContext())
-                        .load(uri)
-                        .into(binding.itemImageChatList)
+
+                profileImageRef.metadata.addOnSuccessListener { metadata ->
+                    if (metadata.sizeBytes > 0) {
+                        // 프로필 사진이 존재하는 경우
+                        profileImageRef.downloadUrl.addOnSuccessListener { uri ->
+                            Glide.with(binding.root.context)
+                                .load(uri)
+                                .into(binding.itemImageChatList)
+                        }.addOnFailureListener {
+                            // 프로필 사진 로드 실패 시 처리할 내용
+                        }
+                    } else {
+                        // 프로필 사진이 존재하지 않는 경우
+                        Glide.with(binding.root.context)
+                            .load(R.mipmap.default_user_image)
+                            .into(binding.itemImageChatList)
+                    }
                 }.addOnFailureListener {
-                    // 프로필 사진 로드 실패 시 처리할 내용
+                    // 프로필 사진 정보 가져오기 실패 시 처리할 내용
+                    Glide.with(binding.root.context)
+                        .load(R.mipmap.default_user_image)
+                        .into(binding.itemImageChatList)
                 }
             }
         }
+
     }
 }

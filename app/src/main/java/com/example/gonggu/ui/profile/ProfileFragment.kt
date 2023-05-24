@@ -1,6 +1,5 @@
 package com.example.gonggu.ui.profile
 
-import android.Manifest
 import android.Manifest.permission.*
 import android.app.Activity
 import android.app.AlertDialog
@@ -10,29 +9,18 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
-import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.gonggu.MainActivity
-import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentProfileBinding
-import com.example.gonggu.ui.chat.ChatData
 import com.example.gonggu.ui.location.LocationFragment
-import com.example.gonggu.ui.login.LoginActivity
-import com.example.gonggu.ui.post.MyPostsFragment
-import com.example.gonggu.ui.post.PostFragment
-import com.example.gonggu.ui.post.PostViewerActivity
+import com.example.gonggu.ui.post.BuyFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -113,7 +101,7 @@ class ProfileFragment : Fragment() {
         }
 
         myPost.setOnClickListener {
-            activity.replaceFragment(MyPostsFragment())
+            activity.replaceFragment(BuyFragment())
         }
 
         myLocation.setOnClickListener {
