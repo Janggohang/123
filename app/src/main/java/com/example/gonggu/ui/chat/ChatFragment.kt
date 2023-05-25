@@ -27,6 +27,9 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 //data class User (val profile :String, val name : String, val phonenumber : String, val email : String)
 data class ChatData (val email:String, var name : String, val lastChat : String, var uid: String){
@@ -41,7 +44,7 @@ class ChatFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
     private lateinit var storage: FirebaseStorage
 
     private  lateinit var messageList: ArrayList<Message>
-    private  lateinit var lach: String
+    private  lateinit var roomid: String
 
 
     // RecyclerView에 사용할 어댑터 객체와 데이터를 담을 ArrayList 선언
@@ -152,7 +155,10 @@ class ChatFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
                 getLastChatMessage(chatData.uid) { lastChatMessage ->
                     binding.itemLastChat.text = lastChatMessage
                 }
-//                binding.itemChatListTime.text = getLastChatTime(chatData.uid)
+                getLastChatTime(chatData.uid) {  lastChatTime ->
+                    binding.itemChatListTime.text = lastChatTime
+
+                }
 
                 val profileImageRef = storage.reference.child("gonggu/userProfile/${chatData.uid}.png")
 
@@ -181,8 +187,9 @@ class ChatFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
             }
 
             private fun getLastChatMessage(uid: String, callback: (String) -> Unit) {
-                val roomid = uid + mAuth.currentUser?.uid
-                val lastMessageRef = mDatabase.child("chats").child(roomid).child("messages").limitToLast(1)
+                roomid = ""
+                roomid = mAuth.currentUser?.uid + uid
+                val lastMessageRef = chmDatabase.child(roomid).child("messages").limitToLast(1)
 
                 lastMessageRef.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
@@ -205,11 +212,45 @@ class ChatFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
             }
 
 
-            private fun getLastChatTime(uid: String): String {
-                // TODO: uid에 해당하는 채팅 데이터를 가져와 마지막 채팅 시간 반환
-                // 여기에 실제로 데이터베이스에서 채팅 데이터를 조회하고 마지막 채팅 시간을 반환하는 로직을 구현해야 합니다.
-                // 현재는 임시로 "12:34"를 반환하도록 처리하였습니다.
-                return "12:34"
+            private fun getLastChatTime(uid: String, callback: (String) -> Unit) {
+                roomid = mAuth.currentUser?.uid + uid
+                val lastMessageRef = chmDatabase.child(roomid).child("messages").limitToLast(1)
+
+                lastMessageRef.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        var lastChatTime = "" // 초기화된 값
+
+                        for (postSnapshot in snapshot.children) {
+                            val message = postSnapshot.getValue(Message::class.java)
+                            lastChatTime = formatChatTime(message?.timestamp ?: 0L)
+                        }
+
+                        // 마지막 채팅 메시지를 반환
+                        callback(lastChatTime)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        // 실패 시 처리할 작업을 구현
+                        callback("") // 실패 시 빈 값 반환
+                    }
+                })
+            }
+
+            private fun formatChatTime(timeInMillis: Long): String {
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = timeInMillis
+
+                val now = Calendar.getInstance()
+
+                val format = if (calendar.get(Calendar.YEAR) != now.get(Calendar.YEAR)) {
+                    SimpleDateFormat("yy/MM/dd", Locale.getDefault())
+                } else if (calendar.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)) {
+                    SimpleDateFormat("MM/dd", Locale.getDefault())
+                } else {
+                    SimpleDateFormat("HH:mm", Locale.getDefault())
+                }
+
+                return format.format(calendar.time)
             }
         }
 
