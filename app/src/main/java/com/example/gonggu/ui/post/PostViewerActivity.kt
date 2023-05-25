@@ -16,6 +16,9 @@ import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.ActivityPostViewer2Binding
 import com.example.gonggu.databinding.ActivityPostViewerBinding
+import com.example.gonggu.ui.chat.ChatActivity
+import com.example.gonggu.ui.chat.Message
+import com.example.gonggu.ui.profile.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -26,6 +29,8 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
@@ -33,6 +38,7 @@ import kotlin.collections.HashMap
 class PostViewerActivity : AppCompatActivity() {
 
     lateinit var mAuth: FirebaseAuth
+    private lateinit var storage : FirebaseStorage
 
     private lateinit var mDbRef: DatabaseReference
 
@@ -44,10 +50,16 @@ class PostViewerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        storage = Firebase.storage
 
         mAuth = Firebase.auth
 
         mDbRef = Firebase.database.reference
+
+        var wname = ""
+        getName(currentPost.writeruid) { name ->
+            wname = name
+        }
 
         //Toast.makeText(this,"${currentPostIndex}의 글을 표시합니다.",Toast.LENGTH_SHORT).show()
 
@@ -60,26 +72,55 @@ class PostViewerActivity : AppCompatActivity() {
         binding.postContent.text = currentPost.content
         loadPhoto() // 게시글 이미지 불러오기
 
-        mDbRef.child("user").child(currentPost.writeruid).child("name")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        val name = snapshot.value as String
-                        binding.userName.text = name
-                    } else {
-                        // 데이터가 존재하지 않을 경우의 처리
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    // 처리 중 오류가 발생한 경우의 콜백
-                }
-            })
+        getName(currentPost.writeruid) { name ->
+            binding.userName.text = name
+        }
+//        mDbRef.child("user").child(currentPost.writeruid).child("name")
+//            .addListenerForSingleValueEvent(object : ValueEventListener {
+//                override fun onDataChange(snapshot: DataSnapshot) {
+//                    if (snapshot.exists()) {
+//                        val name = snapshot.value as String
+//                        binding.userName.text = name
+//                    } else {
+//                        // 데이터가 존재하지 않을 경우의 처리
+//                    }
+//                }
+//
+//                override fun onCancelled(error: DatabaseError) {
+//                    // 처리 중 오류가 발생한 경우의 콜백
+//                }
+//            })
         binding.dateText.text = currentPost.time
         binding.postLocation.text = currentPost.location
         binding.postPrice.text = currentPost.price.toString()
         binding.postNumOfPeople.text = currentPost.numOfPeople.toString()
         binding.likeCount.text = currentPost.like.size.toString()
+        val profileImageRef = storage.reference.child("gonggu/userProfile/${currentPost.writeruid}.png")
+
+        profileImageRef.metadata.addOnSuccessListener { metadata ->
+            if (metadata.sizeBytes > 0) {
+                // 프로필 사진이 존재하는 경우
+                profileImageRef.downloadUrl.addOnSuccessListener { uri ->
+                    Glide.with(binding.root.context)
+                        .load(uri)
+                        .into(binding.userImage)
+                }.addOnFailureListener {
+                    // 프로필 사진 로드 실패 시 처리할 내용
+                }
+            } else {
+                // 프로필 사진이 존재하지 않는 경우
+                Glide.with(binding.root.context)
+                    .load(R.mipmap.default_user_image)
+                    .into(binding.userImage)
+            }
+        }.addOnFailureListener {
+            // 프로필 사진 정보 가져오기 실패 시 처리할 내용
+            Glide.with(binding.root.context)
+                .load(R.mipmap.default_user_image)
+                .into(binding.userImage)
+        }
+
+
 
         //ImageCacheManager.requestImage(currentPost.uid,binding.userImage)
 
@@ -112,6 +153,23 @@ class PostViewerActivity : AppCompatActivity() {
                         binding.likeCount.text = currentPost.like.size.toString()
                     }
             }
+        }
+
+        binding.joinButton.setOnClickListener {
+            if (mAuth.currentUser?.uid != currentPost.writeruid) {
+                val intent = Intent(this, ChatActivity::class.java)
+                intent.putExtra("name",wname)
+                intent.putExtra("uId", currentPost.writeruid)
+
+                startActivity(intent)
+
+            } else {
+                Toast.makeText(this@PostViewerActivity,"자신과는 대화할 수 없습니다.",Toast.LENGTH_SHORT).show()
+
+
+            }
+
+
         }
 
         binding.returnButton.setOnClickListener {
@@ -170,6 +228,30 @@ class PostViewerActivity : AppCompatActivity() {
         }
         popupMenu.show()
     }
+    private fun getName(uid: String, callback: (String) -> Unit) {
+        mDbRef = Firebase.database.reference.child("user")
+        val userRef = mDbRef.child(uid)
+        userRef.child("name")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                var oname = ""
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        var name = snapshot.value as String
+                        oname = name
+
+                    } else {
+                        // 데이터가 존재하지 않을 경우의 처리
+                    }
+                    callback(oname)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // 처리 중 오류가 발생한 경우의 콜백
+                    callback("") // 실패 시 빈 값 반환
+                }
+            })
+    }
+
 
     companion object{
         lateinit var currentPost : PostData
