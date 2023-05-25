@@ -21,6 +21,7 @@ import com.example.gonggu.MainActivity
 import com.example.gonggu.databinding.FragmentProfileBinding
 import com.example.gonggu.ui.location.LocationFragment
 import com.example.gonggu.ui.post.BuyFragment
+import com.example.gonggu.ui.post.MyPostFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -101,7 +102,7 @@ class ProfileFragment : Fragment() {
         }
 
         myPost.setOnClickListener {
-            activity.replaceFragment(BuyFragment())
+            activity.replaceFragment(MyPostFragment())
         }
 
         myLocation.setOnClickListener {

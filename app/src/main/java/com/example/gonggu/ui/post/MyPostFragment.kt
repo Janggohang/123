@@ -2,11 +2,11 @@ package com.example.gonggu.ui.post
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -24,27 +24,26 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.math.*
-import kotlin.properties.Delegates
+import java.util.Calendar
+import java.util.Locale
 
-//data class User (val profile :String, val name : String, val phonenumber : String, val email : String)
+class MyPostFragment : Fragment() {
 
-
-data class Location(val latitude: Double, val longitude: Double)
-
-class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database 객체 선언
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
-    private lateinit var userDatabase: DatabaseReference
-    var locationMap = HashMap<String, Double>() // 내 위도, 경도 정보 담을 hashmap
 
     // RecyclerView에 사용할 어댑터 객체와 데이터를 담을 ArrayList 선언
-    private lateinit var mAdapter: PostAdapter
+    private lateinit var mAdapter: MyPostFragment.PostAdapter
     private val PostList: ArrayList<PostData> = ArrayList()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // 레이아웃 파일을 inflate하고 뷰 바인딩 객체를 생성
         val binding = FragmentBuyBinding.inflate(inflater, container, false)
         // MainActivity 객체 생성
@@ -65,35 +64,23 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdapter }
 
-        // 내 위치 정보 가져오기
-        getMyLocation()
-
         // Firebase Realtime Database에서 데이터를 가져와서 RecyclerView에 표시
         mDatabase.orderByChild("time").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val newPostList: ArrayList<PostData> = ArrayList()
 
-                if (locationMap["latitude"] != null && locationMap["longitude"] != null){
-                    val myLocation = Location(locationMap["latitude"] as Double, locationMap["longitude"] as Double)
+                for (postSnapshot in snapshot.children) {
+                    val post = postSnapshot.getValue(PostData::class.java)
 
-                    for (postSnapshot in snapshot.children) {
-                        val post = postSnapshot.getValue(PostData::class.java)
-
-                        // 게시물의 위치 좌표
-                        val postLocation = post?.let { Location(it.latitude, it.longitude) }
-                        val distance = postLocation?.let { calculateDistance(myLocation, it) }
-
-                        // 반경 5km 내의 게시물만 추가
-                        if (distance != null) {
-                            newPostList.add(0, post)
-//                            if (distance <= 5) {
-//                                newPostList.add(0, post)
-//                            }
-                        }
+                    val postWriterUid = post?.let{ post->
+                        post.writeruid
                     }
-                }
-                else {
-                    Toast.makeText(requireContext(), "위치 정보를 설정해 주세요.", Toast.LENGTH_SHORT).show()
+                    val uid = mAuth.currentUser?.uid!!
+
+                    // 내가 쓴 게시물만 추가
+                    if (post != null && postWriterUid == uid) {
+                        newPostList.add(0, post)
+                    }
                 }
 
                 // 기존 리스트에 새로운 게시글 리스트를 맨 앞에 추가
@@ -113,45 +100,6 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
         return binding.root
     }
 
-    fun getMyLocation() {
-        userDatabase = Firebase.database.reference.child("user").child(mAuth.currentUser?.uid!!)
-
-        userDatabase.addListenerForSingleValueEvent(object: ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val map = snapshot.value as Map <*,*>
-
-                if (map["latitude"] != null && map["longitude"] != null){
-                    locationMap["latitude"] = map["latitude"] as Double
-                    locationMap["longitude"] = map["longitude"] as Double
-                }
-                else {
-                    println("cannot get location")
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
-        })
-    }
-
-    // 위도, 경도로 거리 계산
-    fun calculateDistance(location1: Location, location2: Location): Double {
-        val earthRadius = 6371 // 지구 반경 (단위: km)
-
-        val latDiff = Math.toRadians(location2.latitude - location1.latitude)
-        val lonDiff = Math.toRadians(location2.longitude - location1.longitude)
-
-        val a = sin(latDiff / 2) * sin(latDiff / 2) +
-                cos(Math.toRadians(location1.latitude)) * cos(Math.toRadians(location2.latitude)) *
-                sin(lonDiff / 2) * sin(lonDiff / 2)
-
-        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-
-        return earthRadius * c
-    }
-
     private inner class PostAdapter(private val postList: ArrayList<PostData>) :
         RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 
@@ -168,15 +116,6 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
             holder.itemView.setOnClickListener{
                 PostViewerActivity.currentPost = postData
                 context?.startActivity(Intent(context,PostViewerActivity::class.java))
-
-//                intent.putExtra("content",postData.content)
-//                intent.putExtra("location",postData.location)
-//                intent.putExtra("numOfPeople",postData.numOfPeople.toString())
-//                intent.putExtra("price",postData.price.toString())
-//                intent.putExtra("title",postData.title)
-//                intent.putExtra("time",postData.time)
-//                intent.putExtra("uId",postData.uid)
-//                context?.startActivity(intent)
             }
         }
 
@@ -224,10 +163,5 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
                 binding.itemPostListTime.text = timeString
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        locationMap.clear()
     }
 }
