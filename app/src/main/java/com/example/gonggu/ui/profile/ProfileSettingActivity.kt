@@ -1,20 +1,11 @@
 package com.example.gonggu.ui.profile
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Patterns
 import android.telephony.PhoneNumberFormattingTextWatcher
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.gonggu.MainActivity
 import com.example.gonggu.databinding.ActivityProfileSettingBinding
-import com.example.gonggu.databinding.ActivitySignupBinding
-import com.example.gonggu.ui.login.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -90,39 +81,32 @@ class ProfileSettingActivity : AppCompatActivity() {
         // user 정보 변경
         if (userId != null) {
             val userRef = usersRef.child(userId)
+            
+            userRef.get().addOnSuccessListener { dataSnapshot ->
+                if (dataSnapshot.exists()) {
+                    val userData = dataSnapshot.value as? HashMap<String, Any>
+                    userData?.let { data ->
+                        data["name"] = nameEdit.text.toString()
+                        data["phonenumber"] = phoneEdit.text.toString()
 
-            userRef.addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        val user = snapshot.getValue(com.example.gonggu.ui.profile.UserData::class.java)
-                        user?.name = nameEdit.text.toString()
-                        user?.phonenumber = phoneEdit.text.toString()
-                        
-                        userRef.setValue(user)
+                        userRef.updateChildren(data)
                             .addOnSuccessListener {
-                                val intent: Intent = Intent(this@ProfileSettingActivity, MainActivity::class.java)
-                                startActivity(intent)
                                 Toast.makeText(
                                     this@ProfileSettingActivity,
-                                    "프로필 정보가 변경되었습니다.",
+                                    "프로필 정보가 변경됐습니다.",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
-                            .addOnFailureListener { e->
+                            .addOnFailureListener { e ->
                                 Toast.makeText(
                                     this@ProfileSettingActivity,
-                                    "프로필 정보 변경에 실패 했습니다: $e",
+                                    "프로필 정보 변경에 실패했습니다.: $e",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
                     }
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-
-                }
-
-            })
+            }
         }
     }
 }
