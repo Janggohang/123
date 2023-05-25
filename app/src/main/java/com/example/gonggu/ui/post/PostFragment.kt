@@ -115,7 +115,7 @@ class PostFragment : Fragment() {
         return binding.root
     }
 
-    private fun registerPost(imageUri : String) { // 게시물 등록
+    private fun registerPost(imageUrl : String) { // 게시물 등록
         val title = binding.titleEdit.text.toString() // 제목
         val price = binding.priceEdit.text.toString().toIntOrNull() // 가격
         val numOfPeople = binding.countEdit.text.toString().toIntOrNull() // 인원 수
@@ -147,7 +147,7 @@ class PostFragment : Fragment() {
 
         val postItem = hashMapOf(
             "content" to content,
-            "imageUri" to imageUri,
+            "imageUrl" to imageUrl,
             "latitude" to latitude,
             "location" to location,
             "longitude" to longitude,
