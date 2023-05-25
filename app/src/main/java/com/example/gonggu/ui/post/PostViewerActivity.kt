@@ -127,7 +127,7 @@ class PostViewerActivity : AppCompatActivity() {
         binding.likeButton.setOnClickListener {
             val uid = Firebase.auth.uid.toString()
             if (currentPost.like.contains(uid)) {
-
+                binding.likeSign.setImageResource(R.drawable.ic_empty_heart)
                 currentPost.like.remove(uid)
                 mDbRef.child("post").child(currentPost.postId).child("like").setValue(currentPost.like)
                     .addOnSuccessListener {
@@ -141,6 +141,7 @@ class PostViewerActivity : AppCompatActivity() {
                     }
 
             } else {
+                binding.likeSign.setImageResource(R.drawable.ic_full_heart)
                 currentPost.like.add(uid)
                 mDbRef.child("post").child(currentPost.postId).child("like").setValue(currentPost.like)
                     .addOnSuccessListener {

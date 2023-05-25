@@ -243,8 +243,10 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:id="@+id/like_sign"
                 android:layout_width="16dp"
-                android:layout_height="16dp" />
+                android:layout_height="16dp"
+                app:srcCompat="@drawable/ic_empty_heart"/>
 
             <TextView
                 android:id="@+id/like_count"

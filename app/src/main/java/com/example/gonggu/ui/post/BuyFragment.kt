@@ -113,7 +113,7 @@ class BuyFragment : Fragment() {// FirebaseAuthì™€ Firebase Realtime Database ê°
         return binding.root
     }
 
-    fun getMyLocation() {
+    private fun getMyLocation() {
         userDatabase = Firebase.database.reference.child("user").child(mAuth.currentUser?.uid!!)
 
         userDatabase.addListenerForSingleValueEvent(object: ValueEventListener{
