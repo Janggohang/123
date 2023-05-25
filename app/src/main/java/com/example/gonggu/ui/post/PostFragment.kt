@@ -6,6 +6,8 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -44,6 +46,7 @@ class PostFragment : Fragment() {
     private val postsRef = db.getReference("post")
     private val usersRef = db.getReference("user")
     private val DEFAULT_GALLERY_CODE = 2020
+    var locationMap = HashMap<String, Double>() // 내 위도, 경도 정보 담을 hashmap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,9 +57,16 @@ class PostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPostBinding.inflate(inflater, container, false)
+        val textWatcher = MyTextWatcher()
         val summitBtn = binding.submitBtn
         val locationBtn = binding.locationBtn
         val addPhotoBtn = binding.photoButton
+        val priceText = binding.priceEdit
+        val numOfPeopleText = binding.countEdit
+
+        // 가격과 인원 수에 따라 인당 가격 측정
+        priceText.addTextChangedListener(textWatcher)
+        numOfPeopleText.addTextChangedListener(textWatcher)
 
         // 사진 불러오기
         addPhotoBtn.setOnClickListener {
@@ -105,12 +115,15 @@ class PostFragment : Fragment() {
         return binding.root
     }
 
-    private fun registerPost(imageUrl : String) { // 게시물 등록
+    private fun registerPost(imageUri : String) { // 게시물 등록
         val title = binding.titleEdit.text.toString() // 제목
         val price = binding.priceEdit.text.toString().toIntOrNull() // 가격
         val numOfPeople = binding.countEdit.text.toString().toIntOrNull() // 인원 수
         val content = binding.contentEdit.text.toString() // 내용
         val location = binding.myLocation.text.toString() // 위치
+        val latitude = locationMap["latitude"] as Double // 위도
+        val longitude = locationMap["longitude"] as Double // 경도
+        val pricePerPerson = binding.pricePerText.text.toString().toIntOrNull() // 인당 가격
 
         if (title.isEmpty() || price == null ||
             numOfPeople == null || content.isEmpty() || location == null) {
@@ -132,21 +145,24 @@ class PostFragment : Fragment() {
 
         val postRef = postsRef.push()
 
-        val itemMap = hashMapOf(
+        val postItem = hashMapOf(
             "content" to content,
-            "imageUrl" to imageUrl,
+            "imageUri" to imageUri,
+            "latitude" to latitude,
             "location" to location,
+            "longitude" to longitude,
             "numOfPeople" to numOfPeople,
             "price" to price,
             "title" to title,
             "time" to time,
             "writeruid" to writeruid,
             "like" to like,
-            "postId" to postRef.key
+            "postId" to postRef.key,
+            "pricePerPerson" to pricePerPerson
         )
 
 
-        postRef.setValue(itemMap).addOnSuccessListener {
+        postRef.setValue(postItem).addOnSuccessListener {
             Toast.makeText(requireContext(), "게시물이 등록되었습니다.", Toast.LENGTH_SHORT).show()
             activity?.supportFragmentManager?.popBackStack()
             //activity?.finish() // 현재 액티비티 종료
@@ -159,8 +175,10 @@ class PostFragment : Fragment() {
         usersRef.child(mAuth.currentUser?.uid!!).addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val map = snapshot.value as Map <*,*>
-                if (map.containsKey("address")){
-                    val myAddress = map["address"].toString()
+                if (map.containsKey("location")){
+                    val myAddress = map["location"].toString()
+                    locationMap["latitude"] = map["latitude"] as Double
+                    locationMap["longitude"] = map["longitude"] as Double
                     binding.myLocation.text = myAddress
                 } else {
                     binding.myLocation.text = "내 위치를 설정해 주세요."
@@ -231,5 +249,26 @@ class PostFragment : Fragment() {
             }
             .create()
             .show()
+    }
+
+    private inner class MyTextWatcher: TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            // 텍스트 변경 전에 호출
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            // 텍스트 변경 중에 호출
+            val price = binding.priceEdit.text.toString().toIntOrNull() // 가격
+            val numOfPeople = binding.countEdit.text.toString().toIntOrNull() // 인원 수
+
+            if (price != null && numOfPeople != null) {
+                binding.pricePerText.text = (price / numOfPeople).toString()
+            }
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            // 텍스트 변경 후에 호출
+        }
+
     }
 }
