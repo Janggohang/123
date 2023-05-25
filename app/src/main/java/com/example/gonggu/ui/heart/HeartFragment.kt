@@ -171,7 +171,7 @@ private lateinit var mAuth: FirebaseAuth
                 binding.itemPostTitle.text = postData.title
                 binding.itemPostPre.text = postData.content
                 // ImageView에 이미지 로드
-                if( postData.imageUrl != null) {
+                if( postData.imageUrl.isNotEmpty()) {
                     Glide.with(binding.root)
                         .load(postData.imageUrl)
                         .into(binding.itemPostImgList) // item_post_list.xml의 ImageView ID

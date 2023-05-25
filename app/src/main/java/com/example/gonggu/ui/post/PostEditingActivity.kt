@@ -95,7 +95,7 @@ class PostEditingActivity : AppCompatActivity() {
     private fun loadPostData() {
         binding.titleEdit.setText(currentPost.title) // 제목
         // ImageView에 이미지 로드
-        if( currentPost.imageUrl != null) {
+        if( currentPost.imageUrl.isNotEmpty()) {
             Glide.with(binding.root)
                 .load(currentPost.imageUrl)
                 .into(binding.photoButton) // item_post_list.xml의 ImageView ID
@@ -123,7 +123,7 @@ class PostEditingActivity : AppCompatActivity() {
         val time = dateFormat.format(currentTime) // 현재 시간을 포맷에 맞게 변환
 
         if (title.isEmpty() || price == null ||
-            numOfPeople == null || content.isEmpty() || location == null) {
+            numOfPeople == null || content.isEmpty() || location.isEmpty()) {
             // 필수 입력값이 빠졌을 때
             Toast.makeText(this@PostEditingActivity,
                 "모든 항목을 입력해 주세요.",
@@ -140,7 +140,7 @@ class PostEditingActivity : AppCompatActivity() {
                     postData?.let { data ->
                         data["title"] = title
                         data["price"] = price
-                        data["imageUri"] = imageUri
+                        data["imageUrl"] = imageUri
                         data["numOfPeople"] = numOfPeople
                         data["content"] = content
                         data["pricePerPerson"] = pricePerPerson!!

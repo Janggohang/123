@@ -11,6 +11,7 @@ import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.bumptech.glide.Glide
 import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.ActivityPostViewer2Binding
@@ -57,6 +58,8 @@ class PostViewerActivity : AppCompatActivity() {
 //        binding.price2.text = intent.getStringExtra("price").toString()
 //        binding.numOfPeople.text = intent.getStringExtra("numOfPeople").toString()
         binding.postContent.text = currentPost.content
+        loadPhoto() // 게시글 이미지 불러오기
+
         mDbRef.child("user").child(currentPost.writeruid).child("name")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -125,6 +128,14 @@ class PostViewerActivity : AppCompatActivity() {
         }
     }
 
+    private fun loadPhoto() {
+        // ImageView에 이미지 로드
+        if( currentPost.imageUrl.isNotEmpty()) {
+            Glide.with(binding.root)
+                .load(currentPost.imageUrl)
+                .into(binding.postImg) // item_post_list.xml의 ImageView ID
+        } 
+    }
     private fun showPopupMenu(view: View) {
         val popupMenu = PopupMenu(this, view)
         val inflater = popupMenu.menuInflater
