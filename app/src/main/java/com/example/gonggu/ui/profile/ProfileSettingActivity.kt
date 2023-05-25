@@ -81,7 +81,7 @@ class ProfileSettingActivity : AppCompatActivity() {
         // user 정보 변경
         if (userId != null) {
             val userRef = usersRef.child(userId)
-            
+
             userRef.get().addOnSuccessListener { dataSnapshot ->
                 if (dataSnapshot.exists()) {
                     val userData = dataSnapshot.value as? HashMap<String, Any>

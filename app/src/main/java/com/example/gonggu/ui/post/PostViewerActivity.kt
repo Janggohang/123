@@ -1,11 +1,18 @@
 package com.example.gonggu.ui.post
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.gonggu.MainActivity
+import com.example.gonggu.R
 import com.example.gonggu.databinding.ActivityPostViewer2Binding
 import com.example.gonggu.databinding.ActivityPostViewerBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -28,12 +35,11 @@ class PostViewerActivity : AppCompatActivity() {
 
     private lateinit var mDbRef: DatabaseReference
 
-
     //lateinit var mAuth: FirebaseAuth // 인증 객체
-    //lateinit var mDbRef: DatabaseReference  // DB 객체
     //private val  postCollectionRef = mDbRef.child("post")
     //private val userdataCollectionRef =  mDbRef.child("userdata")
     val binding by lazy { ActivityPostViewer2Binding.inflate(layoutInflater) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -109,7 +115,51 @@ class PostViewerActivity : AppCompatActivity() {
             super.onBackPressed()
         }
 
+        // 내가 쓴 게시글인 경우에만 메뉴 버튼 보이도록
+        if (currentPost.writeruid == mAuth.currentUser!!.uid){
+            binding.postMenu.visibility = View.VISIBLE
+
+            binding.postMenu.setOnClickListener {
+                showPopupMenu(it)
+            }
+        }
     }
+
+    private fun showPopupMenu(view: View) {
+        val popupMenu = PopupMenu(this, view)
+        val inflater = popupMenu.menuInflater
+        inflater.inflate(R.menu.post_menu, popupMenu.menu)
+
+        val postCollectionRef = mDbRef.child("post")
+
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.edit_post -> { // 게시글 수정
+                    val intent = Intent(this@PostViewerActivity, PostEditingActivity::class.java)
+                    startActivity(intent)
+                    PostEditingActivity.currentPost = currentPost
+                    true
+                }
+                R.id.delete_post -> { // 게시글 삭제
+                    postCollectionRef.child(currentPost.postId).removeValue()
+                        .addOnSuccessListener {
+                            Toast.makeText(this@PostViewerActivity,
+                                "게시글이 삭제 됐습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this@PostViewerActivity,
+                                "게시글 삭제 실패 : $e", Toast.LENGTH_SHORT).show()
+                        }
+                    val intent = Intent(this@PostViewerActivity, MainActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                else -> false
+            }
+        }
+        popupMenu.show()
+    }
+
     companion object{
         lateinit var currentPost : PostData
     }
