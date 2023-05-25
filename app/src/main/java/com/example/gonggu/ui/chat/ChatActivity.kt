@@ -6,6 +6,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gonggu.databinding.ActivityChatBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ChatActivity : AppCompatActivity() {
 
@@ -52,10 +55,15 @@ class ChatActivity : AppCompatActivity() {
 
         binding.chatOpponent.text = receiverName
 
+        // 메시지 전송 시간
+        val currentTime = System.currentTimeMillis()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val time = dateFormat.format(Date(currentTime))
+
         //메시지 전송 버튼
         binding.sendButton.setOnClickListener {
             val message = binding.messageEditText.text.toString()
-            val messageObject = Message(message, senderUid)
+            val messageObject = Message(message, senderUid, time, currentTime)
 
             mDbRef.child("chats").child(senderRoom).child("messages").push()
                 .setValue(messageObject).addOnSuccessListener {

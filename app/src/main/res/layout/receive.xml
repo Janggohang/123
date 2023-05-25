@@ -1,20 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
     <TextView
         android:id="@+id/receive_message_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/opponent_chat_round_rect"
-        android:padding="10dp"
-        android:textSize="14dp"
         android:layout_margin="10dp"
+        android:background="@drawable/opponent_chat_round_rect"
         android:fontFamily="@font/rubik_regular"
-        android:textColor="@color/white"
+        android:maxWidth="300dp"
+        android:padding="10dp"
         android:text="상대방이 보낸 채팅입니다."
-        android:maxWidth="300dp"/>
+        android:textColor="@color/white"/>
+
+    <TextView
+        android:id="@+id/receive_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:fontFamily="@font/rubik_regular"
+        android:text="11:22"
+        android:textSize="12sp"
+        android:layout_marginVertical="15dp"
+        android:layout_marginLeft="-5dp"/>
+
 
 </LinearLayout>

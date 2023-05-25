@@ -8,6 +8,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gonggu.R
 import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MessageAdapter(private val context: Context , private val messageList: ArrayList<Message>):
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -29,10 +32,13 @@ class MessageAdapter(private val context: Context , private val messageList: Arr
 
     class SendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val sendMessage: TextView = itemView.findViewById(R.id.send_message_text)
+        val sendTime: TextView = itemView.findViewById(R.id.send_time)
     }
 
     class ReceiveViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val receiveMessage: TextView = itemView.findViewById(R.id.receive_message_text)
+        val receiveTime: TextView = itemView.findViewById(R.id.receive_time)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -50,16 +56,57 @@ class MessageAdapter(private val context: Context , private val messageList: Arr
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        //현재 메시지
         val currentMessage = messageList[position]
 
-        //보내는 데이터
-        if (holder.javaClass == SendViewHolder::class.java) {
-            val viewHolder = holder as SendViewHolder
-            viewHolder.sendMessage.text = currentMessage.message
-        } else { // 받는 데이터
-            val viewHolder = holder as ReceiveViewHolder
-            viewHolder.receiveMessage.text = currentMessage.message
+        // 보내는 데이터
+        if (holder is SendViewHolder) {
+            val sendViewHolder = holder
+            sendViewHolder.sendMessage.text = currentMessage.message
+            sendViewHolder.sendTime.text = formatTime(currentMessage.timestamp)
         }
+        // 받는 데이터
+        else if (holder is ReceiveViewHolder) {
+            val receiveViewHolder = holder
+            receiveViewHolder.receiveMessage.text = currentMessage.message
+            receiveViewHolder.receiveTime.text = formatTime(currentMessage.timestamp)
+        }
+
+//        // 날짜 변경 확인
+//        if (position > 0) {
+//            val previousMessage = messageList[position - 1]
+//            if (!isSameDate(currentMessage.time, previousMessage.time)) {
+//                // 날짜가 변경됐을 때 날짜를 표시하는 줄로 구분
+//                holder.itemView.findViewById<View>(R.id.dateSeparator).visibility = View.VISIBLE
+//                holder.itemView.findViewById<TextView>(R.id.dateText).text = formatDate(currentMessage.time)
+//            } else {
+//                holder.itemView.findViewById<View>(R.id.dateSeparator).visibility = View.GONE
+//            }
+//        } else {
+//            holder.itemView.findViewById<View>(R.id.dateSeparator).visibility = View.VISIBLE
+//            holder.itemView.findViewById<TextView>(R.id.dateText).text = formatDate(currentMessage.time)
+//        }
+    }
+
+    private fun formatTime(time: Long): String {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = time
+        val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+        return dateFormat.format(calendar.time)
+    }
+
+    private fun formatDate(time: Long): String {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = time
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return dateFormat.format(calendar.time)
+    }
+
+    private fun isSameDate(time1: Long, time2: Long): Boolean {
+        val calendar1 = Calendar.getInstance()
+        val calendar2 = Calendar.getInstance()
+        calendar1.timeInMillis = time1
+        calendar2.timeInMillis = time2
+        return calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR) &&
+                calendar1.get(Calendar.DAY_OF_YEAR) == calendar2.get(Calendar.DAY_OF_YEAR)
     }
 }
