@@ -34,7 +34,6 @@ class ProfileSettingActivity : AppCompatActivity() {
     private val db = Firebase.database
     private val usersRef = db.getReference("user")
 
-
     lateinit var  mAuth: FirebaseAuth
 
     private lateinit var mDbRef: DatabaseReference
@@ -49,10 +48,12 @@ class ProfileSettingActivity : AppCompatActivity() {
 
         //인증 초기화
         mDbRef = Firebase.database.reference
-        // 전화번호 입력 시 자동 하이픈 입력
 
         nameEdit = binding!!.nameEditText
         phoneEdit = binding!!.phoneEditText
+
+        // 전화번호 입력 시 자동 하이픈 입력
+        phoneEdit.addTextChangedListener(PhoneNumberFormattingTextWatcher())
 
         val completeBtn = binding!!.completeBtn
 
@@ -123,8 +124,6 @@ class ProfileSettingActivity : AppCompatActivity() {
 
             })
         }
-//        finish()
-
     }
 }
 
