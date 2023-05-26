@@ -181,7 +181,7 @@ class BuyFragment : Fragment() {// FirebaseAuthì™€ Firebase Realtime Database ê°
         }
 
         override fun getItemCount() = postList.size
-        
+
         inner class PostViewHolder(private val binding: ItemPostListBinding) :
             RecyclerView.ViewHolder(binding.root) {
 
