@@ -116,7 +116,7 @@ class BuyFragment : Fragment() {// FirebaseAuthì™€ Firebase Realtime Database ê°
     private fun getMyLocation() {
         userDatabase = Firebase.database.reference.child("user").child(mAuth.currentUser?.uid!!)
 
-        userDatabase.addListenerForSingleValueEvent(object: ValueEventListener{
+        userDatabase.addValueEventListener(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val map = snapshot.value as Map <*,*>
 
