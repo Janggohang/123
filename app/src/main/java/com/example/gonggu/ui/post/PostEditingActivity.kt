@@ -18,6 +18,7 @@ import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.ActivityPostEditingBinding
 import com.example.gonggu.databinding.ActivityPostViewer2Binding
+import com.example.gonggu.ui.home.HomeFragment
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -87,8 +88,10 @@ class PostEditingActivity : AppCompatActivity() {
             } else {
                 editingPost("")
             }
+            val intent = Intent(this@PostEditingActivity, PostViewerActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
             finish()
-            PostViewerActivity.currentPost = currentPost
         }
     }
 
@@ -163,7 +166,20 @@ class PostEditingActivity : AppCompatActivity() {
                             }
                     }
                 }
-            }
+        }
+        updateCurrentPost(content, numOfPeople, price, title, time, imageUri)
+    }
+
+    private fun updateCurrentPost(content: String, numOfPeople: Int, price: Int, title: String, time: String,
+    imageUri: String) {
+        currentPost.content = content
+        currentPost.numOfPeople = numOfPeople
+        currentPost.price = price
+        currentPost.title = title
+        currentPost.time = time
+        currentPost.imageUrl = imageUri
+
+        PostViewerActivity.currentPost = currentPost
     }
 
     private inner class MyTextWatcher: TextWatcher {

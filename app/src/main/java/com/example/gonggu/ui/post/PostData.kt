@@ -1,16 +1,16 @@
 package com.example.gonggu.ui.post
 
 data class PostData (
-    val content: String,
+    var content: String,
     val location: String,
     val latitude: Double,
     val longitude: Double,
-    val numOfPeople: Int,
-    val price : Int,
-    val title: String,
-    val time: String,
+    var numOfPeople: Int,
+    var price : Int,
+    var title: String,
+    var time: String,
     val writeruid: String,
-    val imageUrl: String,
+    var imageUrl: String,
     val like: MutableList<String> = mutableListOf(),
     val postId: String,
 )

@@ -166,11 +166,7 @@ class PostViewerActivity : AppCompatActivity() {
 
             } else {
                 Toast.makeText(this@PostViewerActivity,"자신과는 대화할 수 없습니다.",Toast.LENGTH_SHORT).show()
-
-
             }
-
-
         }
 
         binding.returnButton.setOnClickListener {
@@ -195,6 +191,7 @@ class PostViewerActivity : AppCompatActivity() {
                 .into(binding.postImg) // item_post_list.xml의 ImageView ID
         } 
     }
+
     private fun showPopupMenu(view: View) {
         val popupMenu = PopupMenu(this, view)
         val inflater = popupMenu.menuInflater
