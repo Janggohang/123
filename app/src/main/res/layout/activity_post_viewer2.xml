@@ -67,7 +67,7 @@
         tools:layout_editor_absoluteX="16dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/post_Title"
+        android:id="@+id/post_Title_area"
         android:layout_width="409dp"
         android:layout_height="55dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -101,7 +101,7 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/default_harf_ui_color"
-        app:layout_constraintTop_toBottomOf="@+id/post_Title"
+        app:layout_constraintTop_toBottomOf="@+id/post_Title_area"
         tools:layout_editor_absoluteX="0dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

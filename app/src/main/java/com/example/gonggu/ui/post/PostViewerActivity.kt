@@ -91,6 +91,7 @@ class PostViewerActivity : AppCompatActivity() {
 //                }
 //            })
         binding.dateText.text = currentPost.time
+        binding.postTitle.text = currentPost.title
         binding.postLocation.text = currentPost.location
         binding.postPrice.text = currentPost.price.toString()
         binding.postNumOfPeople.text = currentPost.numOfPeople.toString()
@@ -119,8 +120,6 @@ class PostViewerActivity : AppCompatActivity() {
                 .load(R.mipmap.default_user_image)
                 .into(binding.userImage)
         }
-
-
 
         //ImageCacheManager.requestImage(currentPost.uid,binding.userImage)
 
