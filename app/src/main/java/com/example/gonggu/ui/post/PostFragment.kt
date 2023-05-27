@@ -63,6 +63,7 @@ class PostFragment : Fragment() {
         val addPhotoBtn = binding.photoButton
         val priceText = binding.priceEdit
         val numOfPeopleText = binding.countEdit
+        val selectedPhoto = binding.selectedPhoto
 
         // 가격과 인원 수에 따라 인당 가격 측정
         priceText.addTextChangedListener(textWatcher)
@@ -86,6 +87,14 @@ class PostFragment : Fragment() {
                         arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
                         1000)
                 }
+            }
+        }
+
+        // 선택된 사진 삭제
+        selectedPhoto.setOnClickListener {
+            if (selectedUri != null) {
+                selectedUri = null
+                selectedPhoto.setImageURI(null)
             }
         }
 
@@ -228,7 +237,7 @@ class PostFragment : Fragment() {
             DEFAULT_GALLERY_CODE -> {
                 val selectedImageUri: Uri? = data?.data
                 if (selectedImageUri != null) {
-                    binding.photoButton.setImageURI(selectedImageUri)
+                    binding.selectedPhoto.setImageURI(selectedImageUri)
                     selectedUri = selectedImageUri
                 } else {
                     Toast.makeText(view?.context, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()

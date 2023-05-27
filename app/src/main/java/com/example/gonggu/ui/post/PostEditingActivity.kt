@@ -50,6 +50,11 @@ class PostEditingActivity : AppCompatActivity() {
         // 게시물의 기존 정보 불러오기
         loadPostData()
 
+        binding.selectedPhoto.setOnClickListener {
+            selectedUri = null
+            binding.selectedPhoto.setImageURI(null)
+        }
+
         binding.photoButton.setOnClickListener {
             when {
                 PermissionChecker.checkSelfPermission(
@@ -101,7 +106,7 @@ class PostEditingActivity : AppCompatActivity() {
         if( currentPost.imageUrl.isNotEmpty()) {
             Glide.with(binding.root)
                 .load(currentPost.imageUrl)
-                .into(binding.photoButton) // item_post_list.xml의 ImageView ID
+                .into(binding.selectedPhoto) // item_post_list.xml의 ImageView ID
         } else {
             Glide.with(binding.root)
                 .load(R.drawable.photo_img)
@@ -239,7 +244,7 @@ class PostEditingActivity : AppCompatActivity() {
             DEFAULT_GALLERY_CODE -> {
                 val selectedImageUri: Uri? = data?.data
                 if (selectedImageUri != null) {
-                    binding.photoButton.setImageURI(selectedImageUri)
+                    binding.selectedPhoto.setImageURI(selectedImageUri)
                     selectedUri = selectedImageUri
                 } else {
                     Toast.makeText(this@PostEditingActivity,

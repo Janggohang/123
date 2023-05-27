@@ -39,7 +39,6 @@ class PostViewerActivity : AppCompatActivity() {
 
     lateinit var mAuth: FirebaseAuth
     private lateinit var storage : FirebaseStorage
-
     private lateinit var mDbRef: DatabaseReference
 
     //lateinit var mAuth: FirebaseAuth // 인증 객체
@@ -196,7 +195,7 @@ class PostViewerActivity : AppCompatActivity() {
         val inflater = popupMenu.menuInflater
         inflater.inflate(R.menu.post_menu, popupMenu.menu)
 
-        val postCollectionRef = mDbRef.child("post")
+        val postCollectionRef = Firebase.database.getReference("post")
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
