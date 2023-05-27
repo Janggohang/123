@@ -3,25 +3,31 @@ package com.example.gonggu.ui.profile
 import android.Manifest.permission.*
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract.Profile
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.gonggu.MainActivity
+import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentProfileBinding
 import com.example.gonggu.ui.location.LocationFragment
 import com.example.gonggu.ui.post.BuyFragment
 import com.example.gonggu.ui.post.MyPostFragment
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -32,6 +38,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import com.example.gonggu.ui.profile.ProfileFragment.ChangeProfileImageDialog as ChangeProfileImageDialog1
 
 data class UserData (val email: String, var name: String, var phonenumber: String, val uid: String) {
     constructor() : this("", "", "", "")
@@ -49,6 +56,7 @@ class ProfileFragment : Fragment() {
         mAuth = Firebase.auth
         mDatabase = Firebase.database.reference.child("user")
         storage = Firebase.storage
+        current = this
         val binding = FragmentProfileBinding.bind(view)
 
         mDatabase.child(mAuth.currentUser!!.uid).addValueEventListener(object : ValueEventListener {
@@ -85,7 +93,6 @@ class ProfileFragment : Fragment() {
 
         mAuth = Firebase.auth
         mDatabase = Firebase.database.reference.child("user")
-
         val root: View = binding!!.root
 
         val activity = activity as MainActivity
@@ -110,11 +117,13 @@ class ProfileFragment : Fragment() {
         }
 
         profileImage.setOnClickListener {
-            if (checkStoragePermission()) {
-                openImagePicker()
-            } else {
-                requestStoragePermission()
-            }
+//            if (checkStoragePermission()) {
+//                openImagePicker()
+//            } else {
+//                requestStoragePermission()
+//            }
+            val changeProfileImageDialog = ChangeProfileImageDialog()
+            changeProfileImageDialog.show(childFragmentManager, "changeProfileImage")
         }
 
         return root
@@ -200,7 +209,18 @@ class ProfileFragment : Fragment() {
             }
     }
 
-
+    private fun changeBaseImage() {
+        val profileImageRef = storage.reference.child("gonggu/userProfile/${mAuth.currentUser!!.uid}.png")
+        profileImageRef.delete()
+            .addOnSuccessListener {
+                // 파일 삭제 성공
+                binding!!.profileImage.setImageResource(R.mipmap.default_user_image)
+            }
+            .addOnFailureListener {
+                // 파일 삭제 실패
+                Toast.makeText(requireContext(), "이미 기본 이미지 입니다.", Toast.LENGTH_SHORT).show()
+            }
+    }
     private fun showPermissionContextPopup() {
         AlertDialog.Builder(view?.context)
             .setTitle("권한이 필요합니다.")
@@ -212,8 +232,43 @@ class ProfileFragment : Fragment() {
             .show()
     }
 
+    // 프로필 사진 변경 다이얼로그
+    class ChangeProfileImageDialog : BottomSheetDialogFragment() {
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            val dialog = BottomSheetDialog(requireContext(), theme)
+
+            val contentView = layoutInflater.inflate(R.layout.profile_image_change_layout, null)
+            dialog.setContentView(contentView)
+
+            val changeProfileImageBtn = contentView.findViewById<TextView>(R.id.changeProfileImage)
+            val changeBaseImageBtn = contentView.findViewById<TextView>(R.id.changeBaseImage)
+
+            // 프로필 사진 변경
+            changeProfileImageBtn.setOnClickListener{
+                if (current.checkStoragePermission()) {
+                    current.openImagePicker()
+                } else {
+                    current.requestStoragePermission()
+                }
+                dismiss()
+            }
+
+            // 기본 이미지로 변경
+            changeBaseImageBtn.setOnClickListener {
+                current.changeBaseImage()
+                dismiss()
+            }
+
+            return dialog
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    companion object {
+        lateinit var current: ProfileFragment
     }
 }
