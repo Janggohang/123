@@ -2,27 +2,20 @@ package com.example.gonggu.ui.home
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.gonggu.Data.ChatDataList
-import com.example.gonggu.Data.HomeDataList
 import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentHomeBinding
-import com.example.gonggu.databinding.FragmentProfileBinding
-import com.example.gonggu.ui.chat.ChatFragment
 import com.example.gonggu.ui.chat.ChatListAdapter
 import com.example.gonggu.ui.chat.RecyclerDecoration
 import com.example.gonggu.ui.post.BuyFragment
+import com.example.gonggu.ui.post.DeliveryFragment
 import com.example.gonggu.ui.post.ForeignFragment
 import com.example.gonggu.ui.post.HotDealFragment
 import com.example.gonggu.ui.post.PostFragment
@@ -67,6 +60,9 @@ class HomeFragment : Fragment() {
         }
         binding!!.foreign.setOnClickListener {
             mActivity.replaceFragment(ForeignFragment())
+        }
+        binding!!.deliver.setOnClickListener {
+            mActivity.replaceFragment(DeliveryFragment())
         }
         binding!!.recyclerViewRealtimelist.layoutManager = LinearLayoutManager(requireContext())
         binding!!.recyclerViewRealtimelist.adapter = ChatListAdapter(ChatDataList)
