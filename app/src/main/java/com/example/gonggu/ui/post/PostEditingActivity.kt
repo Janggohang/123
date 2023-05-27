@@ -50,9 +50,10 @@ class PostEditingActivity : AppCompatActivity() {
         // 게시물의 기존 정보 불러오기
         loadPostData()
 
+        // 선택된 사진 삭제
         binding.selectedPhoto.setOnClickListener {
+            binding.selectedPhoto.setImageDrawable(null)
             selectedUri = null
-            binding.selectedPhoto.setImageURI(null)
         }
 
         binding.photoButton.setOnClickListener {
