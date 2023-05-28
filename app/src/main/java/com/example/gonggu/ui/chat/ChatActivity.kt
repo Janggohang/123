@@ -71,12 +71,12 @@ class ChatActivity : AppCompatActivity() {
         binding.sendButton.setOnClickListener {
             val message = binding.messageEditText.text.toString()
             val messageObject = Message(message, senderUid, time, currentTime)
-            mDbRef.child("chats").child(senderRoom).child("postId").push()
-                .setValue(postUid).addOnSuccessListener {
-                    //저장 성공하면
-                    mDbRef.child("chats").child(receiverRoom).child("postId").push()
-                        .setValue(postUid)
-                }
+//            mDbRef.child("chats").child(senderRoom).child("postId").push()
+//                .setValue(postUid).addOnSuccessListener {
+//                    //저장 성공하면
+//                    mDbRef.child("chats").child(receiverRoom).child("postId").push()
+//                        .setValue(postUid)
+//                }
             mDbRef.child("chats").child(senderRoom).child("messages").push()
                 .setValue(messageObject).addOnSuccessListener {
                         //저장 성공하면
