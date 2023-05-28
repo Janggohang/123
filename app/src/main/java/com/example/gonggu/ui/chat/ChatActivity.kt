@@ -2,10 +2,15 @@ package com.example.gonggu.ui.chat
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gonggu.databinding.ActivityChatBinding
+import com.example.gonggu.ui.post.PostData
+import com.example.gonggu.ui.post.PostViewerActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -14,6 +19,7 @@ class ChatActivity : AppCompatActivity() {
 
     private lateinit var receiverName: String
     private lateinit var receiverUid: String
+    private lateinit var postUid: String
     private lateinit var binding: ActivityChatBinding
 
 
@@ -41,6 +47,7 @@ class ChatActivity : AppCompatActivity() {
 
         receiverName = intent.getStringExtra("name").toString()
         receiverUid = intent.getStringExtra("uId").toString()
+        postUid = intent.getStringExtra("postId").toString()
 
         mAuth = FirebaseAuth.getInstance()
         mDbRef = FirebaseDatabase.getInstance().reference
@@ -64,7 +71,12 @@ class ChatActivity : AppCompatActivity() {
         binding.sendButton.setOnClickListener {
             val message = binding.messageEditText.text.toString()
             val messageObject = Message(message, senderUid, time, currentTime)
-
+            mDbRef.child("chats").child(senderRoom).child("postId").push()
+                .setValue(postUid).addOnSuccessListener {
+                    //저장 성공하면
+                    mDbRef.child("chats").child(receiverRoom).child("postId").push()
+                        .setValue(postUid)
+                }
             mDbRef.child("chats").child(senderRoom).child("messages").push()
                 .setValue(messageObject).addOnSuccessListener {
                         //저장 성공하면
@@ -94,9 +106,70 @@ class ChatActivity : AppCompatActivity() {
                 }
 
             })
+
+
+        var postwwid = ""
+        getPostwuid(postUid) { wuid ->
+
+            postwwid = wuid
+            if (postwwid == mAuth.currentUser!!.uid){
+                binding.joinButton2.visibility = View. INVISIBLE
+                binding.joinAdmitButton2.visibility = View.VISIBLE
+
+            }   else if (postwwid != mAuth.currentUser!!.uid)
+            {
+                binding.joinButton2.visibility = View. VISIBLE
+                binding.joinAdmitButton2.visibility = View.INVISIBLE
+
+            }
+        }
+
+
+
+        // 참여하기
+        binding.joinButton2.setOnClickListener {
+
+
+
+        }
+
+        //참여 승인 하기
+        binding.joinAdmitButton2.setOnClickListener {
+
+
+
+        }
         //뒤로가기
         binding.chatBack.setOnClickListener{
             super.onBackPressed()
         }
+    }
+
+    private fun getPostwuid(uid: String, callback: (String) -> Unit) {
+        mDbRef = Firebase.database.reference.child("post")
+        val postRef = mDbRef.child(uid)
+        postRef.child("writeruid")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                var wuid = ""
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        var uid = snapshot.value as String
+                        wuid = uid
+
+                    } else {
+                        // 데이터가 존재하지 않을 경우의 처리
+                    }
+                    callback(wuid)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // 처리 중 오류가 발생한 경우의 콜백
+                    callback("") // 실패 시 빈 값 반환
+                }
+            })
+    }
+
+    companion object{
+        lateinit var currentPost : PostData
     }
 }

@@ -159,6 +159,8 @@ class PostViewerActivity : AppCompatActivity() {
                 val intent = Intent(this, ChatActivity::class.java)
                 intent.putExtra("name",wname)
                 intent.putExtra("uId", currentPost.writeruid)
+                intent.putExtra("postId", currentPost.postId)
+
 
                 startActivity(intent)
 
