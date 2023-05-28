@@ -3,6 +3,6 @@
     <string-array name="spinner_items">
         <item></item>
         <item>개인정보 수정</item>
-        <item>로그아웃</item>w
+        <item>로그아웃</item>
     </string-array>
 </resources>
