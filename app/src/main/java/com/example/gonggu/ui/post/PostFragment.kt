@@ -151,6 +151,8 @@ class PostFragment : Fragment() {
         val writeruid = Firebase.auth.uid
         val like = mutableListOf<String>()
         val comment= mutableListOf<Map<String,String>>()
+        val joiner = mutableListOf<String>()
+
 
         val postRef = postsRef.push()
 
@@ -167,7 +169,8 @@ class PostFragment : Fragment() {
             "writeruid" to writeruid,
             "like" to like,
             "postId" to postRef.key,
-            "pricePerPerson" to pricePerPerson
+            "pricePerPerson" to pricePerPerson,
+            "joiner" to joiner
         )
 
 

@@ -13,7 +13,9 @@ data class PostData (
     var imageUrl: String,
     val like: MutableList<String> = mutableListOf(),
     val postId: String,
+    val pricePerPerson: Int,
+    val joiner: MutableList<String> = mutableListOf()
 )
 {
-    constructor(): this("", "", 0.0, 0.0,0,0,"","","","", mutableListOf(),"")
+    constructor(): this("", "", 0.0, 0.0,0,0,"","","","", mutableListOf(),"", 0,mutableListOf())
 }

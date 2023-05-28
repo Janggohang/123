@@ -9,6 +9,7 @@ import android.view.MenuInflater
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
@@ -21,10 +22,7 @@ import com.example.gonggu.ui.chat.Message
 import com.example.gonggu.ui.profile.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -123,11 +121,12 @@ class PostViewerActivity : AppCompatActivity() {
         //ImageCacheManager.requestImage(currentPost.uid,binding.userImage)
 
         binding.likeButton.setOnClickListener {
+            mDbRef = Firebase.database.reference.child("post")
             val uid = Firebase.auth.uid.toString()
             if (currentPost.like.contains(uid)) {
                 binding.likeSign.setImageResource(R.drawable.ic_empty_heart)
                 currentPost.like.remove(uid)
-                mDbRef.child("post").child(currentPost.postId).child("like").setValue(currentPost.like)
+                mDbRef.child(currentPost.postId).child("like").setValue(currentPost.like)
                     .addOnSuccessListener {
                         Toast.makeText(this, "좋아요를 취소했습니다.", Toast.LENGTH_SHORT).show()
                         binding.likeCount.text = currentPost.like.size.toString()
@@ -141,7 +140,7 @@ class PostViewerActivity : AppCompatActivity() {
             } else {
                 binding.likeSign.setImageResource(R.drawable.ic_full_heart)
                 currentPost.like.add(uid)
-                mDbRef.child("post").child(currentPost.postId).child("like").setValue(currentPost.like)
+                mDbRef.child(currentPost.postId).child("like").setValue(currentPost.like)
                     .addOnSuccessListener {
                         Toast.makeText(this, "이 글을 좋아요 하셨습니다.", Toast.LENGTH_SHORT).show()
                         binding.likeCount.text = currentPost.like.size.toString()
@@ -154,15 +153,70 @@ class PostViewerActivity : AppCompatActivity() {
             }
         }
 
+        val chatRef = FirebaseDatabase.getInstance().getReference("chats")
+        val ddd = currentPost.writeruid + mAuth.currentUser?.uid
+        val fff = mAuth.currentUser?.uid + currentPost.writeruid
+
         binding.joinButton.setOnClickListener {
             if (mAuth.currentUser?.uid != currentPost.writeruid) {
-                val intent = Intent(this, ChatActivity::class.java)
-                intent.putExtra("name",wname)
-                intent.putExtra("uId", currentPost.writeruid)
-                intent.putExtra("postId", currentPost.postId)
+                chatRef.child(ddd).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
 
+                        if (snapshot.exists()) {
+                            val postId = snapshot.child("postId").children.first().value.toString()
 
-                startActivity(intent)
+                            if(currentPost.postId != postId) {
+                                // 이미 이전에 채팅 내역이 존재하는 경우
+                                val alertDialogBuilder = AlertDialog.Builder(this@PostViewerActivity)
+                                alertDialogBuilder.setTitle("경고")
+                                alertDialogBuilder.setMessage("이미 이전에 채팅 내역이 존재합니다. 이전 채팅 내역을 지우시겠습니까?")
+                                alertDialogBuilder.setPositiveButton("Yes") { _, _ ->
+                                    // 이전 채팅 내역 삭제
+                                    chatRef.child(ddd).removeValue()
+                                        .addOnSuccessListener {
+                                            chatRef.child(fff).removeValue()
+
+                                            Toast.makeText(this@PostViewerActivity, "이전 채팅 내역이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this@PostViewerActivity, "이전 채팅 내역 삭제 실패: $e", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                                alertDialogBuilder.setNegativeButton("No") { _, _ ->
+                                    // 뒤로 돌아가기
+                                    finish()
+                                }
+                                alertDialogBuilder.setCancelable(false)
+                                val alertDialog = alertDialogBuilder.create()
+                                alertDialog.show()
+                            } else {
+                                val intent = Intent(this@PostViewerActivity, ChatActivity::class.java)
+                                intent.putExtra("name",wname)
+                                intent.putExtra("uId", currentPost.writeruid)
+                                intent.putExtra("postId", currentPost.postId)
+                                ChatActivity.currentPost = currentPost
+
+                                startActivity(intent)
+
+                            }
+
+                        } else {
+                            val intent = Intent(this@PostViewerActivity, ChatActivity::class.java)
+                            intent.putExtra("name",wname)
+                            intent.putExtra("uId", currentPost.writeruid)
+                            intent.putExtra("postId", currentPost.postId)
+                            ChatActivity.currentPost = currentPost
+
+                            startActivity(intent)
+
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        // 채팅 내역 확인 중 오류 발생 시 처리
+                        Toast.makeText(this@PostViewerActivity, "채팅 내역 확인 실패: $error", Toast.LENGTH_SHORT).show()
+                    }
+                })
 
             } else {
                 Toast.makeText(this@PostViewerActivity,"자신과는 대화할 수 없습니다.",Toast.LENGTH_SHORT).show()
