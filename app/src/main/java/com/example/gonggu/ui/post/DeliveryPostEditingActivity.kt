@@ -10,6 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.PermissionChecker
@@ -25,12 +28,14 @@ import com.google.firebase.storage.ktx.storage
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+@Suppress("DEPRECATION")
 class DeliveryPostEditingActivity : AppCompatActivity() {
     private lateinit var mDbRef: DatabaseReference
     private var selectedUri: Uri? = null
     private val binding by lazy { ActivityDeliveryPostEditingBinding.inflate(layoutInflater) }
     private val storage: FirebaseStorage by lazy { Firebase.storage }
     private val DEFAULT_GALLERY_CODE = 2020
+    var category = ""
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +50,9 @@ class DeliveryPostEditingActivity : AppCompatActivity() {
 
         // 게시물의 기존 정보 불러오기
         loadPostData()
+
+        // 스피너 추가
+        addSpinner()
 
         // 선택된 사진 삭제
         binding.selectedPhoto.setOnClickListener {
@@ -90,10 +98,60 @@ class DeliveryPostEditingActivity : AppCompatActivity() {
             } else {
                 editingPost("")
             }
-            val intent = Intent(this@DeliveryPostEditingActivity, PostViewerActivity::class.java)
+            val intent = Intent(this@DeliveryPostEditingActivity, DeliveryViewerActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
             finish()
+        }
+    }
+
+    private fun addSpinner() {
+        val categorySpinner = binding.categorySpinner
+        val categoryItems = resources.getStringArray(R.array.category_items)
+        val categoryAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
+            categoryItems)
+
+        categorySpinner.adapter = categoryAdapter
+        // 스피너 동작 처리
+        categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val selectedItem = parent?.getItemAtPosition(position) as String
+                category = selectedItem
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+        }
+
+        when (currentDelivery.category) {
+            "한식" -> {
+                categorySpinner.setSelection(0)
+                true
+            }
+            "중식" -> {
+                categorySpinner.setSelection(1)
+                true
+            }
+            "양식" -> {
+                categorySpinner.setSelection(2)
+                true
+            }
+            "일식" -> {
+                categorySpinner.setSelection(3)
+                true
+            }
+            "패스트푸드" -> {
+                categorySpinner.setSelection(4)
+                true
+            }
+            else -> false
         }
     }
 
@@ -141,8 +199,8 @@ class DeliveryPostEditingActivity : AppCompatActivity() {
         // 게시글 수정
         postRef.get().addOnSuccessListener{ dataSnapshot ->
             if (dataSnapshot.exists()) {
-                val postData = dataSnapshot.value as? HashMap<String, Any>
-                postData?.let { data ->
+                val deliveryData = dataSnapshot.value as? HashMap<String, Any>
+                deliveryData?.let { data ->
                     data["title"] = title
                     data["price"] = price
                     data["imageUrl"] = imageUri
@@ -150,6 +208,7 @@ class DeliveryPostEditingActivity : AppCompatActivity() {
                     data["content"] = content
                     data["pricePerPerson"] = pricePerPerson!!
                     data["time"] = time
+                    data["category"] = category
 
                     postRef.updateChildren(data)
                         .addOnSuccessListener {
@@ -169,17 +228,18 @@ class DeliveryPostEditingActivity : AppCompatActivity() {
                 }
             }
         }
-        updatecurrentDelivery(content, numOfPeople, price, title, time, imageUri)
+        updatecurrentDelivery(content, numOfPeople, price, title, time, imageUri, category)
     }
 
     private fun updatecurrentDelivery(content: String, numOfPeople: Int, price: Int, title: String, time: String,
-                                      imageUri: String) {
+                                      imageUri: String, category: String) {
         currentDelivery.content = content
         currentDelivery.numOfPeople = numOfPeople
         currentDelivery.price = price
         currentDelivery.title = title
         currentDelivery.time = time
         currentDelivery.imageUrl = imageUri
+        currentDelivery.category = category
 
         DeliveryViewerActivity.currentDelivery = currentDelivery
     }

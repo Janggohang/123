@@ -1,7 +1,7 @@
 package com.example.gonggu.ui.post
 
 data class DeliveryData (
-    val category: String,
+    var category: String,
     var content: String,
     val location: String,
     val latitude: Double,
