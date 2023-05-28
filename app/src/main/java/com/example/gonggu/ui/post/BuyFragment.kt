@@ -1,6 +1,7 @@
 package com.example.gonggu.ui.post
 
 import android.content.Intent
+import com.example.gonggu.ui.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,9 +31,6 @@ import kotlin.math.*
 import kotlin.properties.Delegates
 
 //data class User (val profile :String, val name : String, val phonenumber : String, val email : String)
-
-
-data class Location(val latitude: Double, val longitude: Double)
 
 class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database 객체 선언
     private lateinit var mAuth: FirebaseAuth
@@ -68,6 +66,39 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
         // 내 위치 정보 가져오기
         getMyLocation()
 
+        val spaceDecoration = RecyclerDecoration(40)
+        binding.recyclerViewPostlist.addItemDecoration(spaceDecoration)
+
+        return binding.root
+    }
+
+    private fun getMyLocation() {
+        userDatabase = Firebase.database.reference.child("user").child(mAuth.currentUser?.uid!!)
+
+        userDatabase.addValueEventListener(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val map = snapshot.value as Map <*,*>
+
+                if (map["latitude"] != null && map["longitude"] != null){
+                    locationMap["latitude"] = map["latitude"] as Double
+                    locationMap["longitude"] = map["longitude"] as Double
+
+                    loadPost()
+                }
+                else {
+                    println("cannot get location")
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+    }
+
+    // 게시물 불러오기
+    private fun loadPost() {
         // Firebase Realtime Database에서 데이터를 가져와서 RecyclerView에 표시
         mDatabase.orderByChild("time").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -107,37 +138,10 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
                 // 실패 시 처리할 작업을 구현
             }
         })
-        val spaceDecoration = RecyclerDecoration(40)
-        binding.recyclerViewPostlist.addItemDecoration(spaceDecoration)
-
-        return binding.root
-    }
-
-    private fun getMyLocation() {
-        userDatabase = Firebase.database.reference.child("user").child(mAuth.currentUser?.uid!!)
-
-        userDatabase.addValueEventListener(object: ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val map = snapshot.value as Map <*,*>
-
-                if (map["latitude"] != null && map["longitude"] != null){
-                    locationMap["latitude"] = map["latitude"] as Double
-                    locationMap["longitude"] = map["longitude"] as Double
-                }
-                else {
-                    println("cannot get location")
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
-        })
     }
 
     // 위도, 경도로 거리 계산
-    fun calculateDistance(location1: Location, location2: Location): Double {
+    private fun calculateDistance(location1: Location, location2: Location): Double {
         val earthRadius = 6371 // 지구 반경 (단위: km)
 
         val latDiff = Math.toRadians(location2.latitude - location1.latitude)

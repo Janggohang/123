@@ -16,6 +16,7 @@ import com.example.gonggu.ui.chat.ChatListAdapter
 import com.example.gonggu.ui.chat.RecyclerDecoration
 import com.example.gonggu.ui.post.BuyFragment
 import com.example.gonggu.ui.post.DeliveryFragment
+import com.example.gonggu.ui.post.DeliveryPostFragment
 import com.example.gonggu.ui.post.ForeignFragment
 import com.example.gonggu.ui.post.HotDealFragment
 import com.example.gonggu.ui.post.PostFragment
