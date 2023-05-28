@@ -38,7 +38,7 @@
                         android:layout_marginStart="28sp"
                         android:background="#437044"
                         android:gravity="center_horizontal|center_vertical"
-                        android:text="공동 구매 게시글 작성"
+                        android:text="게시글 작성"
                         android:textColor="#FFFFFF"
                         android:textSize="20sp"
                         android:textStyle="bold"

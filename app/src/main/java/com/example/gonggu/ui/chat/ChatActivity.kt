@@ -71,18 +71,23 @@ class ChatActivity : AppCompatActivity() {
         binding.sendButton.setOnClickListener {
             val message = binding.messageEditText.text.toString()
             val messageObject = Message(message, senderUid, time, currentTime)
-//            mDbRef.child("chats").child(senderRoom).child("postId").push()
-//                .setValue(postUid).addOnSuccessListener {
-//                    //저장 성공하면
-//                    mDbRef.child("chats").child(receiverRoom).child("postId").push()
-//                        .setValue(postUid)
-//                }
-            mDbRef.child("chats").child(senderRoom).child("messages").push()
-                .setValue(messageObject).addOnSuccessListener {
+            if(mDbRef.child("chats").child(senderRoom).child("postId") == null) {
+                mDbRef.child("chats").child(senderRoom).child("postId").push()
+                .setValue(postUid).addOnSuccessListener {
+                    //저장 성공하면
+                    mDbRef.child("chats").child(receiverRoom).child("postId").push()
+                        .setValue(postUid)
+                }
+            } else{
+                mDbRef.child("chats").child(senderRoom).child("messages").push()
+                    .setValue(messageObject).addOnSuccessListener {
                         //저장 성공하면
                         mDbRef.child("chats").child(receiverRoom).child("messages").push()
                             .setValue(messageObject)
+                    }
             }
+
+
             //입력값 초기화
             binding.messageEditText.setText("")
         }
@@ -146,8 +151,10 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun getPostwuid(uid: String, callback: (String) -> Unit) {
-        mDbRef = Firebase.database.reference.child("post")
-        val postRef = mDbRef.child(uid)
+
+
+        val mDbRefq = Firebase.database.reference.child("post")
+        val postRef = mDbRefq.child(uid)
         postRef.child("writeruid")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 var wuid = ""

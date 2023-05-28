@@ -24,12 +24,6 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="33">
         <activity
-            android:name=".ui.post.DeliveryPostEditingActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.post.DeliveryViewerActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.post.PostEditingActivity"
             android:exported="false" />
         <activity

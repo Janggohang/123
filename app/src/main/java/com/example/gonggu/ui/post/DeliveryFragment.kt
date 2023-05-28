@@ -180,8 +180,17 @@ class DeliveryFragment : Fragment() {
             holder.bind(postData)
 
             holder.itemView.setOnClickListener{
-                DeliveryViewerActivity.currentDelivery = postData
-                context?.startActivity(Intent(context, DeliveryViewerActivity::class.java))
+//                PostViewerActivity.currentPost = postData
+//                context?.startActivity(Intent(context,PostViewerActivity::class.java))
+
+//                intent.putExtra("content",postData.content)
+//                intent.putExtra("location",postData.location)
+//                intent.putExtra("numOfPeople",postData.numOfPeople.toString())
+//                intent.putExtra("price",postData.price.toString())
+//                intent.putExtra("title",postData.title)
+//                intent.putExtra("time",postData.time)
+//                intent.putExtra("uId",postData.uid)
+//                context?.startActivity(intent)
             }
         }
 
