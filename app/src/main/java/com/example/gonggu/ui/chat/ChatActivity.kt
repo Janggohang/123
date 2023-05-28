@@ -84,11 +84,27 @@ class ChatActivity : AppCompatActivity() {
                                 }
                         } else {
                             // postId가 존재하지 않는 경우
+                            //
                             mDbRef.child("chats").child(senderRoom).child("postId").push()
                                 .setValue(postUid).addOnSuccessListener { // 저장 성공하면
                                     mDbRef.child("chats").child(receiverRoom).child("postId").push()
                                         .setValue(postUid)
+                                    //
+                                    mDbRef.child("chats").child(senderRoom).child("writerId").push()
+                                        .setValue(receiverUid).addOnSuccessListener { // 저장 성공하면
+                                            mDbRef.child("chats").child(receiverRoom).child("writerId")
+                                                .push()
+                                                .setValue(receiverUid)
+                                        }
+                                    //
+                                    mDbRef.child("chats").child(senderRoom).child("messages").push()
+                                        .setValue(messageObject).addOnSuccessListener { // 저장 성공하면
+                                            mDbRef.child("chats").child(receiverRoom).child("messages")
+                                                .push()
+                                                .setValue(messageObject)
+                                        }
                                 }
+
                         }
                     }
 
@@ -123,21 +139,27 @@ class ChatActivity : AppCompatActivity() {
             })
 
 
-        var postwwid = ""
-        getPostwuid(postUid) { wuid ->
 
-            postwwid = wuid
-            if (postwwid == mAuth.currentUser!!.uid){
-                binding.joinButton2.visibility = View. INVISIBLE
-                binding.joinAdmitButton2.visibility = View.VISIBLE
 
-            }   else if (postwwid != mAuth.currentUser!!.uid)
-            {
-                binding.joinButton2.visibility = View. VISIBLE
-                binding.joinAdmitButton2.visibility = View.INVISIBLE
+        mDbRef.child("chats").child(senderRoom)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.child("writerId").toString() == mAuth.currentUser?.uid) {
+                        // postId가 존재하는 경우
+                        binding.joinButton2.visibility = View. INVISIBLE
+                        binding.joinAdmitButton2.visibility = View.VISIBLE
+                    } else {
+                        // postId가 존재하지 않는 경우
+                        binding.joinButton2.visibility = View. VISIBLE
+                        binding.joinAdmitButton2.visibility = View.INVISIBLE
 
-            }
-        }
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // 오류 처리
+                }
+            })
 
 
 
