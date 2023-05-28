@@ -141,25 +141,25 @@ class ChatActivity : AppCompatActivity() {
 
 
 
-        mDbRef.child("chats").child(senderRoom)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if (dataSnapshot.child("writerId").toString() == mAuth.currentUser?.uid) {
-                        // postId가 존재하는 경우
-                        binding.joinButton2.visibility = View. INVISIBLE
-                        binding.joinAdmitButton2.visibility = View.VISIBLE
-                    } else {
-                        // postId가 존재하지 않는 경우
-                        binding.joinButton2.visibility = View. VISIBLE
-                        binding.joinAdmitButton2.visibility = View.INVISIBLE
-
-                    }
+        mDbRef.child("chats").child(senderRoom).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val writerId = dataSnapshot.child("writerId").getValue(String::class.java)
+                if (writerId == mAuth.currentUser?.uid) {
+                    // 현재 접속 계정과 writerId가 동일한 경우
+                    binding.joinButton2.visibility = View.INVISIBLE
+                    binding.joinAdmitButton2.visibility = View.VISIBLE
+                } else {
+                    // 현재 접속 계정과 writerId가 동일하지 않은 경우
+                    binding.joinButton2.visibility = View.VISIBLE
+                    binding.joinAdmitButton2.visibility = View.INVISIBLE
                 }
+            }
 
-                override fun onCancelled(databaseError: DatabaseError) {
-                    // 오류 처리
-                }
-            })
+            override fun onCancelled(databaseError: DatabaseError) {
+                // 오류 처리
+            }
+        })
+
 
 
 
