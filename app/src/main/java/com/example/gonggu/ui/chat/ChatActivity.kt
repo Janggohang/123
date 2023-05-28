@@ -1,19 +1,18 @@
 package com.example.gonggu.ui.chat
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gonggu.databinding.ActivityChatBinding
 import com.example.gonggu.ui.post.PostData
-import com.example.gonggu.ui.post.PostViewerActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class ChatActivity : AppCompatActivity() {
 
@@ -71,21 +70,32 @@ class ChatActivity : AppCompatActivity() {
         binding.sendButton.setOnClickListener {
             val message = binding.messageEditText.text.toString()
             val messageObject = Message(message, senderUid, time, currentTime)
-            if(mDbRef.child("chats").child(senderRoom).child("postId") == null) {
-                mDbRef.child("chats").child(senderRoom).child("postId").push()
-                .setValue(postUid).addOnSuccessListener {
-                    //저장 성공하면
-                    mDbRef.child("chats").child(receiverRoom).child("postId").push()
-                        .setValue(postUid)
-                }
-            } else{
-                mDbRef.child("chats").child(senderRoom).child("messages").push()
-                    .setValue(messageObject).addOnSuccessListener {
-                        //저장 성공하면
-                        mDbRef.child("chats").child(receiverRoom).child("messages").push()
-                            .setValue(messageObject)
+            mDbRef.child("chats").child(senderRoom)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (dataSnapshot.child("postId").exists()) {
+                            // postId가 존재하는 경우
+
+                            mDbRef.child("chats").child(senderRoom).child("messages").push()
+                                .setValue(messageObject).addOnSuccessListener { // 저장 성공하면
+                                    mDbRef.child("chats").child(receiverRoom).child("messages")
+                                        .push()
+                                        .setValue(messageObject)
+                                }
+                        } else {
+                            // postId가 존재하지 않는 경우
+                            mDbRef.child("chats").child(senderRoom).child("postId").push()
+                                .setValue(postUid).addOnSuccessListener { // 저장 성공하면
+                                    mDbRef.child("chats").child(receiverRoom).child("postId").push()
+                                        .setValue(postUid)
+                                }
+                        }
                     }
-            }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // 오류 처리
+                    }
+                })
 
 
             //입력값 초기화
@@ -151,7 +161,6 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun getPostwuid(uid: String, callback: (String) -> Unit) {
-
 
         val mDbRefq = Firebase.database.reference.child("post")
         val postRef = mDbRefq.child(uid)
