@@ -162,9 +162,9 @@ class DeliveryViewerActivity : AppCompatActivity() {
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.edit_post -> { // 게시글 수정
-                    val intent = Intent(this@DeliveryViewerActivity, PostEditingActivity::class.java)
+                    val intent = Intent(this@DeliveryViewerActivity, DeliveryPostEditingActivity::class.java)
                     startActivity(intent)
-                    //DeliveryPostEditingActivity.currentDelivery = currentDelivery
+                    DeliveryPostEditingActivity.currentDelivery = currentDelivery
                     true
                 }
                 R.id.delete_post -> { // 게시글 삭제
