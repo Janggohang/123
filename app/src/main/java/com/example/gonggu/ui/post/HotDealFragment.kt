@@ -25,7 +25,7 @@ class HotDealFragment : Fragment() {
         webView.webViewClient = WebViewClient()
 
         // 연결할 URL 설정
-        val externalLink = "https://m.ppomppu.co.kr/new/hotdeal/"
+        val externalLink = "http://www.dealbada.com/bbs/board.php?bo_table=deal_domestic"
 
         webView.loadUrl(externalLink)
 
