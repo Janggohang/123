@@ -27,18 +27,22 @@ class MainActivity : AppCompatActivity() {
     val binding by lazy { ActivityMainBinding.inflate(layoutInflater)}
     private lateinit var bottomNavigationView: BottomNavigationView
 
+
+
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_Gonggu)
         current = this
         setContentView(binding.root)
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragment) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment) as NavHostFragment
         val navController = navHostFragment.navController
         // CAUTION: findNavController(R.id.fragment) in onCreate will fail.
         bottomNavigationView = findViewById(R.id.bottomNav)
         bottomNavigationView.setupWithNavController(navController)
+
+        val fragment = HomeFragment()
+        supportFragmentManager.beginTransaction().add(R.id.fragment,fragment).commit()
 
         // 해시키 구하기
         try {
