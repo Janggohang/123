@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,10 +23,20 @@ import com.example.gonggu.ui.post.DeliveryPostFragment
 import com.example.gonggu.ui.post.ForeignFragment
 import com.example.gonggu.ui.post.HotDealFragment
 import com.example.gonggu.ui.post.PostFragment
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), View.OnClickListener {
     lateinit var binding: FragmentHomeBinding
     lateinit var mainContext : Context
+
+    //여기부터 Fab 버튼 및 anim 선언
+    private lateinit var fab_open:Animation
+    private lateinit var fab_close:Animation
+    private var isFabOpen = false
+    private lateinit var fab: FloatingActionButton
+    private lateinit var fab1: FloatingActionButton
+    private lateinit var fab2: FloatingActionButton
+
     companion object {
         fun newInstance() : HomeFragment {
             return HomeFragment()
@@ -38,24 +51,36 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding!!.root
+
+        //의심 지역 1번
+        val viewFab = inflater.inflate(R.layout.fragment_home,container,false)
+        fab_open = AnimationUtils.loadAnimation(requireContext(),R.anim.fab_open)
+        fab_close = AnimationUtils.loadAnimation(requireContext(),R.anim.fab_close)
+        fab = viewFab!!.findViewById(R.id.fab)
+        fab1 = viewFab!!.findViewById(R.id.fab1)
+        fab2 = viewFab!!.findViewById(R.id.fab2)
+        fab.setOnClickListener(this)
+        fab1.setOnClickListener(this)
+        fab2.setOnClickListener(this)
+
 
         //val view = inflater.inflate(R.layout.fragment_home,container,false)
         //val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView_realtimelist)
         //val wrBtn = view.findViewById<Button>(R.id.wrBtn) // 글쓰기 버튼
         val mActivity = activity as MainActivity
+
         binding!!.buy.setOnClickListener {
             mActivity.replaceFragment(BuyFragment())
         }
-        binding!!.fabMain.setOnClickListener {
-            mActivity.replaceFragment(PostFragment())
-        }
+        //의심지역 2번
+        //binding!!.fabMain.setOnClickListener {
+            //여기에 작성해야 할 거 같은데..
+         //   mActivity.replaceFragment(PostFragment())
+        //}
         binding!!.hotdeal.setOnClickListener {
             mActivity.replaceFragment(HotDealFragment())
         }
@@ -70,6 +95,9 @@ class HomeFragment : Fragment() {
         val spaceDecoration = RecyclerDecoration(40)
         binding!!.recyclerViewRealtimelist.addItemDecoration(spaceDecoration)
         mainContext = container!!.context
+
+
+
         return root //inflater.inflate(R.layout.fragment_home, container, false)
     }
     override fun onDestroyView() {
@@ -167,5 +195,37 @@ class HomeFragment : Fragment() {
         }
     }
 
+    override fun onClick(v: View?) {
+        val id = v?.id
+        when(id){
+            R.id.fab -> {
+                anim()
+                Toast.makeText(requireContext(),"FAB",Toast.LENGTH_SHORT).show()
+            }
+            R.id.fab1 -> {
+                anim()
+                Toast.makeText(requireContext(),"btn1",Toast.LENGTH_SHORT).show()
+            }
+            R.id.fab2 -> {
+                anim()
+                Toast.makeText(requireContext(),"btn2",Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
+    private fun anim() {
+        if(isFabOpen) {
+            fab1.startAnimation(fab_close)
+            fab2.startAnimation(fab_close)
+            fab1.isClickable = false
+            fab2.isClickable = false
+            isFabOpen = false
+        }else{
+            fab1.startAnimation(fab_open)
+            fab2.startAnimation(fab_open)
+            fab1.isClickable = true
+            fab2.isClickable = true
+            isFabOpen = true
+        }
+    }
 }
