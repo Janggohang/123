@@ -38,11 +38,16 @@ class DeliveryViewerActivity : AppCompatActivity() {
 
         mDbRef = Firebase.database.reference
 
+        val uid = mAuth.uid.toString()
+
         var wname = ""
         getName(currentDelivery.writeruid) { name ->
             wname = name
         }
 
+        if (currentDelivery.like.contains(uid)) {
+            binding.likeSign.setImageResource(R.drawable.ic_full_heart)
+        }
         binding.postContent.text = currentDelivery.content
         loadPhoto() // 게시글 이미지 불러오기
 
@@ -84,12 +89,13 @@ class DeliveryViewerActivity : AppCompatActivity() {
         }
 
         binding.likeButton.setOnClickListener {
-            val uid = Firebase.auth.uid.toString()
+
+            mDbRef = Firebase.database.reference.child("delivery")
 
             if (currentDelivery.like.contains(uid)) {
                 binding.likeSign.setImageResource(R.drawable.ic_empty_heart)
                 currentDelivery.like.remove(uid)
-                mDbRef.child("delivery").child(currentDelivery.postId).child("like").setValue(currentDelivery.like)
+                mDbRef.child(currentDelivery.postId).child("like").setValue(currentDelivery.like)
                     .addOnSuccessListener {
                         Toast.makeText(this, "좋아요를 취소했습니다.", Toast.LENGTH_SHORT).show()
                         binding.likeCount.text = currentDelivery.like.size.toString()
@@ -103,7 +109,7 @@ class DeliveryViewerActivity : AppCompatActivity() {
             } else {
                 binding.likeSign.setImageResource(R.drawable.ic_full_heart)
                 currentDelivery.like.add(uid)
-                mDbRef.child("delivery").child(currentDelivery.postId).child("like").setValue(currentDelivery.like)
+                mDbRef.child(currentDelivery.postId).child("like").setValue(currentDelivery.like)
                     .addOnSuccessListener {
                         Toast.makeText(this, "이 글을 좋아요 하셨습니다.", Toast.LENGTH_SHORT).show()
                         binding.likeCount.text = currentDelivery.like.size.toString()

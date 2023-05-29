@@ -53,11 +53,17 @@ class PostViewerActivity : AppCompatActivity() {
 
         mDbRef = Firebase.database.reference
 
+        val uid = mAuth.uid.toString()
+
         var wname = ""
         getName(currentPost.writeruid) { name ->
             wname = name
         }
 
+        if (currentPost.like.contains(uid)) {
+            binding.likeSign.setImageResource(R.drawable.ic_full_heart)
+        }
+        
         //Toast.makeText(this,"${currentPostIndex}의 글을 표시합니다.",Toast.LENGTH_SHORT).show()
 
 //        binding.postContent.text = intent.getStringExtra("content").toString()
@@ -122,7 +128,7 @@ class PostViewerActivity : AppCompatActivity() {
 
         binding.likeButton.setOnClickListener {
             mDbRef = Firebase.database.reference.child("post")
-            val uid = Firebase.auth.uid.toString()
+
             if (currentPost.like.contains(uid)) {
                 binding.likeSign.setImageResource(R.drawable.ic_empty_heart)
                 currentPost.like.remove(uid)
