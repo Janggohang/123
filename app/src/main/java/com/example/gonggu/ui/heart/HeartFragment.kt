@@ -37,7 +37,7 @@ private lateinit var mAuth: FirebaseAuth
 
     // RecyclerView에 사용할 어댑터 객체와 데이터를 담을 ArrayList 선언
     private lateinit var mAdapter: PostAdapter
-    private val PostList: ArrayList<PostData> = ArrayList()
+    private val postList: ArrayList<PostData> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // 레이아웃 파일을 inflate하고 뷰 바인딩 객체를 생성
@@ -54,7 +54,7 @@ private lateinit var mAuth: FirebaseAuth
         mDatabase = Firebase.database.reference.child("post")
 
         // RecyclerView에 사용할 어댑터를 초기화
-        mAdapter = PostAdapter(PostList)
+        mAdapter = PostAdapter(postList)
 
         // RecyclerView 설정
 
@@ -62,37 +62,6 @@ private lateinit var mAuth: FirebaseAuth
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdapter }
 
-//        mDatabase.orderByChild("time").addValueEventListener(object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                val newPostList: ArrayList<PostData> = ArrayList()
-//
-//                for (postSnapshot in snapshot.children) {
-//                    val post = postSnapshot.getValue(PostData::class.java)
-//                    post?.let {
-//                        // PostData에서 like 정보를 가져와서 userId 목록을 추출
-//                        val likeSnapshot = postSnapshot.child("like")
-//                        val userIdList = mutableListOf<String>()
-//                        likeSnapshot.children.forEach { likeChildSnapshot ->
-//                            val userId = likeChildSnapshot.key
-//                            userId?.let { userIdList.add(userId) }
-//                        }
-//                        if (userIdList.contains(mAuth.currentUser?.uid)) {
-//                            newPostList.add(0, post)
-//                        }
-//                    }
-//                }
-//
-//                // 기존 리스트에 새로운 게시글 리스트를 맨 앞에 추가
-//                PostList.clear()
-//                PostList.addAll(newPostList)
-//
-//                mAdapter.notifyDataSetChanged()
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                // 실패 시 처리할 작업을 구현
-//            }
-//        })
         // Firebase Realtime Database에서 데이터를 가져와서 RecyclerView에 표시
         mDatabase.orderByChild("time").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -102,19 +71,17 @@ private lateinit var mAuth: FirebaseAuth
                     val post = postSnapshot.getValue(PostData::class.java)
                     newPostList.add(0, post!!)
                 }
-                val HeartPostList = mutableListOf<PostData>()
+                val heartPostList = mutableListOf<PostData>()
 
                 for (post in newPostList) {
                     if (post.like?.contains(mAuth.currentUser?.uid) == true) {
-                        HeartPostList.add(post)
+                        heartPostList.add(post)
                     }
                 }
 
-
-
                 // 기존 리스트에 새로운 게시글 리스트를 맨 앞에 추가
-                PostList.clear()
-                PostList.addAll(HeartPostList)
+                postList.clear()
+                postList.addAll(heartPostList)
 
                 mAdapter.notifyDataSetChanged()
             }
@@ -123,6 +90,7 @@ private lateinit var mAuth: FirebaseAuth
                 // 실패 시 처리할 작업을 구현
             }
         })
+
         val spaceDecoration = RecyclerDecoration(40)
         binding.recyclerViewHeartlist.addItemDecoration(spaceDecoration)
 
@@ -146,20 +114,10 @@ private lateinit var mAuth: FirebaseAuth
             holder.itemView.setOnClickListener{
 //                PostViewerActivity.currentPost = postData
 //                context?.startActivity(Intent(context,PostViewerActivity::class.java))
-//
-//                intent.putExtra("content",postData.content)
-//                intent.putExtra("location",postData.location)
-//                intent.putExtra("numOfPeople",postData.numOfPeople.toString())
-//                intent.putExtra("price",postData.price.toString())
-//                intent.putExtra("title",postData.title)
-//                intent.putExtra("time",postData.time)
-//                intent.putExtra("uId",postData.uid)
-//                context?.startActivity(intent)
             }
         }
 
         override fun getItemCount() = postList.size
-
 
         inner class PostViewHolder(private val binding: ItemPostListBinding) :
             RecyclerView.ViewHolder(binding.root) {
