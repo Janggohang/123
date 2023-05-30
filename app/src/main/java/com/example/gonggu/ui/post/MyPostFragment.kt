@@ -1,19 +1,13 @@
 package com.example.gonggu.ui.post
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.gonggu.MainActivity
-import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentBuyBinding
-import com.example.gonggu.databinding.ItemPostListBinding
 import com.example.gonggu.ui.chat.RecyclerDecoration
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -23,9 +17,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 class MyPostFragment : Fragment() {
 
