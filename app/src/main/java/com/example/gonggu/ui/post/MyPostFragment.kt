@@ -1,6 +1,5 @@
 package com.example.gonggu.ui.post
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gonggu.MainActivity
-import com.example.gonggu.databinding.FragmentBuyBinding
 import com.example.gonggu.databinding.FragmentMyPostBinding
 import com.example.gonggu.ui.chat.RecyclerDecoration
 import com.google.firebase.auth.FirebaseAuth
@@ -111,7 +109,6 @@ class MyPostFragment : Fragment() {
         mDatabase = Firebase.database.reference.child("delivery")
         // Firebase Realtime Database에서 데이터를 가져와서 RecyclerView에 표시
         mDatabase.orderByChild("time").addValueEventListener(object : ValueEventListener {
-            @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
                 val newPostList: ArrayList<DeliveryData> = ArrayList()
 
