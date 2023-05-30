@@ -29,7 +29,7 @@
         android:elevation="3dp"
         android:hint="검색하시오."
         android:background="@drawable/round_white_rect"
-        android:inputType="textEmailAddress"
+        android:inputType="text"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.508"

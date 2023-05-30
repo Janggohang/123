@@ -25,7 +25,7 @@ import kotlin.collections.ArrayList
 //data class User (val profile :String, val name : String, val phonenumber : String, val email : String)
 
 class HeartFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database 객체 선언
-private lateinit var mAuth: FirebaseAuth
+    private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
 
     // RecyclerView에 사용할 어댑터 객체와 데이터를 담을 ArrayList 선언

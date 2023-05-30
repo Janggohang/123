@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +20,6 @@ import com.example.gonggu.ui.post.DeliveryFragment
 import com.example.gonggu.ui.post.DeliveryPostFragment
 import com.example.gonggu.ui.post.ForeignFragment
 import com.example.gonggu.ui.post.HotDealFragment
-import com.example.gonggu.ui.post.PostFragment
 
 class HomeFragment : Fragment() {
     lateinit var binding: FragmentHomeBinding
@@ -44,34 +44,49 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding!!.root
+        val root: View = binding.root
 
-        //val view = inflater.inflate(R.layout.fragment_home,container,false)
-        //val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView_realtimelist)
-        //val wrBtn = view.findViewById<Button>(R.id.wrBtn) // 글쓰기 버튼
         val mActivity = activity as MainActivity
-        binding!!.buy.setOnClickListener {
+
+        // 검색 기능
+        binding.search.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                println("hi")
+                true
+            } else {
+                false
+            }
+        }
+        // 공동 구매 게시판 이동
+        binding.buy.setOnClickListener {
             mActivity.replaceFragment(BuyFragment())
         }
-        binding!!.fabMain.setOnClickListener {
+        // 글쓰기 버튼
+        binding.fabMain.setOnClickListener {
             //mActivity.replaceFragment(PostFragment())
             mActivity.replaceFragment(DeliveryPostFragment())
         }
-        binding!!.hotdeal.setOnClickListener {
+        // 핫딜 사이트 이동
+        binding.hotdeal.setOnClickListener {
             mActivity.replaceFragment(HotDealFragment())
         }
-        binding!!.foreign.setOnClickListener {
+        // 해외 직구 사이트 이동
+        binding.foreign.setOnClickListener {
             mActivity.replaceFragment(ForeignFragment())
         }
-        binding!!.deliver.setOnClickListener {
+        // 공동 배달 게시판 이동
+        binding.deliver.setOnClickListener {
             mActivity.replaceFragment(DeliveryFragment())
         }
-        binding!!.recyclerViewRealtimelist.layoutManager = LinearLayoutManager(requireContext())
-        binding!!.recyclerViewRealtimelist.adapter = ChatListAdapter(ChatDataList)
+
+        binding.recyclerViewRealtimelist.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewRealtimelist.adapter = ChatListAdapter(ChatDataList)
+
         val spaceDecoration = RecyclerDecoration(40)
-        binding!!.recyclerViewRealtimelist.addItemDecoration(spaceDecoration)
+        binding.recyclerViewRealtimelist.addItemDecoration(spaceDecoration)
         mainContext = container!!.context
-        return root //inflater.inflate(R.layout.fragment_home, container, false)
+
+        return root
     }
     override fun onDestroyView() {
         super.onDestroyView()
