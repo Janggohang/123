@@ -58,7 +58,7 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_postlist"
+        android:id="@+id/recyclerView_searchList"
         android:layout_width="match_parent"
         android:layout_height="640dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

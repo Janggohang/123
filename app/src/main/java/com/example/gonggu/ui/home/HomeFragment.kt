@@ -20,6 +20,7 @@ import com.example.gonggu.ui.post.DeliveryFragment
 import com.example.gonggu.ui.post.DeliveryPostFragment
 import com.example.gonggu.ui.post.ForeignFragment
 import com.example.gonggu.ui.post.HotDealFragment
+import com.example.gonggu.ui.search.SearchFragment
 
 class HomeFragment : Fragment() {
     lateinit var binding: FragmentHomeBinding
@@ -51,7 +52,8 @@ class HomeFragment : Fragment() {
         // 검색 기능
         binding.search.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                println("hi")
+                SearchFragment.wordForSearch = binding.search.text.toString()
+                mActivity.replaceFragment(SearchFragment())
                 true
             } else {
                 false
