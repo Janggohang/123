@@ -40,7 +40,7 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
 
     // RecyclerView에 사용할 어댑터 객체와 데이터를 담을 ArrayList 선언
     private lateinit var mAdapter: PostAdapter
-    private val PostList: ArrayList<PostData> = ArrayList()
+    private val PostList: ArrayList<Any?> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // 레이아웃 파일을 inflate하고 뷰 바인딩 객체를 생성
@@ -56,7 +56,7 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
         mDatabase = Firebase.database.reference.child("post")
 
         // RecyclerView에 사용할 어댑터를 초기화
-        mAdapter = PostAdapter(PostList)
+        mAdapter = PostAdapter(requireContext(), PostList)
 
         // RecyclerView 설정
         binding.recyclerViewPostlist.apply {
@@ -155,80 +155,7 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
 
         return earthRadius * c
     }
-
-    private inner class PostAdapter(private val postList: ArrayList<PostData>) :
-        RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-            val inflater = LayoutInflater.from(parent.context)
-            val binding = ItemPostListBinding.inflate(inflater, parent, false)
-            return PostViewHolder(binding)
-        }
-
-        override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-            val postData = postList[position]
-            holder.bind(postData)
-
-            holder.itemView.setOnClickListener{
-                PostViewerActivity.currentPost = postData
-                context?.startActivity(Intent(context,PostViewerActivity::class.java))
-
-//                intent.putExtra("content",postData.content)
-//                intent.putExtra("location",postData.location)
-//                intent.putExtra("numOfPeople",postData.numOfPeople.toString())
-//                intent.putExtra("price",postData.price.toString())
-//                intent.putExtra("title",postData.title)
-//                intent.putExtra("time",postData.time)
-//                intent.putExtra("uId",postData.uid)
-//                context?.startActivity(intent)
-            }
-        }
-
-        override fun getItemCount() = postList.size
-
-        inner class PostViewHolder(private val binding: ItemPostListBinding) :
-            RecyclerView.ViewHolder(binding.root) {
-
-            private val now = Calendar.getInstance()
-            private val postDataFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA)
-
-            fun bind(postData: PostData) {
-                binding.itemPostTitle.text = postData.title
-                binding.itemPostPre.text = postData.content
-                // ImageView에 이미지 로드
-                if( postData.imageUrl.isNotEmpty()) {
-                    Glide.with(binding.root)
-                        .load(postData.imageUrl)
-                        .into(binding.itemPostImgList) // item_post_list.xml의 ImageView ID
-                } else {
-                    Glide.with(binding.root)
-                        .load(R.drawable.image4)
-                        .into(binding.itemPostImgList)
-                }
-
-                // 게시글 작성 시간 데이터 파싱
-                val postTime = Calendar.getInstance().apply {
-                    time = postDataFormat.parse(postData.time)!!
-                }
-
-                // 날짜, 시간 변환
-                val diff = now.timeInMillis - postTime.timeInMillis
-                val timeString = when {
-                    diff < 60 * 1000 -> "방금 전"
-                    diff < 60 * 60 * 1000 -> "${diff / (60 * 1000)}분 전"
-                    postTime.get(Calendar.YEAR) == now.get(Calendar.YEAR) -> {
-                        when (postTime.get(Calendar.DAY_OF_YEAR)) {
-                            now.get(Calendar.DAY_OF_YEAR) -> postDataFormat.format(postTime.time).substring(11)
-                            else -> SimpleDateFormat("MM/dd", Locale.KOREA).format(postTime.time)
-                        }
-                    }
-                    else -> SimpleDateFormat("yy/MM/dd", Locale.KOREA).format(postTime.time)
-                }
-                binding.itemPostListTime.text = timeString
-            }
-        }
-    }
-
+    
     override fun onDestroyView() {
         super.onDestroyView()
         locationMap.clear()
