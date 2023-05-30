@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,11 +40,20 @@ class DeliveryFragment : Fragment() {
         // 레이아웃 파일을 inflate하고 뷰 바인딩 객체를 생성
         val binding = FragmentDeliveryBinding.inflate(inflater, container, false)
 
-        // MainActivity 객체 생성
-        val mActivity = activity as MainActivity
+        val category1 = binding.btnCategory1 // 한식 카테고리
+        val category2 = binding.btnCategory2 // 중식 카테고리
+        val category3 = binding.btnCategory3 // 양식 카테고리
+        val category4 = binding.btnCategory4 // 일식 카테고리
+        val category5 = binding.btnCategory5 // 패스트푸드 카테고리
+        val category6 = binding.btnCategory6 // 기타 카테고리
+        val viewByCategory = ViewByCategory()
 
-        // 게시판 이동 후 네비게이션 바로 홈 화면 이동
-        mActivity.addNavigation()
+        category1.setOnClickListener(viewByCategory)
+        category2.setOnClickListener(viewByCategory)
+        category3.setOnClickListener(viewByCategory)
+        category4.setOnClickListener(viewByCategory)
+        category5.setOnClickListener(viewByCategory)
+        category6.setOnClickListener(viewByCategory)
 
         // mAuth 객체 초기화
         mAuth = Firebase.auth
@@ -155,6 +165,56 @@ class DeliveryFragment : Fragment() {
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
         return earthRadius * c
+    }
+
+    // 카테고리 별로 배달 글 보기
+    private inner class ViewByCategory: View.OnClickListener {
+        override fun onClick(view: View?) {
+            if (view is Button) {
+                val category = view.text.toString()
+
+                deliveryRef.orderByChild("time").addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val newPostList: ArrayList<DeliveryData> = ArrayList()
+
+                        if (locationMap["latitude"] != null && locationMap["longitude"] != null){
+                            val myLocation = Location(locationMap["latitude"] as Double, locationMap["longitude"] as Double)
+
+                            for (postSnapshot in snapshot.children) {
+                                val post = postSnapshot.getValue(DeliveryData::class.java)
+
+                                // 게시글의 위치 좌표
+                                val postLocation = post?.let { Location(it.latitude, it.longitude) }
+                                val distance = postLocation?.let { calculateDistance(myLocation, it) }
+                                // 게시글의 카테고리
+                                val postCategory = post?.let {it.category}
+
+                                // 반경 5km 내의 게시물만 추가
+                                if (distance != null && postCategory == category) {
+                                    newPostList.add(0, post)
+//                                if (distance <= 5 && postCategory == category) {
+//                                    newPostList.add(0, post)
+//                                }
+                                }
+                            }
+                        }
+                        else {
+                            Toast.makeText(requireContext(), "위치 정보를 설정해 주세요.", Toast.LENGTH_SHORT).show()
+                        }
+
+                        // 기존 리스트에 새로운 게시글 리스트를 맨 앞에 추가
+                        postList.clear()
+                        postList.addAll(newPostList)
+
+                        mAdapter.notifyDataSetChanged()
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        // 실패 시 처리할 작업을 구현
+                    }
+                })
+            }
+        }
     }
 
     override fun onDestroyView() {
