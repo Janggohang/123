@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gonggu.MainActivity
 import com.example.gonggu.databinding.FragmentHeartBinding
 import com.example.gonggu.ui.chat.RecyclerDecoration
+import com.example.gonggu.ui.post.DeliveryData
 import com.example.gonggu.ui.post.PostAdapter
 import com.example.gonggu.ui.post.PostData
 import com.google.firebase.auth.FirebaseAuth
@@ -31,6 +32,7 @@ private lateinit var mAuth: FirebaseAuth
     private lateinit var mAdapter: PostAdapter
     private val postList: ArrayList<Any?> = ArrayList()
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // 레이아웃 파일을 inflate하고 뷰 바인딩 객체를 생성
         val binding = FragmentHeartBinding.inflate(inflater, container, false)
@@ -43,17 +45,36 @@ private lateinit var mAuth: FirebaseAuth
 
         // FirebaseAuth와 Firebase Realtime Database 객체 초기화
         mAuth = Firebase.auth
-        mDatabase = Firebase.database.reference.child("post")
-//        mDatabase = Firebase.database.reference.child("delivery")
+
         // RecyclerView에 사용할 어댑터를 초기화
         mAdapter = PostAdapter(requireContext(), postList)
 
         // RecyclerView 설정
-
         binding.recyclerViewHeartlist.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdapter }
 
+        showPost()
+
+        // 좋아요한 공동 구매 게시글 보기
+        binding.showPost.setOnClickListener {
+            showPost()
+        }
+
+        // 좋아요한 공동 배달 게시글 보기
+        binding.showDelivery.setOnClickListener {
+            showDelivery()
+        }
+
+        val spaceDecoration = RecyclerDecoration(40)
+        binding.recyclerViewHeartlist.addItemDecoration(spaceDecoration)
+
+
+        return binding.root
+    }
+
+    private fun showPost() {
+        mDatabase = Firebase.database.reference.child("post")
         // Firebase Realtime Database에서 데이터를 가져와서 RecyclerView에 표시
         mDatabase.orderByChild("time").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -82,39 +103,36 @@ private lateinit var mAuth: FirebaseAuth
                 // 실패 시 처리할 작업을 구현
             }
         })
+    }
 
-//        mDatabase.orderByChild("time").addValueEventListener(object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                val newPostList: ArrayList<DeliveryData> = ArrayList()
-//
-//                for (postSnapshot in snapshot.children) {
-//                    val post = postSnapshot.getValue(DeliveryData::class.java)
-//                    newPostList.add(0, post!!)
-//                }
-//                val heartPostList = mutableListOf<DeliveryData>()
-//
-//                for (post in newPostList) {
-//                    if (post.like?.contains(mAuth.currentUser?.uid) == true) {
-//                        heartPostList.add(post)
-//                    }
-//                }
-//
-//                // 기존 리스트에 새로운 게시글 리스트를 맨 앞에 추가
-//                postList.clear()
-//                postList.addAll(heartPostList)
-//
-//                mAdapter.notifyDataSetChanged()
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                // 실패 시 처리할 작업을 구현
-//            }
-//        })
+    private fun showDelivery() {
+        mDatabase = Firebase.database.reference.child("delivery")
+        mDatabase.orderByChild("time").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val newPostList: ArrayList<DeliveryData> = ArrayList()
 
-        val spaceDecoration = RecyclerDecoration(40)
-        binding.recyclerViewHeartlist.addItemDecoration(spaceDecoration)
+                for (postSnapshot in snapshot.children) {
+                    val post = postSnapshot.getValue(DeliveryData::class.java)
+                    newPostList.add(0, post!!)
+                }
+                val heartPostList = mutableListOf<DeliveryData>()
 
+                for (post in newPostList) {
+                    if (post.like?.contains(mAuth.currentUser?.uid) == true) {
+                        heartPostList.add(post)
+                    }
+                }
 
-        return binding.root
+                // 기존 리스트에 새로운 게시글 리스트를 맨 앞에 추가
+                postList.clear()
+                postList.addAll(heartPostList)
+
+                mAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // 실패 시 처리할 작업을 구현
+            }
+        })
     }
 }

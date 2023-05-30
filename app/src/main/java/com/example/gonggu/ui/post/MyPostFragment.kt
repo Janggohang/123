@@ -1,5 +1,6 @@
 package com.example.gonggu.ui.post
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gonggu.MainActivity
 import com.example.gonggu.databinding.FragmentBuyBinding
+import com.example.gonggu.databinding.FragmentMyPostBinding
 import com.example.gonggu.ui.chat.RecyclerDecoration
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -36,7 +38,7 @@ class MyPostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // 레이아웃 파일을 inflate하고 뷰 바인딩 객체를 생성
-        val binding = FragmentBuyBinding.inflate(inflater, container, false)
+        val binding = FragmentMyPostBinding.inflate(inflater, container, false)
         // MainActivity 객체 생성
         val mActivity = activity as MainActivity
 
@@ -45,7 +47,6 @@ class MyPostFragment : Fragment() {
 
         // FirebaseAuth와 Firebase Realtime Database 객체 초기화
         mAuth = Firebase.auth
-        mDatabase = Firebase.database.reference.child("post")
 
         // RecyclerView에 사용할 어댑터를 초기화
         mAdapter = PostAdapter(requireContext(), postList)
@@ -55,6 +56,25 @@ class MyPostFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdapter }
 
+        showMyPost()
+
+        // 내가 쓴 공동 구매 게시글 보기
+        binding.showPost.setOnClickListener {
+            showMyPost()
+        }
+        // 내가 쓴 공동 배달 게시글 보기
+        binding.showDelivery.setOnClickListener{
+            showMyDelivery()
+        }
+
+        val spaceDecoration = RecyclerDecoration(40)
+        binding.recyclerViewPostlist.addItemDecoration(spaceDecoration)
+
+        return binding.root
+    }
+
+    private fun showMyPost() {
+        mDatabase = Firebase.database.reference.child("post")
         // Firebase Realtime Database에서 데이터를 가져와서 RecyclerView에 표시
         mDatabase.orderByChild("time").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -85,9 +105,41 @@ class MyPostFragment : Fragment() {
                 // 실패 시 처리할 작업을 구현
             }
         })
-        val spaceDecoration = RecyclerDecoration(40)
-        binding.recyclerViewPostlist.addItemDecoration(spaceDecoration)
+    }
 
-        return binding.root
+    private fun showMyDelivery() {
+        mDatabase = Firebase.database.reference.child("delivery")
+        // Firebase Realtime Database에서 데이터를 가져와서 RecyclerView에 표시
+        mDatabase.orderByChild("time").addValueEventListener(object : ValueEventListener {
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val newPostList: ArrayList<DeliveryData> = ArrayList()
+
+                for (postSnapshot in snapshot.children) {
+                    val post = postSnapshot.getValue(DeliveryData::class.java)
+
+                    val postWriterUid = post?.let{ post->
+                        post.writeruid
+                    }
+                    val uid = mAuth.currentUser?.uid!!
+
+                    // 내가 쓴 게시물만 추가
+                    if (post != null && postWriterUid == uid) {
+                        newPostList.add(0, post)
+                    }
+                }
+
+                // 기존 리스트에 새로운 게시글 리스트를 맨 앞에 추가
+                postList.clear()
+                postList.addAll(newPostList)
+
+                mAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // 실패 시 처리할 작업을 구현
+            }
+        })
+
     }
 }

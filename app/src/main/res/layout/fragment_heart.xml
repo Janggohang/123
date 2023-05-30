@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:background="#7F9287"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#7F9287"
+    android:orientation="vertical"
     tools:context=".ui.heart.HeartFragment">
 
 
@@ -23,35 +23,51 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/textViewHeart"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/show_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/border_layout"
+            android:gravity="center"
+            android:text="공동 구매"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/textViewHeart"
+            tools:layout_editor_absoluteX="90dp" />
+
+        <TextView
+            android:id="@+id/show_delivery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/border_layout"
+            android:gravity="center"
+            android:text="공동 배달"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/textViewHeart"
+            tools:layout_editor_absoluteX="215dp" />
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_Heartlist"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="640dp"
+        android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_marginTop="85dp"
-        android:layout_marginBottom="18dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        tools:ignore="MissingConstraints" />
-
-<!--    <View-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent" />-->
-<!--    <androidx.fragment.app.FragmentContainerView-->
-<!--        android:id="@+id/fragment"-->
-<!--        android:name="androidx.navigation.fragment.NavHostFragment"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:layout_weight="1"-->
-<!--        app:defaultNavHost="true"-->
-<!--        app:navGraph="@navigation/mobile_navigation"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/bottomNav"/>-->
-<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--        android:id="@+id/bottomNav"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:menu="@menu/bottom_nav_menu"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"/>-->
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="24dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
