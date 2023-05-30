@@ -34,7 +34,7 @@ class MyPostFragment : Fragment() {
 
     // RecyclerView에 사용할 어댑터 객체와 데이터를 담을 ArrayList 선언
     private lateinit var mAdapter: PostAdapter
-    private val PostList: ArrayList<Any?> = ArrayList()
+    private val postList: ArrayList<Any?> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +57,7 @@ class MyPostFragment : Fragment() {
         mDatabase = Firebase.database.reference.child("post")
 
         // RecyclerView에 사용할 어댑터를 초기화
-        mAdapter = PostAdapter(requireContext(), PostList)
+        mAdapter = PostAdapter(requireContext(), postList)
 
         // RecyclerView 설정
         binding.recyclerViewPostlist.apply {
@@ -84,8 +84,8 @@ class MyPostFragment : Fragment() {
                 }
 
                 // 기존 리스트에 새로운 게시글 리스트를 맨 앞에 추가
-                PostList.clear()
-                PostList.addAll(newPostList)
+                postList.clear()
+                postList.addAll(newPostList)
 
                 mAdapter.notifyDataSetChanged()
             }

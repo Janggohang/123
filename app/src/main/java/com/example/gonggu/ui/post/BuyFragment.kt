@@ -40,7 +40,7 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
 
     // RecyclerView에 사용할 어댑터 객체와 데이터를 담을 ArrayList 선언
     private lateinit var mAdapter: PostAdapter
-    private val PostList: ArrayList<Any?> = ArrayList()
+    private val postList: ArrayList<Any?> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // 레이아웃 파일을 inflate하고 뷰 바인딩 객체를 생성
@@ -56,7 +56,7 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
         mDatabase = Firebase.database.reference.child("post")
 
         // RecyclerView에 사용할 어댑터를 초기화
-        mAdapter = PostAdapter(requireContext(), PostList)
+        mAdapter = PostAdapter(requireContext(), postList)
 
         // RecyclerView 설정
         binding.recyclerViewPostlist.apply {
@@ -128,8 +128,8 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
                 }
 
                 // 기존 리스트에 새로운 게시글 리스트를 맨 앞에 추가
-                PostList.clear()
-                PostList.addAll(newPostList)
+                postList.clear()
+                postList.addAll(newPostList)
 
                 mAdapter.notifyDataSetChanged()
             }
