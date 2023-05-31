@@ -61,20 +61,20 @@ class SplashActivity : AppCompatActivity() {
 
     }
     private fun splashAnimation() {
-        val imageAnim = AnimationUtils.loadAnimation(this,R.anim.anim_splash_imageview)
+        val imageAnim = AnimationUtils.loadAnimation(this, R.anim.anim_splash_imageview)
         binding.splash.startAnimation(imageAnim)
 
         imageAnim.setAnimationListener(object : AnimationListener {
             override fun onAnimationEnd(animation: Animation?) {
                 val intent = Intent(this@SplashActivity, MainActivity::class.java)
                 startActivity(intent)
-                overridePendingTransition(R.anim.anim_splash_out_top,R.anim.anim_splash_in_down)
+                overridePendingTransition(R.anim.anim_splash_out_top, R.anim.anim_splash_in_down)
                 finish()
             }
+
             override fun onAnimationStart(animation: Animation?) {
 
             }
-
 
 
             override fun onAnimationRepeat(animation: Animation?) {
@@ -83,6 +83,5 @@ class SplashActivity : AppCompatActivity() {
 
 
         })
-
     }
 }
