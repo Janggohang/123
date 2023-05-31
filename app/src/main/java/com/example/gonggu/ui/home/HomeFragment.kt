@@ -90,18 +90,20 @@ class HomeFragment : Fragment() {
             }
         }
         // 글쓰기 버튼
-        binding.fabMain.setOnClickListener {
+        binding.fab.setOnClickListener {
             toggleFabMenu()
             //mActivity.replaceFragment(PostFragment())
 
         }
-
         binding.fab1.setOnClickListener {
-            mActivity.replaceFragment(DeliveryPostFragment())
-        }
+            toggleFabMenu()
+            //mActivity.replaceFragment(PostFragment())
 
+        }
         binding.fab2.setOnClickListener {
-            mActivity.replaceFragment(PostFragment())
+            toggleFabMenu()
+            //mActivity.replaceFragment(PostFragment())
+
         }
 
 
@@ -139,7 +141,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun showFabMenu() {
-        binding.fabMain.animate().rotationBy(45f).setDuration(300).start()
+        binding.fab.animate().rotationBy(45f).setDuration(300).start()
         binding.fab1.animate().translationY(-resources.getDimension(R.dimen.fab_margin)).alpha(1f).setDuration(300).start()
         binding.fab2.animate().translationY(-resources.getDimension(R.dimen.fab_margin) * 2).alpha(1f).setDuration(300).start()
 
@@ -148,7 +150,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun closeFabMenu() {
-        binding.fabMain.animate().rotationBy(-45f).setDuration(300).start()
+        binding.fab.animate().rotationBy(-45f).setDuration(300).start()
         binding.fab1.animate().translationY(0f).alpha(0f).setDuration(300).start()
         binding.fab2.animate().translationY(0f).alpha(0f).setDuration(300).start()
 

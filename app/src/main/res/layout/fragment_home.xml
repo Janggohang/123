@@ -136,43 +136,42 @@
         app:layout_constraintTop_toTopOf="@+id/textView" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_main"
+        android:id="@+id/fab2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="15dp"
-        android:backgroundTint="#437044"
-        android:src="@drawable/ic_write"
-        app:borderWidth="0dp"
-        app:fabSize="normal"
+        android:layout_marginBottom="110dp"
+        android:layout_marginEnd="15sp"
+        android:visibility="invisible"
+        android:src="@drawable/ic_delivery"
+        app:backgroundTint="#ffffff"
+        app:elevation="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="MissingConstraints"
-        android:contentDescription="글쓰기 버튼"/>
+        app:pressedTranslationZ="12dp" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="51dp"
-        app:layout_constraintBottom_toTopOf="@+id/fab2"
-        app:layout_constraintEnd_toEndOf="@+id/recyclerView_realtimelist"
-        app:layout_constraintStart_toStartOf="@+id/fab2"
-        app:layout_constraintTop_toTopOf="@+id/recyclerView_realtimelist" />
+        android:layout_marginBottom="60dp"
+        android:layout_marginEnd="15sp"
+        android:visibility="invisible"
+        android:src="@drawable/ic_shopping"
+        app:backgroundTint="#ffffff"
+        app:elevation="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:pressedTranslationZ="12dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab2"
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="107dp"
-        app:layout_constraintBottom_toTopOf="@+id/fab_main"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/fab_main"
-        app:layout_constraintTop_toTopOf="@+id/recyclerView_realtimelist" />
-
+        android:layout_margin="15sp"
+        android:backgroundTint="#437044"
+        android:src="@drawable/ic_write"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
