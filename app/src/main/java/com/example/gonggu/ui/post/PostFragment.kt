@@ -65,6 +65,9 @@ class PostFragment : Fragment() {
         val numOfPeopleText = binding.countEdit
         val selectedPhoto = binding.selectedPhoto
 
+        val mainActivity = activity as MainActivity
+        mainActivity.addNavigation()
+
         // 가격과 인원 수에 따라 인당 가격 측정
         priceText.addTextChangedListener(textWatcher)
         numOfPeopleText.addTextChangedListener(textWatcher)

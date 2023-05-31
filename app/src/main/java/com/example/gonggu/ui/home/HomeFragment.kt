@@ -100,13 +100,12 @@ class HomeFragment : Fragment() {
         }
         binding.fab1.setOnClickListener {
             toggleFabMenu()
-            //mActivity.replaceFragment(PostFragment())
+            mActivity.replaceFragment(PostFragment())
 
         }
         binding.fab2.setOnClickListener {
             toggleFabMenu()
-            //mActivity.replaceFragment(PostFragment())
-
+            mActivity.replaceFragment(DeliveryPostFragment())
         }
 
 
@@ -137,7 +136,6 @@ class HomeFragment : Fragment() {
     }
     private fun toggleFabMenu() {
         val isOpen = binding.fab1.visibility == View.VISIBLE
-
         if (isOpen) {
             closeFabMenu()
         } else {
