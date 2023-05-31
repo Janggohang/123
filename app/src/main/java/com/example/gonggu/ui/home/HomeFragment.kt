@@ -189,7 +189,7 @@ class HomeFragment : Fragment() {
                     val postDate = LocalDate.of(year, month, day)
                     val comparison = today.compareTo(postDate)
 
-                    if (comparison == 0 && post.like.size >= 5) {
+                    if (comparison == 0 && post.like.size >= 1) {
                         popularPostList.add(post)
                     }
                 }
