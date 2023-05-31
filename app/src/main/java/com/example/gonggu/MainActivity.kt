@@ -45,10 +45,7 @@ class MainActivity : AppCompatActivity() {
         // CAUTION: findNavController(R.id.fragment) in onCreate will fail.
         bottomNavigationView = findViewById(R.id.bottomNav)
         bottomNavigationView.setupWithNavController(navController)
-
-        val fragment = HomeFragment()
-        supportFragmentManager.beginTransaction().add(R.id.fragment,fragment).commit()
-
+        
         // 해시키 구하기
         try {
             val information =
