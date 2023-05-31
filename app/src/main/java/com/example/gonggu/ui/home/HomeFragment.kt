@@ -15,11 +15,7 @@ import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentHomeBinding
 import com.example.gonggu.ui.chat.ChatListAdapter
 import com.example.gonggu.ui.chat.RecyclerDecoration
-import com.example.gonggu.ui.post.BuyFragment
-import com.example.gonggu.ui.post.DeliveryFragment
-import com.example.gonggu.ui.post.DeliveryPostFragment
-import com.example.gonggu.ui.post.ForeignFragment
-import com.example.gonggu.ui.post.HotDealFragment
+import com.example.gonggu.ui.post.*
 import com.example.gonggu.ui.search.SearchFragment
 
 class HomeFragment : Fragment() {
@@ -65,9 +61,21 @@ class HomeFragment : Fragment() {
         }
         // 글쓰기 버튼
         binding.fabMain.setOnClickListener {
+            toggleFabMenu()
             //mActivity.replaceFragment(PostFragment())
+
+        }
+
+        binding.fab1.setOnClickListener {
             mActivity.replaceFragment(DeliveryPostFragment())
         }
+
+        binding.fab2.setOnClickListener {
+            mActivity.replaceFragment(PostFragment())
+        }
+
+
+
         // 핫딜 사이트 이동
         binding.hotdeal.setOnClickListener {
             mActivity.replaceFragment(HotDealFragment())
@@ -89,6 +97,33 @@ class HomeFragment : Fragment() {
         mainContext = container!!.context
 
         return root
+    }
+    private fun toggleFabMenu() {
+        val isOpen = binding.fab1.visibility == View.VISIBLE
+
+        if (isOpen) {
+            closeFabMenu()
+        } else {
+            showFabMenu()
+        }
+    }
+
+    private fun showFabMenu() {
+        binding.fabMain.animate().rotationBy(45f).setDuration(300).start()
+        binding.fab1.animate().translationY(-resources.getDimension(R.dimen.fab_margin)).alpha(1f).setDuration(300).start()
+        binding.fab2.animate().translationY(-resources.getDimension(R.dimen.fab_margin) * 2).alpha(1f).setDuration(300).start()
+
+        binding.fab1.visibility = View.VISIBLE
+        binding.fab2.visibility = View.VISIBLE
+    }
+
+    private fun closeFabMenu() {
+        binding.fabMain.animate().rotationBy(-45f).setDuration(300).start()
+        binding.fab1.animate().translationY(0f).alpha(0f).setDuration(300).start()
+        binding.fab2.animate().translationY(0f).alpha(0f).setDuration(300).start()
+
+        binding.fab1.visibility = View.INVISIBLE
+        binding.fab2.visibility = View.INVISIBLE
     }
     override fun onDestroyView() {
         super.onDestroyView()
