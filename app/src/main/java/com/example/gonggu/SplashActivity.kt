@@ -10,12 +10,6 @@ import androidx.navigation.fragment.NavHostFragment
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Intent
 
-import android.content.pm.PackageManager
-import android.os.Build
-import android.os.Handler
-import android.os.PersistableBundle
-import android.util.Base64
-import android.view.View
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
