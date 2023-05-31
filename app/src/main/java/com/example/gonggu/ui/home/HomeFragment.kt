@@ -78,6 +78,8 @@ class HomeFragment : Fragment() {
             mActivity.replaceFragment(BuyFragment())
         }
 
+        showPopularPost()
+
         binding.chip.setOnClickListener {
             if (flag == 0){
                 flag = 1
@@ -189,7 +191,7 @@ class HomeFragment : Fragment() {
                     val postDate = LocalDate.of(year, month, day)
                     val comparison = today.compareTo(postDate)
 
-                    if (comparison == 0 && post.like.size >= 1) {
+                    if (comparison == 0 && post.like.size >= 5) {
                         popularPostList.add(post)
                     }
                 }
