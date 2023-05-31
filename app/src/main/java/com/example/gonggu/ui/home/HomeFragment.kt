@@ -31,7 +31,7 @@ class HomeFragment : Fragment() {
     lateinit var binding: FragmentHomeBinding
     lateinit var mainContext : Context
     private lateinit var mDatabase: DatabaseReference
-    
+
     // RecyclerView에 사용할 어댑터 객체와 데이터를 담을 ArrayList 선언
     private lateinit var mAdapter: PostAdapter
     private val postList: ArrayList<Any?> = ArrayList()
@@ -60,6 +60,9 @@ class HomeFragment : Fragment() {
 
         val mActivity = activity as MainActivity
 
+        // RecyclerView에 사용할 어댑터를 초기화
+        mAdapter = PostAdapter(requireContext(), postList)
+        
         // 검색 기능
         binding.search.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -121,8 +124,10 @@ class HomeFragment : Fragment() {
             mActivity.replaceFragment(DeliveryFragment())
         }
 
-        binding.recyclerViewRealtimelist.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewRealtimelist.adapter = ChatListAdapter(ChatDataList)
+        // RecyclerView 설정
+        binding.recyclerViewRealtimelist.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = mAdapter }
 
         val spaceDecoration = RecyclerDecoration(40)
         binding.recyclerViewRealtimelist.addItemDecoration(spaceDecoration)
