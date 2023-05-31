@@ -1,11 +1,13 @@
 package com.example.gonggu.ui.home
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,10 +19,23 @@ import com.example.gonggu.ui.chat.ChatListAdapter
 import com.example.gonggu.ui.chat.RecyclerDecoration
 import com.example.gonggu.ui.post.*
 import com.example.gonggu.ui.search.SearchFragment
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.*
+import com.google.firebase.ktx.Firebase
+import java.time.LocalDate
 
 class HomeFragment : Fragment() {
     lateinit var binding: FragmentHomeBinding
     lateinit var mainContext : Context
+    private lateinit var mDatabase: DatabaseReference
+    
+    // RecyclerView에 사용할 어댑터 객체와 데이터를 담을 ArrayList 선언
+    private lateinit var mAdapter: PostAdapter
+    private val postList: ArrayList<Any?> = ArrayList()
+    var flag = 0
     companion object {
         fun newInstance() : HomeFragment {
             return HomeFragment()
@@ -58,6 +73,21 @@ class HomeFragment : Fragment() {
         // 공동 구매 게시판 이동
         binding.buy.setOnClickListener {
             mActivity.replaceFragment(BuyFragment())
+        }
+
+        binding.chip.setOnClickListener {
+            if (flag == 0){
+                flag = 1
+                binding.textView.text = "내 주변 실시간 인기 배달"
+                binding.chip.text = "구매"
+                showPopularDelivery()
+            }
+            else if (flag == 1) {
+                flag = 0
+                binding.textView.text = "내 주변 실시간 인기 구매"
+                binding.chip.text = "배달"
+                showPopularPost()
+            }
         }
         // 글쓰기 버튼
         binding.fabMain.setOnClickListener {
@@ -125,98 +155,104 @@ class HomeFragment : Fragment() {
         binding.fab1.visibility = View.INVISIBLE
         binding.fab2.visibility = View.INVISIBLE
     }
+
+    // 인기 공동 구매 게시글 보기
+    private fun showPopularPost() {
+        mDatabase = Firebase.database.reference.child("post")
+
+        // Firebase Realtime Database에서 데이터를 가져와서 RecyclerView에 표시
+        mDatabase.orderByChild("time").addValueEventListener(object : ValueEventListener {
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val newPostList: ArrayList<PostData> = ArrayList()
+
+                for (postSnapshot in snapshot.children) {
+                    val post = postSnapshot.getValue(PostData::class.java)
+                    newPostList.add(0, post!!)
+                }
+                val popularPostList = mutableListOf<PostData>()
+
+
+                // 오늘 올라온 게시글 중 좋아요 개수가 5개 이상인 게시글만 추가
+                for (post in newPostList) {
+                    val postTime = post.time.split("-") // 게시글 등록 날짜 분리
+                    val year = postTime[0].toInt()
+                    val month = postTime[1].toInt()
+                    val day = postTime[2].substringBefore(" ").toInt()
+
+                    val today = LocalDate.now()
+                    val postDate = LocalDate.of(year, month, day)
+                    val comparison = today.compareTo(postDate)
+
+                    if (comparison == 0 && post.like.size >= 5) {
+                        popularPostList.add(post)
+                    }
+                }
+
+                // 기존 리스트에 새로운 게시글 리스트를 맨 앞에 추가
+                postList.clear()
+                postList.addAll(popularPostList)
+
+                mAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // 실패 시 처리할 작업을 구현
+            }
+        })
+    }
+
+    // 인기 공동 배달 게시글 보기
+    private fun showPopularDelivery() {
+        mDatabase = Firebase.database.reference.child("delivery")
+
+        // Firebase Realtime Database에서 데이터를 가져와서 RecyclerView에 표시
+        mDatabase.orderByChild("time").addValueEventListener(object : ValueEventListener {
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val newPostList: ArrayList<DeliveryData> = ArrayList()
+
+                for (postSnapshot in snapshot.children) {
+                    val post = postSnapshot.getValue(DeliveryData::class.java)
+                    newPostList.add(0, post!!)
+                }
+                val popularDeliveryList = mutableListOf<DeliveryData>()
+
+
+                // 오늘 올라온 게시글 중 좋아요 개수가 5개 이상인 게시글만 추가
+                for (post in newPostList) {
+                    val postTime = post.time.split("-") // 게시글 등록 날짜 분리
+                    val year = postTime[0].toInt()
+                    val month = postTime[1].toInt()
+                    val day = postTime[2].substringBefore(" ").toInt()
+
+                    val today = LocalDate.now()
+                    val postDate = LocalDate.of(year, month, day)
+                    val comparison = today.compareTo(postDate)
+
+                    if (comparison == 0 && post.like.size >= 5) {
+                        popularDeliveryList.add(post)
+                    }
+                }
+
+                // 기존 리스트에 새로운 게시글 리스트를 맨 앞에 추가
+                postList.clear()
+                postList.addAll(popularDeliveryList)
+
+                mAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // 실패 시 처리할 작업을 구현
+            }
+        })
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
     }
 
     override fun onResume() {
         super.onResume()
-    }
-    data class Post(
-        val postId: String,
-        val title: String,
-        val content: String,
-        var views: Int,
-        val timestamp: Long // 게시물 작성 시간을 나타내는 타임스탬프 변수
-
-    )
-    class PostManager {
-        companion object {
-            private const val POPULAR_THRESHOLD: Int = 500 // 인기 게시물로 판단하는 조회수 임계치
-            private const val POPULAR_INTERVAL: Long = 6 * 60 * 60 * 1000 // 인기 게시물로 유지되는 시간 (6시간)
-        }
-
-        private val popularPosts: MutableList<Post> = mutableListOf()
-
-        // 게시글 조회수 업데이트
-        fun updateViews(postId: String, views: Int) {
-            // postId에 해당하는 게시글을 popularPosts에서 찾아 조회수 업데이트
-            for (post in popularPosts) {
-                if (post.postId == postId) {
-                    post.views = views
-                    break
-                }
-            }
-
-            // 조회수가 임계치를 넘었는지 확인하여 인기 게시물로 추가
-            if (views > POPULAR_THRESHOLD) {
-                addPopularPost(postId, views)
-            }
-        }
-
-        // 인기 게시물로 추가
-        private fun addPopularPost(postId: String, views: Int) {
-            // 이미 인기 게시물 목록에 있는지 확인
-            for (post in popularPosts) {
-                if (post.postId == postId) {
-                    return // 이미 인기 게시물에 있는 경우 추가하지 않음
-                }
-            }
-
-            // 인기 게시물로 추가
-            val timestamp = System.currentTimeMillis()
-            val post = Post(postId, "", "", views, timestamp)
-            popularPosts.add(post)
-        }
-
-        // 주기적으로 인기 게시물 목록에서 삭제
-        private fun removeExpiredPopularPosts() {
-            val iterator = popularPosts.iterator()
-            while (iterator.hasNext()) {
-                val post = iterator.next()
-                val currentTime = System.currentTimeMillis()
-                val elapsedTime = currentTime - post.timestamp
-                if (elapsedTime >= POPULAR_INTERVAL) {
-                    iterator.remove()
-                }
-            }
-        }
-
-        // 인기 게시물 목록 반환
-        fun getPopularPosts(): List<Post> {
-            removeExpiredPopularPosts()
-            return popularPosts
-        }
-    }
-
-    class PostActivity : AppCompatActivity() {
-        private lateinit var postManager: PostManager
-
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setContentView(R.layout.activity_post_viewer2)
-
-            // PostManager 인스턴스 생성
-            postManager = PostManager()
-
-            // 게시글 데이터를 가져오는 로직
-            val postId = intent.getStringExtra("postId")
-            val views = 1000 // 예시로 조회수를 1000으로 설정
-
-            // 게시글 조회수 업데이트
-            if (postId != null) {
-                postManager.updateViews(postId, views)
-            }
-        }
     }
 }
