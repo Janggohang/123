@@ -179,7 +179,6 @@ class HomeFragment : Fragment() {
                 }
                 val popularPostList = mutableListOf<PostData>()
 
-
                 // 오늘 올라온 게시글 중 좋아요 개수가 5개 이상인 게시글만 추가
                 for (post in newPostList) {
                     val postTime = post.time.split("-") // 게시글 등록 날짜 분리
