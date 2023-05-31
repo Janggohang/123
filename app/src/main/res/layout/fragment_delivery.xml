@@ -72,70 +72,76 @@
 
             <!-- 카테고리 1 -->
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_category1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/button_round"
+                android:background="@drawable/button_draw"
                 android:padding="10dp"
                 android:text="한식"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textColor="@color/white"/>
 
             <!-- 카테고리 2 -->
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_category2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/button_round"
+                android:background="@drawable/button_draw"
                 android:padding="10dp"
                 android:text="중식"
+                android:textColor="@color/white"
                 android:textSize="18sp" />
 
             <!-- 카테고리 3 -->
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_category3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/button_round"
+                android:background="@drawable/button_draw"
                 android:padding="10dp"
                 android:text="양식"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textColor="@color/white"/>
 
             <!-- 카테고리 4 -->
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_category4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/button_round"
+                android:background="@drawable/button_draw"
                 android:padding="10dp"
                 android:text="일식"
+                android:textColor="@color/white"
                 android:textSize="18sp" />
 
             <!-- 카테고리 5 -->
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_category5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/button_round"
+                android:background="@drawable/button_draw"
                 android:padding="10dp"
                 android:text="패스트푸드"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textColor="@color/white"/>
 
             <!-- 카테고리 6 -->
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_category6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/button_round"
+                android:background="@drawable/button_draw"
                 android:padding="10dp"
                 android:text="기타"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textColor="@color/white"/>
 
         </LinearLayout>
 

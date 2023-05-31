@@ -71,7 +71,7 @@ class HomeFragment : Fragment() {
         // RecyclerView에 사용할 어댑터를 초기화
         mAdapter = PostAdapter(requireContext(), postList)
         mAuth = Firebase.auth
-        
+
         // 검색 기능
         binding.search.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
