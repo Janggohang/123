@@ -30,19 +30,9 @@ import com.example.gonggu.ui.post.PostFragment
 import com.example.gonggu.ui.profile.ProfileFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class MainActivity : AppCompatActivity(),View.OnClickListener {
+class MainActivity : AppCompatActivity() {
     val binding by lazy { ActivityMainBinding.inflate(layoutInflater)}
     private lateinit var bottomNavigationView: BottomNavigationView
-
-    //애니메이션 선언부
-    lateinit var fab_open: Animation
-    lateinit var fab_close: Animation
-    private var isFabOpen = false
-    private var fab: FloatingActionButton? = null
-    private var fab1: FloatingActionButton? = null
-    private var fab2: FloatingActionButton? = null
-
-
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,25 +45,7 @@ class MainActivity : AppCompatActivity(),View.OnClickListener {
         // CAUTION: findNavController(R.id.fragment) in onCreate will fail.
         bottomNavigationView = findViewById(R.id.bottomNav)
         bottomNavigationView.setupWithNavController(navController)
-
-        val fragment = HomeFragment()
-        supportFragmentManager.beginTransaction().add(R.id.fragment,fragment).commit()
-
-
-        fab_open = AnimationUtils.loadAnimation(applicationContext,R.anim.fab_open)
-        fab_close = AnimationUtils.loadAnimation(applicationContext,R.anim.fab_close)
-
-        fab=findViewById(R.id.fab)
-        fab1=findViewById(R.id.fab1)
-        fab2=findViewById(R.id.fab2)
-        fab?.startAnimation(fab_close)
-        fab1?.startAnimation(fab_close)
-        fab2?.startAnimation(fab_close)
-        fab?.setOnClickListener(this)
-        fab1?.setOnClickListener(this)
-        fab2?.setOnClickListener(this)
-
-
+        
         // 해시키 구하기
         try {
             val information =
@@ -130,44 +102,6 @@ class MainActivity : AppCompatActivity(),View.OnClickListener {
         }
     }
 
-
-    override fun onClick(v: View) {
-        val id = v.id
-        when (id) {
-            R.id.fab -> {
-                anim()
-                replaceFragment(PostFragment())
-                Toast.makeText(this, "Floating Action Button", Toast.LENGTH_SHORT).show()
-            }
-
-            R.id.fab1 -> {
-                anim()
-                Toast.makeText(this, "Button1", Toast.LENGTH_SHORT).show()
-                replaceFragment(PostFragment())
-            }
-
-            R.id.fab2 -> {
-                anim()
-                Toast.makeText(this, "Button2", Toast.LENGTH_SHORT).show()
-                replaceFragment(DeliveryPostFragment())
-            }
-        }
-    }
-    fun anim() {
-        if (isFabOpen) {
-            fab1?.startAnimation(fab_close)
-            fab2?.startAnimation(fab_close)
-            fab1?.isClickable = false
-            fab2?.isClickable = false
-            isFabOpen = false
-        } else {
-            fab1?.startAnimation(fab_open)
-            fab2?.startAnimation(fab_open)
-            fab1?.isClickable = true
-            fab2?.isClickable = true
-            isFabOpen = true
-        }
-    }
 
     companion object{
         lateinit var current : MainActivity

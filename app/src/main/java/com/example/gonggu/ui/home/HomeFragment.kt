@@ -8,17 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.gonggu.Data.ChatDataList
 import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentHomeBinding
-import com.example.gonggu.ui.chat.ChatListAdapter
 import com.example.gonggu.ui.chat.RecyclerDecoration
+import com.example.gonggu.ui.location.Location
 import com.example.gonggu.ui.post.*
 import com.example.gonggu.ui.search.SearchFragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -26,11 +26,19 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.*
 import com.google.firebase.ktx.Firebase
 import java.time.LocalDate
+import java.util.HashMap
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 class HomeFragment : Fragment() {
+    private lateinit var mAuth: FirebaseAuth
     lateinit var binding: FragmentHomeBinding
     lateinit var mainContext : Context
     private lateinit var mDatabase: DatabaseReference
+    private lateinit var userDatabase: DatabaseReference
+    var locationMap = HashMap<String, Double>() // 내 위도, 경도 정보 담을 hashmap
 
     // RecyclerView에 사용할 어댑터 객체와 데이터를 담을 ArrayList 선언
     private lateinit var mAdapter: PostAdapter
@@ -62,7 +70,8 @@ class HomeFragment : Fragment() {
 
         // RecyclerView에 사용할 어댑터를 초기화
         mAdapter = PostAdapter(requireContext(), postList)
-        
+        mAuth = Firebase.auth
+
         // 검색 기능
         binding.search.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -78,7 +87,7 @@ class HomeFragment : Fragment() {
             mActivity.replaceFragment(BuyFragment())
         }
 
-        showPopularPost()
+        getMyLocation()
 
         binding.chip.setOnClickListener {
             if (flag == 0){
@@ -163,6 +172,31 @@ class HomeFragment : Fragment() {
         binding.fab2.visibility = View.INVISIBLE
     }
 
+    private fun getMyLocation() {
+        userDatabase = Firebase.database.reference.child("user").child(mAuth.currentUser?.uid!!)
+
+        userDatabase.addValueEventListener(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val map = snapshot.value as Map <*,*>
+
+                if (map["latitude"] != null && map["longitude"] != null){
+                    locationMap["latitude"] = map["latitude"] as Double
+                    locationMap["longitude"] = map["longitude"] as Double
+
+                    showPopularPost()
+                }
+                else {
+                    println("cannot get location")
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+    }
+
     // 인기 공동 구매 게시글 보기
     private fun showPopularPost() {
         mDatabase = Firebase.database.reference.child("post")
@@ -172,10 +206,19 @@ class HomeFragment : Fragment() {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onDataChange(snapshot: DataSnapshot) {
                 val newPostList: ArrayList<PostData> = ArrayList()
+                val myLocation = Location(locationMap["latitude"] as Double, locationMap["longitude"] as Double)
 
                 for (postSnapshot in snapshot.children) {
                     val post = postSnapshot.getValue(PostData::class.java)
-                    newPostList.add(0, post!!)
+                    val postLocation = post?.let { Location(it.latitude, it.longitude) }
+                    val distance = postLocation?.let { calculateDistance(myLocation, it) }
+
+                    // 반경 3km 내의 게시물만 추가
+                    if (distance != null) {
+                        if (distance <= 3) {
+                            newPostList.add(0, post)
+                        }
+                    }
                 }
                 val popularPostList = mutableListOf<PostData>()
 
@@ -217,10 +260,19 @@ class HomeFragment : Fragment() {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onDataChange(snapshot: DataSnapshot) {
                 val newPostList: ArrayList<DeliveryData> = ArrayList()
+                val myLocation = Location(locationMap["latitude"] as Double, locationMap["longitude"] as Double)
 
                 for (postSnapshot in snapshot.children) {
                     val post = postSnapshot.getValue(DeliveryData::class.java)
-                    newPostList.add(0, post!!)
+                    val postLocation = post?.let { Location(it.latitude, it.longitude) }
+                    val distance = postLocation?.let { calculateDistance(myLocation, it) }
+
+                    // 반경 3km 내의 게시물만 추가
+                    if (distance != null) {
+                        if (distance <= 3) {
+                            newPostList.add(0, post)
+                        }
+                    }
                 }
                 val popularDeliveryList = mutableListOf<DeliveryData>()
 
@@ -252,6 +304,21 @@ class HomeFragment : Fragment() {
                 // 실패 시 처리할 작업을 구현
             }
         })
+    }
+
+    private fun calculateDistance(location1: Location, location2: Location): Double {
+        val earthRadius = 6371 // 지구 반경 (단위: km)
+
+        val latDiff = Math.toRadians(location2.latitude - location1.latitude)
+        val lonDiff = Math.toRadians(location2.longitude - location1.longitude)
+
+        val a = sin(latDiff / 2) * sin(latDiff / 2) +
+                cos(Math.toRadians(location1.latitude)) * cos(Math.toRadians(location2.latitude)) *
+                sin(lonDiff / 2) * sin(lonDiff / 2)
+
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        return earthRadius * c
     }
 
     override fun onDestroyView() {
