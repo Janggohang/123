@@ -55,6 +55,11 @@ class SearchFragment : Fragment() {
         // 검색 시 처음에는 공동 구매 글이 뜨도록
         showSearchPost()
 
+        // 뒤로 가기 버튼
+        binding.returnButton.setOnClickListener {
+            mActivity.onBackPressed()
+        }
+
         // 검색 기능
         binding.search.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
