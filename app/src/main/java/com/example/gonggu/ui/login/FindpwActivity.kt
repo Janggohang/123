@@ -2,6 +2,7 @@ package com.example.gonggu.ui.login
 
 import android.os.Bundle
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.ActivityForgetpasswordBinding
@@ -18,6 +19,12 @@ class FindpwActivity: AppCompatActivity()  {
 
         binding.loginButton.setOnClickListener{
             FirebaseAuth.getInstance().sendPasswordResetEmail(email.text.toString())
+                .addOnSuccessListener {
+                    Toast.makeText(this, "해당 이메일로 비밀번호 변경 요청을 전송했습니다.", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "이메일 전송에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 }
