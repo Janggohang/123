@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gonggu.MainActivity
-import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentSearchBinding
 import com.example.gonggu.ui.chat.RecyclerDecoration
 import com.example.gonggu.ui.post.DeliveryData

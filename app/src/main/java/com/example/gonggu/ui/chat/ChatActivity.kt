@@ -5,12 +5,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.gonggu.R
 import com.example.gonggu.databinding.ActivityChatBinding
 import com.example.gonggu.ui.post.PostData
-import com.example.gonggu.ui.post.PostViewerActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase

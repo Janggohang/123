@@ -14,11 +14,8 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.PermissionChecker
 import com.bumptech.glide.Glide
-import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.ActivityPostEditingBinding
-import com.example.gonggu.databinding.ActivityPostViewer2Binding
-import com.example.gonggu.ui.home.HomeFragment
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
