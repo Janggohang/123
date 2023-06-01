@@ -12,6 +12,7 @@ import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.ActivityPostViewer2Binding
 import com.example.gonggu.ui.chat.ChatActivity
+import com.example.gonggu.ui.dialog.ImageDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -53,6 +54,13 @@ class PostViewerActivity : AppCompatActivity() {
 
         getName(currentPost.writeruid) { name ->
             binding.userName.text = name
+        }
+        binding.postImg.setOnClickListener {
+            // 다이얼로그 생성
+            if (currentPost.imageUrl.isNotEmpty()){
+                val imageDialogFragment = ImageDialogFragment(currentPost.imageUrl)
+                imageDialogFragment.show(supportFragmentManager, "ImageDialogFragment")
+            }
         }
 
         binding.dateText.text = currentPost.time

@@ -62,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginTop="6dp"
-        android:background="@color/default_harf_ui_color"
+        android:background="@color/browser_actions_bg_grey"
         app:layout_constraintTop_toBottomOf="@+id/post_Img"
         tools:layout_editor_absoluteX="16dp" />
 
@@ -91,7 +91,7 @@
         android:id="@+id/divider2"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/default_harf_ui_color"
+        android:background="@color/browser_actions_bg_grey"
         app:layout_constraintTop_toBottomOf="@+id/post_Title_area"
         tools:layout_editor_absoluteX="0dp" />
 
@@ -143,7 +143,7 @@
         android:id="@+id/divider3"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/default_harf_ui_color"
+        android:background="@color/browser_actions_bg_grey"
         app:layout_constraintTop_toBottomOf="@+id/post_profile"
         tools:layout_editor_absoluteX="-26dp" />
 
@@ -177,8 +177,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="인원: "
+            android:text="총 인원: "
             android:textSize="18sp"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -189,6 +190,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="3"
+            android:textColor="@color/white"
+
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/post_numOfPeople"
@@ -201,6 +204,7 @@
             android:layout_marginStart="150dp"
             android:text="가격: "
             android:textSize="18sp"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/numOfPeopleText"
             app:layout_constraintTop_toTopOf="parent" />
@@ -211,12 +215,20 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:text="30000￦"
+            android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/post_price"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+        android:id="@+id/divider4"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/browser_actions_bg_grey"
+        app:layout_constraintTop_toBottomOf="@+id/post_location_part"
+        tools:layout_editor_absoluteX="0dp" />
 
     <TextView
         android:id="@+id/post_content"
@@ -228,10 +240,10 @@
         android:paddingEnd="15dp"
         android:paddingBottom="10dp"
         android:text="임시로 작성된 글 입니다.\n안녕하세요."
-        android:textSize="18sp"
         android:textColor="@color/default_dark_ui_color"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
-        app:layout_constraintTop_toBottomOf="@+id/post_location_part"
+        app:layout_constraintTop_toBottomOf="@+id/divider4"
         tools:layout_editor_absoluteX="-16dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
