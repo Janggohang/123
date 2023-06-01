@@ -190,7 +190,7 @@ class DeliveryFragment : Fragment() {
 
                                 // 반경 3km 내의 게시물만 추가
                                 if (distance != null && postCategory == category) {
-                                    if (distance <= 5) {
+                                    if (distance <= 3) {
                                         newPostList.add(0, post)
                                     }
                                 }
