@@ -14,8 +14,11 @@ data class DeliveryData (
     val writeruid: String,
     var imageUrl: String,
     val like: MutableList<String> = mutableListOf(),
-    val postId: String
+    val postId: String,
+    val joiner: MutableList<String> = mutableListOf()
 )
 {
-    constructor(): this("","", "", 0.0, 0.0,0,0, 0,"","","","", mutableListOf(),"")
+    constructor(): this("","", "", 0.0, 0.0,0,0, 0,"","","","",
+        mutableListOf(),"", mutableListOf()
+    )
 }

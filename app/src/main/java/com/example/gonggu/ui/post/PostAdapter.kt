@@ -81,6 +81,9 @@ class PostAdapter(private val context: Context, private val postList: ArrayList<
                     else -> SimpleDateFormat("yy/MM/dd", Locale.KOREA).format(postTime.time)
                 }
                 binding.itemPostListTime.text = timeString
+
+                // 참여 인원 수 확인
+                binding.itemPostListNumOfParticipants.text = "참여 인원: ${postData.joiner.size}/${postData.numOfPeople}명"
             }
             else if (postData is DeliveryData){
                 binding.itemPostTitle.text = postData.title
@@ -115,6 +118,9 @@ class PostAdapter(private val context: Context, private val postList: ArrayList<
                     else -> SimpleDateFormat("yy/MM/dd", Locale.KOREA).format(postTime.time)
                 }
                 binding.itemPostListTime.text = timeString
+
+                // 참여 인원 수 확인
+                binding.itemPostListNumOfParticipants.text = "참여 인원: ${postData.joiner.size}/${postData.numOfPeople}명"
             }
         }
     }
