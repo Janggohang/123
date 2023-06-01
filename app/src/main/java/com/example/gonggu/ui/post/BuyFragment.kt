@@ -107,12 +107,11 @@ class BuyFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
                         val postLocation = post?.let { Location(it.latitude, it.longitude) }
                         val distance = postLocation?.let { calculateDistance(myLocation, it) }
 
-                        // 반경 5km 내의 게시물만 추가
+                        // 반경 3km 내의 게시물만 추가
                         if (distance != null) {
-                            newPostList.add(0, post)
-//                            if (distance <= 5) {
-//                                newPostList.add(0, post)
-//                            }
+                            if (distance <= 3) {
+                                newPostList.add(0, post)
+                            }
                         }
                     }
                 }

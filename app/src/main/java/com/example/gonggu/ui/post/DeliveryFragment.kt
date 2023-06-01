@@ -125,12 +125,11 @@ class DeliveryFragment : Fragment() {
                         val postLocation = post?.let { Location(it.latitude, it.longitude) }
                         val distance = postLocation?.let { calculateDistance(myLocation, it) }
 
-                        // 반경 5km 내의 게시물만 추가
+                        // 반경 3km 내의 게시물만 추가
                         if (distance != null) {
-                            newPostList.add(0, post)
-//                            if (distance <= 5) {
-//                                newPostList.add(0, post)
-//                            }
+                            if (distance <= 5) {
+                                newPostList.add(0, post)
+                            }
                         }
                     }
                 }
@@ -189,12 +188,11 @@ class DeliveryFragment : Fragment() {
                                 // 게시글의 카테고리
                                 val postCategory = post?.let {it.category}
 
-                                // 반경 5km 내의 게시물만 추가
+                                // 반경 3km 내의 게시물만 추가
                                 if (distance != null && postCategory == category) {
-                                    newPostList.add(0, post)
-//                                if (distance <= 5 && postCategory == category) {
-//                                    newPostList.add(0, post)
-//                                }
+                                    if (distance <= 5) {
+                                        newPostList.add(0, post)
+                                    }
                                 }
                             }
                         }
