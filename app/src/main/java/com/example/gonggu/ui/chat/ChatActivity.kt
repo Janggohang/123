@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gonggu.databinding.ActivityChatBinding
+import com.example.gonggu.ui.post.DeliveryData
 import com.example.gonggu.ui.post.PostData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -397,5 +398,6 @@ class ChatActivity : AppCompatActivity() {
 
     companion object{
         lateinit var currentPost : PostData
+        lateinit var currentDelivery : DeliveryData
     }
 }

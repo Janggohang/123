@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.example.gonggu.MainActivity
 import com.example.gonggu.R
@@ -14,10 +15,7 @@ import com.example.gonggu.ui.chat.ChatActivity
 import com.example.gonggu.ui.dialog.ImageDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -131,17 +129,73 @@ class DeliveryViewerActivity : AppCompatActivity() {
                     }
             }
         }
+        val chatRef = FirebaseDatabase.getInstance().getReference("chats")
+        val ddd = currentDelivery.writeruid + mAuth.currentUser?.uid
+        val fff = mAuth.currentUser?.uid + currentDelivery.writeruid
 
         binding.joinButton.setOnClickListener {
             if (mAuth.currentUser?.uid != currentDelivery.writeruid) {
-                val intent = Intent(this, ChatActivity::class.java)
-                intent.putExtra("name",wname)
-                intent.putExtra("uId", currentDelivery.writeruid)
+                chatRef.child(ddd).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
 
-                startActivity(intent)
+                        if (snapshot.exists()) {
+                            val postId = snapshot.child("postId").children.first().value.toString()
+
+                            if(currentDelivery.postId != postId) {
+                                // 이미 이전에 채팅 내역이 존재하는 경우
+                                val alertDialogBuilder = AlertDialog.Builder(this@DeliveryViewerActivity)
+                                alertDialogBuilder.setTitle("경고")
+                                alertDialogBuilder.setMessage("이미 이전에 채팅 내역이 존재합니다. 이전 채팅 내역을 지우시겠습니까?")
+                                alertDialogBuilder.setPositiveButton("Yes") { _, _ ->
+                                    // 이전 채팅 내역 삭제
+                                    chatRef.child(ddd).removeValue()
+                                        .addOnSuccessListener {
+                                            chatRef.child(fff).removeValue()
+
+                                            Toast.makeText(this@DeliveryViewerActivity, "이전 채팅 내역이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(this@DeliveryViewerActivity, "이전 채팅 내역 삭제 실패: $e", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                                alertDialogBuilder.setNegativeButton("No") { _, _ ->
+                                    // 뒤로 돌아가기
+                                    finish()
+                                }
+                                alertDialogBuilder.setCancelable(false)
+                                val alertDialog = alertDialogBuilder.create()
+                                alertDialog.show()
+                            } else {
+                                val intent = Intent(this@DeliveryViewerActivity, ChatActivity::class.java)
+                                intent.putExtra("name",wname)
+                                intent.putExtra("uId", currentDelivery.writeruid)
+                                intent.putExtra("postId", currentDelivery.postId)
+                                ChatActivity.currentDelivery = currentDelivery
+
+                                startActivity(intent)
+
+                            }
+
+                        } else {
+                            val intent = Intent(this@DeliveryViewerActivity, ChatActivity::class.java)
+                            intent.putExtra("name",wname)
+                            intent.putExtra("uId", currentDelivery.writeruid)
+                            intent.putExtra("postId", currentDelivery.postId)
+                            ChatActivity.currentDelivery = currentDelivery
+
+                            startActivity(intent)
+
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        // 채팅 내역 확인 중 오류 발생 시 처리
+                        Toast.makeText(this@DeliveryViewerActivity, "채팅 내역 확인 실패: $error", Toast.LENGTH_SHORT).show()
+                    }
+                })
 
             } else {
-                Toast.makeText(this@DeliveryViewerActivity,"자신과는 대화할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@DeliveryViewerActivity,"자신과는 대화할 수 없습니다.",Toast.LENGTH_SHORT).show()
             }
         }
 
