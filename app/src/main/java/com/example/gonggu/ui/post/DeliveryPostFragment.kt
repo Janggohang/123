@@ -210,16 +210,17 @@ class DeliveryPostFragment : Fragment() {
     //storage에 사진 업로드 함수
     private fun uploadPhoto(uri: Uri, successHandler: (String) -> Unit, errorHandler: () -> Unit) {
         val fileName = "${System.currentTimeMillis()}.png"
-        storage.reference.child("gonggu/photo").child(fileName)
+        storage.reference.child("gonggu/delivery").child(fileName)
             .putFile(uri)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    storage.reference.child("gonggu/delivery/photo").child(fileName)
+                    storage.reference.child("gonggu/delivery").child(fileName)
                         .downloadUrl
                         .addOnSuccessListener { uri ->
                             successHandler(uri.toString())
-                        }.addOnFailureListener {
+                        }.addOnFailureListener {e ->
                             errorHandler()
+                            println(e)
                         }
                 } else {
                     errorHandler()
