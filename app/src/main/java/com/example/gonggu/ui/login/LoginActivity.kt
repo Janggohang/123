@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gonggu.MainActivity
+import com.example.gonggu.R
 import com.example.gonggu.databinding.ActivityLoginBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -24,7 +25,10 @@ class LoginActivity : AppCompatActivity() {
             //Toast.makeText(this,"Current user is ${Firebase.auth.uid}",Toast.LENGTH_SHORT).show()
             startActivity(
                 Intent(this, MainActivity::class.java)
+
             )
+            overridePendingTransition(R.anim.anim_splash_out_top, R.anim.anim_splash_in_down)
+
             finish()
         }
 
@@ -36,12 +40,16 @@ class LoginActivity : AppCompatActivity() {
         //회원가입 버튼 이벤트
         binding.createAccount.setOnClickListener {
             startActivity(Intent(this@LoginActivity,SignUpActivity::class.java))
+            overridePendingTransition(R.anim.anim_splash_out_top, R.anim.anim_splash_in_down)
+
         }
 
         // 비밀번호 찾기 버튼 이벤트
         binding.findpw.setOnClickListener {
             val intent = Intent(this,FindpwActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.anim_splash_out_top, R.anim.anim_splash_in_down)
+
         }
 
         println("Login activity activated.")
@@ -70,6 +78,8 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(
                         Intent(this,MainActivity::class.java)
                     )
+                    overridePendingTransition(R.anim.anim_splash_out_top, R.anim.anim_splash_in_down)
+
                     finish()
                 }
 
