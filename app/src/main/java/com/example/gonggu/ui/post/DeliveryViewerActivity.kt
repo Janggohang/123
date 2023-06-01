@@ -66,9 +66,9 @@ class DeliveryViewerActivity : AppCompatActivity() {
 
         binding.dateText.text = currentDelivery.time // 시간
         binding.postTitle.text = currentDelivery.title // 제목
-        binding.postLocation.text = currentDelivery.location // 위치
+        binding.postLocation.text = "위치 : ${ currentDelivery.location }"
         binding.priceText.text = "${currentDelivery.price}￦" // 가격
-        binding.numOfPeopleText.text = "${currentDelivery.numOfPeople}명" // 인원 수
+        binding.numOfPeopleText.text = "${currentDelivery.joiner.size}/${currentDelivery.numOfPeople}명" // 인원 수
         binding.pricePerPersonText.text = "${currentDelivery.pricePerPerson}￦" // 인당 가격
         binding.likeCount.text = currentDelivery.like.size.toString() // 좋아요
         binding.category.text = currentDelivery.category // 카테고리
