@@ -19,7 +19,6 @@ import androidx.core.content.PermissionChecker
 import com.bumptech.glide.Glide
 import com.example.gonggu.R
 import com.example.gonggu.databinding.ActivityDeliveryPostEditingBinding
-import com.example.gonggu.databinding.ActivityPostEditingBinding
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase

@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.ContactsContract.Profile
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +23,6 @@ import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentProfileBinding
 import com.example.gonggu.ui.location.LocationFragment
-import com.example.gonggu.ui.post.BuyFragment
 import com.example.gonggu.ui.post.MyPostFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -38,7 +36,6 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import com.example.gonggu.ui.profile.ProfileFragment.ChangeProfileImageDialog as ChangeProfileImageDialog1
 
 data class UserData (val email: String, var name: String, var phonenumber: String, val uid: String) {
     constructor() : this("", "", "", "")

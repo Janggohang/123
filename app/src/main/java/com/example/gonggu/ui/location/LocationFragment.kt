@@ -3,7 +3,6 @@ package com.example.gonggu.ui.location
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Context.LOCATION_SERVICE
-import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
@@ -16,14 +15,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.PermissionChecker
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.FragmentLocationBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
