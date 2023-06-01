@@ -31,11 +31,12 @@ class HeartFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database 
     // RecyclerView에 사용할 어댑터 객체와 데이터를 담을 ArrayList 선언
     private lateinit var mAdapter: PostAdapter
     private val postList: ArrayList<Any?> = ArrayList()
+    private lateinit var binding: FragmentHeartBinding
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // 레이아웃 파일을 inflate하고 뷰 바인딩 객체를 생성
-        val binding = FragmentHeartBinding.inflate(inflater, container, false)
+        binding = FragmentHeartBinding.inflate(inflater, container, false)
 
         // MainActivity 객체 생성
         val mActivity = activity as MainActivity
@@ -97,6 +98,11 @@ class HeartFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database 
                 postList.addAll(heartPostList)
 
                 mAdapter.notifyDataSetChanged()
+                if (postList.isEmpty()) {
+                    binding.alert.visibility = View.VISIBLE
+                } else {
+                    binding.alert.visibility = View.INVISIBLE
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -128,6 +134,11 @@ class HeartFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database 
                 postList.addAll(heartPostList)
 
                 mAdapter.notifyDataSetChanged()
+                if (postList.isEmpty()) {
+                    binding.alert.visibility = View.VISIBLE
+                } else {
+                    binding.alert.visibility = View.INVISIBLE
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {

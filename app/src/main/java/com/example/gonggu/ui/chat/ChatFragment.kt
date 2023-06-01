@@ -67,12 +67,14 @@ class ChatFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
 
         // RecyclerView에 사용할 어댑터를 초기화
         mAdapter = ChatAdapter(mChatList)
-
         // RecyclerView 설정
 
         binding.recyclerViewChatlist.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = mAdapter }
+            adapter = mAdapter
+
+        }
+
 
 
         // Firebase Realtime Database에서 데이터를 가져와서 RecyclerView에 표시
@@ -100,11 +102,15 @@ class ChatFragment : Fragment() {// FirebaseAuth와 Firebase Realtime Database �
                     }.addOnFailureListener { exception ->
                         // Handle the failure
                         Log.e("firebase", "Error getting name data", exception)
+                        binding.alert.visibility = if (mChatList.isEmpty()) View.VISIBLE else View.INVISIBLE
                     }
+
 
                 }
 
                 mAdapter.notifyDataSetChanged()
+                binding.alert.visibility = if (mChatList.isEmpty()) View.VISIBLE else View.INVISIBLE
+
             }
 
             override fun onCancelled(error: DatabaseError) {
