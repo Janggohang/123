@@ -177,7 +177,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="참여 인원: "
+            android:text="참여 인원 : "
             android:textStyle="bold"
             android:textSize="18sp"
             android:textColor="@color/white"
