@@ -1,37 +1,24 @@
 package com.example.gonggu.ui.post
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
 import com.example.gonggu.MainActivity
 import com.example.gonggu.R
 import com.example.gonggu.databinding.ActivityPostViewer2Binding
-import com.example.gonggu.databinding.ActivityPostViewerBinding
 import com.example.gonggu.ui.chat.ChatActivity
-import com.example.gonggu.ui.chat.Message
-import com.example.gonggu.ui.profile.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.HashMap
 
 class PostViewerActivity : AppCompatActivity() {
 
@@ -39,9 +26,6 @@ class PostViewerActivity : AppCompatActivity() {
     private lateinit var storage : FirebaseStorage
     private lateinit var mDbRef: DatabaseReference
 
-    //lateinit var mAuth: FirebaseAuth // 인증 객체
-    //private val  postCollectionRef = mDbRef.child("post")
-    //private val userdataCollectionRef =  mDbRef.child("userdata")
     val binding by lazy { ActivityPostViewer2Binding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,42 +47,21 @@ class PostViewerActivity : AppCompatActivity() {
         if (currentPost.like.contains(uid)) {
             binding.likeSign.setImageResource(R.drawable.ic_full_heart)
         }
-        
-        //Toast.makeText(this,"${currentPostIndex}의 글을 표시합니다.",Toast.LENGTH_SHORT).show()
 
-//        binding.postContent.text = intent.getStringExtra("content").toString()
-//        binding.userName.text = intent.getStringExtra("uId").toString()
-//        binding.dateText.text = intent.getStringExtra("time").toString()
-//        binding.postLocation.text = intent.getStringExtra("location").toString()
-//        binding.price2.text = intent.getStringExtra("price").toString()
-//        binding.numOfPeople.text = intent.getStringExtra("numOfPeople").toString()
         binding.postContent.text = currentPost.content
         loadPhoto() // 게시글 이미지 불러오기
 
         getName(currentPost.writeruid) { name ->
             binding.userName.text = name
         }
-//        mDbRef.child("user").child(currentPost.writeruid).child("name")
-//            .addListenerForSingleValueEvent(object : ValueEventListener {
-//                override fun onDataChange(snapshot: DataSnapshot) {
-//                    if (snapshot.exists()) {
-//                        val name = snapshot.value as String
-//                        binding.userName.text = name
-//                    } else {
-//                        // 데이터가 존재하지 않을 경우의 처리
-//                    }
-//                }
-//
-//                override fun onCancelled(error: DatabaseError) {
-//                    // 처리 중 오류가 발생한 경우의 콜백
-//                }
-//            })
+
         binding.dateText.text = currentPost.time
         binding.postTitle.text = currentPost.title
         binding.postLocation.text = currentPost.location
-        binding.postPrice.text = currentPost.price.toString()
-        binding.postNumOfPeople.text = currentPost.numOfPeople.toString()
+        binding.priceText.text = "${currentPost.price}￦"
+        binding.numOfPeopleText.text = "${currentPost.numOfPeople}명"
         binding.likeCount.text = currentPost.like.size.toString()
+        binding.pricePerPersonText.text = "${currentPost.pricePerPerson}￦"
         val profileImageRef = storage.reference.child("gonggu/userProfile/${currentPost.writeruid}.png")
 
         profileImageRef.metadata.addOnSuccessListener { metadata ->
@@ -123,8 +86,6 @@ class PostViewerActivity : AppCompatActivity() {
                 .load(R.mipmap.default_user_image)
                 .into(binding.userImage)
         }
-
-        //ImageCacheManager.requestImage(currentPost.uid,binding.userImage)
 
         binding.likeButton.setOnClickListener {
             mDbRef = Firebase.database.reference.child("post")

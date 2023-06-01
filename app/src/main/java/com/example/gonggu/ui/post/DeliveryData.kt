@@ -8,6 +8,7 @@ data class DeliveryData (
     val longitude: Double,
     var numOfPeople: Int,
     var price : Int,
+    val pricePerPerson: Int,
     var title: String,
     var time: String,
     val writeruid: String,
@@ -16,5 +17,5 @@ data class DeliveryData (
     val postId: String
 )
 {
-    constructor(): this("","", "", 0.0, 0.0,0,0,"","","","", mutableListOf(),"")
+    constructor(): this("","", "", 0.0, 0.0,0,0, 0,"","","","", mutableListOf(),"")
 }
