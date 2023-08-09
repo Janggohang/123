@@ -50,7 +50,6 @@ class PostAdapter(private val context: Context, private val postList: ArrayList<
         fun bind(postData: Any) {
             if (postData is PostData){
                 binding.itemPostTitle.text = postData.title
-                binding.itemPostPre.text = postData.content
                 // ImageView에 이미지 로드
                 if( postData.imageUrl.isNotEmpty()) {
                     Glide.with(binding.root)
@@ -58,7 +57,7 @@ class PostAdapter(private val context: Context, private val postList: ArrayList<
                         .into(binding.itemPostImgList) // item_post_list.xml의 ImageView ID
                 } else {
                     Glide.with(binding.root)
-                        .load(R.drawable.image4)
+                        .load(R.drawable.no_image)
                         .into(binding.itemPostImgList)
                 }
 
@@ -87,7 +86,6 @@ class PostAdapter(private val context: Context, private val postList: ArrayList<
             }
             else if (postData is DeliveryData){
                 binding.itemPostTitle.text = postData.title
-                binding.itemPostPre.text = postData.content
                 // ImageView에 이미지 로드
                 if( postData.imageUrl.isNotEmpty()) {
                     Glide.with(binding.root)
@@ -95,7 +93,7 @@ class PostAdapter(private val context: Context, private val postList: ArrayList<
                         .into(binding.itemPostImgList) // item_post_list.xml의 ImageView ID
                 } else {
                     Glide.with(binding.root)
-                        .load(R.drawable.image4)
+                        .load(R.drawable.no_image)
                         .into(binding.itemPostImgList)
                 }
 
