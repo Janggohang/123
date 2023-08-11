@@ -83,6 +83,9 @@ class PostAdapter(private val context: Context, private val postList: ArrayList<
 
                 // 참여 인원 수 확인
                 binding.itemPostListNumOfParticipants.text = "참여 인원: ${postData.joiner.size}/${postData.numOfPeople}명"
+
+                // 가격 확인
+                binding.itemPostListPrice.text = "${postData.price}원"
             }
             else if (postData is DeliveryData){
                 binding.itemPostTitle.text = postData.title
@@ -119,6 +122,9 @@ class PostAdapter(private val context: Context, private val postList: ArrayList<
 
                 // 참여 인원 수 확인
                 binding.itemPostListNumOfParticipants.text = "참여 인원: ${postData.joiner.size}/${postData.numOfPeople}명"
+
+                // 가격 확인
+                binding.itemPostListPrice.text = "${postData.price}원"
             }
         }
     }
