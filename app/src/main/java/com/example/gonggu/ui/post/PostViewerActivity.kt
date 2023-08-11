@@ -65,8 +65,8 @@ class PostViewerActivity : AppCompatActivity() {
 
         binding.dateText.text = currentPost.time
         binding.postTitle.text = currentPost.title
-        binding.postLocation.text = "위치 : ${ currentPost.location }"
-        binding.priceText.text = "${currentPost.price}￦"
+        binding.postLocation.text = "위치 : ${ currentPost.location}"
+        binding.priceText.text = "${currentPost.price}원"
         binding.numOfPeopleText.text = "${currentPost.joiner.size}/${currentPost.numOfPeople}명"
         binding.likeCount.text = currentPost.like.size.toString()
         binding.pricePerPersonText.text = "${currentPost.pricePerPerson}￦"
